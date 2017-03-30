@@ -3,3 +3,24 @@ server:
 spring:
   mandatory-file-encoding: UTF-8
 
+  datasource:
+      url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      driverClassName: org.h2.Driver
+      username: sa
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
+
+logging:
+  level:
+    org:
+      hibernate:
+        type: trace
+
+password:
+  size: 4
