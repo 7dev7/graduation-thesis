@@ -8,10 +8,8 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">Вход:</h3>
                 </div>
-                <#if (error)??>
-                    <div class="control-group error">
-                        <p class="control-label">${error!""}</p>
-                    </div>
+                <#if error??>
+                    <div class="alert alert-danger" role="alert">${error}</div>
                 </#if>
                 <div class="panel-body">
                     <form role="form" method="post">

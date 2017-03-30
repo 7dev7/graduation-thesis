@@ -33,7 +33,8 @@ public class UserService {
     }
 
     private String getCurrentUserLogin() {
-        return getCurrentUser().getLogin();
+        User currentUser = getCurrentUser();
+        return currentUser != null ? currentUser.getLogin() : null;
     }
 
     public User getUser(String login) {
@@ -42,7 +43,10 @@ public class UserService {
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findOneByLogin(authentication.getName());
+        if (authentication != null) {
+            return userRepository.findOneByLogin(authentication.getName());
+        }
+        return null;
     }
 
     public List<Role> getAllRoles() {
