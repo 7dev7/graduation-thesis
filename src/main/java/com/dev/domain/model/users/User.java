@@ -10,6 +10,7 @@ public class User {
     private long id;
     @Column(unique = true)
     private String login;
+    private String name;
     private String password;
     private String email;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -67,11 +68,20 @@ public class User {
         return enabled;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", login='" + login + '\'' +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", roles=" + roles +

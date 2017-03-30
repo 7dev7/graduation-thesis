@@ -1,0 +1,35 @@
+package com.dev.domain.neuralnetwork.common;
+
+import java.util.Collection;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
+
+public abstract class ArraysHelper {
+    public static <In1, In2, Out> Stream<Out> mergeByBiFunction(In1[] array1, In2[] array2, BiFunction<In1, In2, Out> function) {
+        int length = Math.min(array1.length, array2.length);
+        Stream.Builder<Out> streamBuilder = Stream.builder();
+        for (int i = 0; i < length; i++) {
+            streamBuilder.accept(function.apply(array1[i], array2[i]));
+        }
+        return streamBuilder.build();
+    }
+
+    public static DoubleStream mergeByBiFunction(double[] array1, double[] array2, BiFunction<Double, Double, Double> function) {
+        int length = Math.min(array1.length, array2.length);
+        DoubleStream.Builder streamBuilder = DoubleStream.builder();
+        for (int i = 0; i < length; i++) {
+            streamBuilder.accept(function.apply(array1[i], array2[i]));
+        }
+        return streamBuilder.build();
+    }
+
+    public static double[][] to2DArray(Collection<double[]> collection) {
+        return collection.toArray(new double[collection.size()][]);
+    }
+
+    public static double[][] to2DArray(Stream<double[]> stream) {
+        return to2DArray(stream.collect(Collectors.toList()));
+    }
+}
