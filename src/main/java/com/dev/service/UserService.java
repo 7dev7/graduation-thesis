@@ -2,8 +2,8 @@ package com.dev.service;
 
 import com.dev.domain.dao.RoleRepository;
 import com.dev.domain.dao.UserRepository;
-import com.dev.domain.model.users.Role;
-import com.dev.domain.model.users.User;
+import com.dev.domain.model.user.Role;
+import com.dev.domain.model.user.User;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

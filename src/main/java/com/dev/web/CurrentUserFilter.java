@@ -1,6 +1,6 @@
 package com.dev.web;
 
-import com.dev.domain.model.users.User;
+import com.dev.domain.model.user.User;
 import com.dev.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,8 +11,12 @@ import java.io.IOException;
 @Component
 public class CurrentUserFilter implements Filter {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public CurrentUserFilter(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

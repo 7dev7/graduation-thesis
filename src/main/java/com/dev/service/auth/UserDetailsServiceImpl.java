@@ -1,7 +1,7 @@
 package com.dev.service.auth;
 
 import com.dev.domain.dao.UserRepository;
-import com.dev.domain.model.users.User;
+import com.dev.domain.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

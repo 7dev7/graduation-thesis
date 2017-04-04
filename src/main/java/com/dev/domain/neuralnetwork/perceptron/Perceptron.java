@@ -1,11 +1,16 @@
 package com.dev.domain.neuralnetwork.perceptron;
 
-public interface Perceptron {
-    double[] process(double[] input);
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
 
-    void study(double[] input, double[] expectedOutput);
+import java.util.List;
 
-    double[] getNeurons(int layer);
+public class Perceptron {
+    private BasicNetwork network = new BasicNetwork();
 
-    int getLayers();
+    public Perceptron(List<BasicLayer> layers) {
+        layers.forEach(l -> network.addLayer(l));
+        network.getStructure().finalizeStructure();
+        network.reset();
+    }
 }

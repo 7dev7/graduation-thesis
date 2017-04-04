@@ -1,4 +1,4 @@
-package com.dev.domain.model.users;
+package com.dev.domain.model.user;
 
 import javax.persistence.*;
 import java.util.List;
@@ -60,12 +60,12 @@ public class User {
         this.roles = roles;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getName() {

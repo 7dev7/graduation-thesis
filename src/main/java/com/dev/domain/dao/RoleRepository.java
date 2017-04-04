@@ -1,6 +1,6 @@
 package com.dev.domain.dao;
 
-import com.dev.domain.model.users.Role;
+import com.dev.domain.model.user.Role;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
