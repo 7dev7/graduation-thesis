@@ -1,10 +1,14 @@
 package com.dev.domain.model.user;
 
+import com.dev.domain.model.Patient;
+import com.dev.domain.model.questionnaire.Questionnaire;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User {
+public class Doctor {
     @Id
     @GeneratedValue
     private long id;
@@ -17,7 +21,15 @@ public class User {
     private List<Role> roles;
     private boolean enabled;
 
-    public User() {
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor")
+    private List<Patient> patients;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "items")
+    private List<Questionnaire> questionnaires;
+
+    public Doctor() {
+        patients = new ArrayList<>();
+        questionnaires = new ArrayList<>();
     }
 
     public long getId() {
@@ -76,9 +88,25 @@ public class User {
         this.name = name;
     }
 
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
+    }
+
+    public List<Questionnaire> getQuestionnaires() {
+        return questionnaires;
+    }
+
+    public void setQuestionnaires(List<Questionnaire> questionnaires) {
+        this.questionnaires = questionnaires;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
+        return "Doctor{" +
                 "id=" + id +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +

@@ -1,7 +1,7 @@
 package com.dev.web;
 
-import com.dev.domain.model.user.User;
-import com.dev.service.UserService;
+import com.dev.domain.model.user.Doctor;
+import com.dev.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +11,11 @@ import java.io.IOException;
 @Component
 public class CurrentUserFilter implements Filter {
 
-    private final UserService userService;
+    private final DoctorService doctorService;
 
     @Autowired
-    public CurrentUserFilter(UserService userService) {
-        this.userService = userService;
+    public CurrentUserFilter(DoctorService doctorService) {
+        this.doctorService = doctorService;
     }
 
     @Override
@@ -26,9 +26,9 @@ public class CurrentUserFilter implements Filter {
     public void doFilter(ServletRequest servletRequest,
                          ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
-        User currentUser = userService.getCurrentUser();
-        if (currentUser != null) {
-            servletRequest.setAttribute("user", currentUser.getLogin());
+        Doctor currentDoctor = doctorService.getCurrentUser();
+        if (currentDoctor != null) {
+            servletRequest.setAttribute("doctorLogin", currentDoctor.getLogin());
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

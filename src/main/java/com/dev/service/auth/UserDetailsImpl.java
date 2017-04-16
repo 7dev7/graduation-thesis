@@ -1,6 +1,6 @@
 package com.dev.service.auth;
 
-import com.dev.domain.model.user.User;
+import com.dev.domain.model.user.Doctor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,44 +8,44 @@ import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private User user;
+    private Doctor doctor;
 
-    public UserDetailsImpl(User user) {
-        this.user = user;
+    public UserDetailsImpl(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles();
+        return doctor.getRoles();
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return doctor.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getLogin();
+        return doctor.getLogin();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return user.isEnabled();
+        return doctor.isEnabled();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.isEnabled();
+        return doctor.isEnabled();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return user.isEnabled();
+        return doctor.isEnabled();
     }
 
     @Override
     public boolean isEnabled() {
-        return user.isEnabled();
+        return doctor.isEnabled();
     }
 }

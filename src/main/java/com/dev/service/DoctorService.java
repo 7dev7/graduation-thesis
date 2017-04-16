@@ -1,9 +1,9 @@
 package com.dev.service;
 
+import com.dev.domain.dao.DoctorRepository;
 import com.dev.domain.dao.RoleRepository;
-import com.dev.domain.dao.UserRepository;
+import com.dev.domain.model.user.Doctor;
 import com.dev.domain.model.user.Role;
-import com.dev.domain.model.user.User;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +17,8 @@ import java.util.Calendar;
 import java.util.List;
 
 @Service
-public class UserService {
-    private final UserRepository userRepository;
+public class DoctorService {
+    private final DoctorRepository doctorRepository;
     private final RoleRepository roleRepository;
     private final RoleManager roleManager;
 
@@ -26,25 +26,25 @@ public class UserService {
     private int passwordSize;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, RoleManager roleManager) {
-        this.userRepository = userRepository;
+    public DoctorService(DoctorRepository doctorRepository, RoleRepository roleRepository, RoleManager roleManager) {
+        this.doctorRepository = doctorRepository;
         this.roleRepository = roleRepository;
         this.roleManager = roleManager;
     }
 
     private String getCurrentUserLogin() {
-        User currentUser = getCurrentUser();
-        return currentUser != null ? currentUser.getLogin() : null;
+        Doctor currentDoctor = getCurrentUser();
+        return currentDoctor != null ? currentDoctor.getLogin() : null;
     }
 
-    public User getUser(String login) {
-        return userRepository.findOneByLogin(login);
+    public Doctor getUser(String login) {
+        return doctorRepository.findOneByLogin(login);
     }
 
-    public User getCurrentUser() {
+    public Doctor getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
-            return userRepository.findOneByLogin(authentication.getName());
+            return doctorRepository.findOneByLogin(authentication.getName());
         }
         return null;
     }
@@ -54,16 +54,16 @@ public class UserService {
     }
 
     public boolean addUser(String login, String pass, List<String> rolesName, String email) {
-        if (userRepository.findOneByLogin(login) != null) {
+        if (doctorRepository.findOneByLogin(login) != null) {
             return false;
         }
-        User user = new User();
-        user.setLogin(login);
-        user.setEmail(email);
-        user.setEnabled(true);
-        user.setPassword(new BCryptPasswordEncoder().encode(pass));
-        user.setRoles(getRolesByAuthorityNames(rolesName));
-        userRepository.save(user);
+        Doctor doctor = new Doctor();
+        doctor.setLogin(login);
+        doctor.setEmail(email);
+        doctor.setEnabled(true);
+        doctor.setPassword(new BCryptPasswordEncoder().encode(pass));
+        doctor.setRoles(getRolesByAuthorityNames(rolesName));
+        doctorRepository.save(doctor);
         return true;
     }
 

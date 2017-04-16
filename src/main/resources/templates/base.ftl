@@ -31,8 +31,8 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#">Главная</a></li>
                 <li><a href="#">Контакты</a></li>
-                <#if user??>
-                    <li><a href="#">${user}</a></li>
+                <#if doctorLogin??>
+                    <li><a href="#">${doctorLogin}</a></li>
                     <li><a href="/logout">Выйти</a></li>
                 </#if>
             </ul>

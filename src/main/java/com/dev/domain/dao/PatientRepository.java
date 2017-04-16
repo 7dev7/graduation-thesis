@@ -1,7 +1,7 @@
 package com.dev.domain.dao;
 
-import com.dev.domain.model.Doctor;
 import com.dev.domain.model.Patient;
+import com.dev.domain.model.user.Doctor;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

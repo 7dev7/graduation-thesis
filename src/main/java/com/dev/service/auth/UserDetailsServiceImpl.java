@@ -1,7 +1,7 @@
 package com.dev.service.auth;
 
-import com.dev.domain.dao.UserRepository;
-import com.dev.domain.model.user.User;
+import com.dev.domain.dao.DoctorRepository;
+import com.dev.domain.model.user.Doctor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,19 +10,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final DoctorRepository doctorRepository;
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserDetailsServiceImpl(DoctorRepository doctorRepository) {
+        this.doctorRepository = doctorRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findOneByLogin(login);
-        if (user == null) {
-            throw new UsernameNotFoundException("User Not Found");
+        Doctor doctor = doctorRepository.findOneByLogin(login);
+        if (doctor == null) {
+            throw new UsernameNotFoundException("Doctor Not Found");
         }
-        return new UserDetailsImpl(user);
+        return new UserDetailsImpl(doctor);
     }
 }
