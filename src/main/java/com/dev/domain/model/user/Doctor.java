@@ -16,6 +16,7 @@ public class Doctor {
     private String login;
     private String name;
     private String password;
+    private String passwordConfirm;
     private String email;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
@@ -102,6 +103,15 @@ public class Doctor {
 
     public void setQuestionnaires(List<Questionnaire> questionnaires) {
         this.questionnaires = questionnaires;
+    }
+
+    @Transient
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
 
     @Override

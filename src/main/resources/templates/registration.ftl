@@ -1,37 +1,33 @@
 <#include "base.ftl">
 <#macro page_body>
-
+    <#import "/spring.ftl" as spring />
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
             <div class="login-panel panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Вход:</h3>
+                    <h3 class="panel-title">Добавить врача:</h3>
                 </div>
-                <#if error??>
-                    <div class="alert alert-danger" role="alert">${error}</div>
-                </#if>
                 <div class="panel-body">
-                    <form role="form" method="post">
+                    <form role="form" method="post" action="">
                         <fieldset>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Логин" name="username" type="text"
+                                <input class="form-control" placeholder="Логин" name="login" type="text"
                                        autofocus>
                             </div>
                             <div class="form-group">
                                 <input class="form-control" placeholder="Пароль" name="password" type="password"
                                        value="">
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input name="remember" type="checkbox" value="Запомнить">Запомнить
-                                </label>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Подтверждение пароля" name="passwordConfirm"
+                                       type="password"
+                                       value="">
                             </div>
-                            <button type="submit" class="btn btn-lg btn-primary btn-block">Войти</button>
+                            <button type="submit" class="btn btn-lg btn-primary btn-block">Создать</button>
                         </fieldset>
                     </form>
                 </div>
-                <a href="/registration" class="btn btn-lg btn-primary btn-block">Регистрация</a>
             </div>
         </div>
     </div>

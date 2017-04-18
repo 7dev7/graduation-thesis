@@ -29,6 +29,7 @@ public class Application {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.csrf().disable().authorizeRequests()
+                    .antMatchers("/registration").permitAll()
                     .antMatchers("/**", "/*", "/").authenticated()
                     .and().formLogin().loginPage("/login")
                     .failureUrl("/login?error").permitAll()

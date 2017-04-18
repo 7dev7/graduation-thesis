@@ -21,6 +21,7 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final RoleRepository roleRepository;
     private final RoleManager roleManager;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Value("${password.size}")
     private int passwordSize;
@@ -32,16 +33,16 @@ public class DoctorService {
         this.roleManager = roleManager;
     }
 
-    private String getCurrentUserLogin() {
-        Doctor currentDoctor = getCurrentUser();
+    private String getCurrentDoctorLogin() {
+        Doctor currentDoctor = getCurrentDoctor();
         return currentDoctor != null ? currentDoctor.getLogin() : null;
     }
 
-    public Doctor getUser(String login) {
+    public Doctor getDoctor(String login) {
         return doctorRepository.findOneByLogin(login);
     }
 
-    public Doctor getCurrentUser() {
+    public Doctor getCurrentDoctor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             return doctorRepository.findOneByLogin(authentication.getName());
@@ -53,7 +54,7 @@ public class DoctorService {
         return roleRepository.findAll();
     }
 
-    public boolean addUser(String login, String pass, List<String> rolesName, String email) {
+    public boolean addDoctor(String login, String pass, List<String> rolesName, String email) {
         if (doctorRepository.findOneByLogin(login) != null) {
             return false;
         }
@@ -61,7 +62,7 @@ public class DoctorService {
         doctor.setLogin(login);
         doctor.setEmail(email);
         doctor.setEnabled(true);
-        doctor.setPassword(new BCryptPasswordEncoder().encode(pass));
+        doctor.setPassword(bCryptPasswordEncoder.encode(pass));
         doctor.setRoles(getRolesByAuthorityNames(rolesName));
         doctorRepository.save(doctor);
         return true;
@@ -88,5 +89,16 @@ public class DoctorService {
     private String generateLogin(String name, String lastName) {
         Calendar calendar = Calendar.getInstance();
         return name.trim().substring(0, 2) + lastName.trim().substring(0, 2) + calendar.get(Calendar.DAY_OF_MONTH) + calendar.get(Calendar.YEAR);
+    }
+
+    public Doctor findByLogin(String login) {
+        return doctorRepository.findOneByLogin(login);
+    }
+
+    public void save(Doctor doctor) {
+        doctor.setPassword(bCryptPasswordEncoder.encode(doctor.getPassword()));
+        doctor.setRoles(new ArrayList<>(roleRepository.findAll()));
+        doctor.setEnabled(true);
+        doctorRepository.save(doctor);
     }
 }

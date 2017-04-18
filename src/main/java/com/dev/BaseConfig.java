@@ -56,6 +56,7 @@ public class BaseConfig {
         Doctor doctor = new Doctor();
         doctor.setLogin("doctor");
         doctor.setPassword(new BCryptPasswordEncoder().encode("doctor"));
+        doctor.setPasswordConfirm(new BCryptPasswordEncoder().encode("doctor"));
         doctor.setEmail("us.us@us.com");
         doctor.setEnabled(true);
         doctor.setRoles(Arrays.asList(roleManager.getRoleByRoleName("DOCTOR")));

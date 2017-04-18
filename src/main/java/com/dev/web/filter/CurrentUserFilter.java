@@ -1,4 +1,4 @@
-package com.dev.web;
+package com.dev.web.filter;
 
 import com.dev.domain.model.user.Doctor;
 import com.dev.service.DoctorService;
@@ -26,7 +26,7 @@ public class CurrentUserFilter implements Filter {
     public void doFilter(ServletRequest servletRequest,
                          ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
-        Doctor currentDoctor = doctorService.getCurrentUser();
+        Doctor currentDoctor = doctorService.getCurrentDoctor();
         if (currentDoctor != null) {
             servletRequest.setAttribute("doctorLogin", currentDoctor.getLogin());
         }
