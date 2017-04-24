@@ -3,9 +3,9 @@ package com.dev;
 import com.dev.domain.dao.DoctorRepository;
 import com.dev.domain.dao.PatientRepository;
 import com.dev.domain.dao.RoleRepository;
-import com.dev.domain.model.user.Doctor;
-import com.dev.domain.model.user.Role;
-import com.dev.service.RoleManager;
+import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.model.doctor.Role;
+import com.dev.service.impl.RoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -30,12 +30,12 @@ public class BaseConfig {
 
     private final DoctorRepository doctorRepository;
     private final RoleRepository roleRepository;
-    private final RoleManager roleManager;
+    private final RoleServiceImpl roleManager;
     private final PatientRepository patientRepository;
 
     @Autowired
     public BaseConfig(DoctorRepository doctorRepository, RoleRepository roleRepository,
-                      RoleManager roleManager, PatientRepository patientRepository) {
+                      RoleServiceImpl roleManager, PatientRepository patientRepository) {
         this.doctorRepository = doctorRepository;
         this.roleRepository = roleRepository;
         this.roleManager = roleManager;

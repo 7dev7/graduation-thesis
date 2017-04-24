@@ -1,6 +1,6 @@
 package com.dev.web;
 
-import com.dev.domain.model.user.Doctor;
+import com.dev.domain.model.doctor.Doctor;
 import com.dev.service.DoctorService;
 import com.dev.service.SecurityService;
 import com.dev.service.validator.DoctorValidator;

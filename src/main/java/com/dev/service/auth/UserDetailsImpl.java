@@ -1,6 +1,6 @@
 package com.dev.service.auth;
 
-import com.dev.domain.model.user.Doctor;
+import com.dev.domain.model.doctor.Doctor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

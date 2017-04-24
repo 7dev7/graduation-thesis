@@ -1,4 +1,4 @@
-package com.dev.domain.model.user;
+package com.dev.domain.model.doctor;
 
 import com.dev.domain.model.Patient;
 import com.dev.domain.model.questionnaire.Questionnaire;

@@ -1,6 +1,6 @@
 package com.dev.domain.model.questionnaire;
 
-import com.dev.domain.model.user.Doctor;
+import com.dev.domain.model.doctor.Doctor;
 
 import javax.persistence.*;
 import java.util.ArrayList;

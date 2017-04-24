@@ -1,7 +1,7 @@
 package com.dev.web;
 
 import com.dev.domain.DTO.DoctorDTO;
-import com.dev.domain.model.user.Doctor;
+import com.dev.domain.model.doctor.Doctor;
 import com.dev.service.DoctorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

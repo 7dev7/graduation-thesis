@@ -1,6 +1,6 @@
 package com.dev.web.filter;
 
-import com.dev.domain.model.user.Doctor;
+import com.dev.domain.model.doctor.Doctor;
 import com.dev.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

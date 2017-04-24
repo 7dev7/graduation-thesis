@@ -1,4 +1,4 @@
-package com.dev.domain.model.user;
+package com.dev.domain.model.doctor;
 
 import org.springframework.security.core.GrantedAuthority;
 
