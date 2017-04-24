@@ -15,6 +15,7 @@ public class Doctor {
     @Column(unique = true)
     private String login;
     private String name;
+    private String lastName;
     private String password;
     private String passwordConfirm;
     private String email;
@@ -112,6 +113,14 @@ public class Doctor {
 
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Override

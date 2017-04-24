@@ -29,19 +29,19 @@ public class DoctorValidator implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "login", "NotEmpty");
         if (doctor.getLogin().length() < 4 || doctor.getLogin().length() > 32) {
-            errors.rejectValue("login", "Size.doctorForm.login");
+            errors.rejectValue("login", "Size");
         }
         if (doctorService.findByLogin(doctor.getLogin()) != null) {
-            errors.rejectValue("login", "Duplicate.doctorForm.login");
+            errors.rejectValue("login", "Duplicate");
         }
         //TODO uncomment it
 //        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
-//        if (doctor.getPassword().length() < 8 || doctor.getPassword().length() > 32) {
-//            errors.rejectValue("password", "Size.doctorForm.password");
+//        if (doctor.getPassword().length() < 6 || doctor.getPassword().length() > 32) {
+//            errors.rejectValue("password", "Size");
 //        }
 
         if (!doctor.getPasswordConfirm().equals(doctor.getPassword())) {
-            errors.rejectValue("passwordConfirm", "Diff.doctorForm.passwordConfirm");
+            errors.rejectValue("passwordConfirm", "Diff");
         }
     }
 }

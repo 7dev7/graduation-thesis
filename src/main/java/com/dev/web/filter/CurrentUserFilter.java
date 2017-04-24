@@ -29,6 +29,7 @@ public class CurrentUserFilter implements Filter {
         Doctor currentDoctor = doctorService.getCurrentDoctor();
         if (currentDoctor != null) {
             servletRequest.setAttribute("doctorLogin", currentDoctor.getLogin());
+            servletRequest.setAttribute("doctorId", currentDoctor.getId());
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

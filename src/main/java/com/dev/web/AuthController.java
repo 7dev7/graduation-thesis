@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 @Controller
 public class AuthController {
 
@@ -21,10 +22,10 @@ public class AuthController {
     private final SecurityService securityService;
 
     @Autowired
-    public AuthController(DoctorValidator doctorValidator, DoctorService doctorService, SecurityService securityService) {
-        this.doctorValidator = doctorValidator;
+    public AuthController(DoctorService doctorService, SecurityService securityService, DoctorValidator doctorValidator) {
         this.doctorService = doctorService;
         this.securityService = securityService;
+        this.doctorValidator = doctorValidator;
     }
 
     @RequestMapping("/login")
@@ -46,7 +47,7 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String registration(@ModelAttribute("doctorForm") Doctor doctorForm, BindingResult bindingResult, Model model) {
+    public String registration(@ModelAttribute("doctorForm") Doctor doctorForm, BindingResult bindingResult) {
         doctorValidator.validate(doctorForm, bindingResult);
         if (bindingResult.hasErrors()) {
             return "registration";

@@ -1,5 +1,6 @@
 package com.dev.service;
 
+import com.dev.domain.DTO.DoctorDTO;
 import com.dev.domain.dao.DoctorRepository;
 import com.dev.domain.dao.RoleRepository;
 import com.dev.domain.model.user.Doctor;
@@ -95,10 +96,23 @@ public class DoctorService {
         return doctorRepository.findOneByLogin(login);
     }
 
+    public Doctor findById(long id) {
+        return doctorRepository.findOne(id);
+    }
+
     public void save(Doctor doctor) {
         doctor.setPassword(bCryptPasswordEncoder.encode(doctor.getPassword()));
         doctor.setRoles(new ArrayList<>(roleRepository.findAll()));
         doctor.setEnabled(true);
+        doctorRepository.save(doctor);
+    }
+
+    public void save(DoctorDTO doctorDTO) {
+        Doctor doctor = doctorRepository.findOne(doctorDTO.getId());
+        doctor.setLogin(doctorDTO.getLogin());
+        doctor.setName(doctorDTO.getName());
+        doctor.setLastName(doctorDTO.getLastName());
+        doctor.setEmail(doctorDTO.getEmail());
         doctorRepository.save(doctor);
     }
 }
