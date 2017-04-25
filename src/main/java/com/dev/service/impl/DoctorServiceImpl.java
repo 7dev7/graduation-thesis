@@ -6,7 +6,6 @@ import com.dev.domain.dao.RoleRepository;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,10 +17,7 @@ import java.util.ArrayList;
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final RoleRepository roleRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
-    @Value("${password.size}")
-    private int passwordSize;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public DoctorServiceImpl(DoctorRepository doctorRepository, RoleRepository roleRepository) {

@@ -3,6 +3,11 @@ server:
 spring:
   mandatory-file-encoding: UTF-8
 
+  http:
+   multipart:
+     max-file-size: 50MB
+     max-request-size: 50MB
+
   datasource:
       url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
       driverClassName: org.h2.Driver
@@ -21,6 +26,3 @@ logging:
     org:
       hibernate:
         type: trace
-
-password:
-  size: 4
