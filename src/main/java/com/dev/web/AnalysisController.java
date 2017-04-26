@@ -23,6 +23,11 @@ public class AnalysisController {
         this.fileValidator = fileValidator;
     }
 
+    @GetMapping("/excel_sheet")
+    public String excelSheet() {
+        return "excel_sheet";
+    }
+
     @GetMapping("/analysis")
     public String analyze() {
         return "analysis";

@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <title>Regression</title>
+    <script src="/js/jquery-3.2.0.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/grid.locale-ru.js"></script>
+    <script type="text/ecmascript" src="/js/jquery.jqGrid.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/ui.jqgrid-bootstrap.css"/>
+</head>
+<body>
+
+<div th:include="fragments/common :: header"></div>
+
+<script>
+    //    $.jgrid.defaults.width = 780;
+    $.jgrid.defaults.responsive = true;
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <table id="jqGrid"></table>
+            <div id="jqGridPager"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/js/excel-sheet.js"></script>
+</body>
+</html>
