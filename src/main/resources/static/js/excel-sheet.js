@@ -17,17 +17,17 @@ $(function () {
             $("#load-excel-file-module").hide();
             $("#show-excel-file-module").show();
 
+            var responseData = JSON.parse(response.responseText);
+            var cols = responseData.columns;
+            var model = [];
+            for (var i = 0; i < cols.length; i++) {
+                model.push({label: cols[i], name: cols[i]});
+            }
+
             $("#jqGrid").jqGrid({
-                url: 'http://trirand.com/blog/phpjqgrid/examples/jsonp/getjsonp.php?callback=?&qwery=longorders',
-                mtype: "GET",
-                datatype: "jsonp",
-                colModel: [
-                    {label: 'OrderID', name: 'OrderID', key: true},
-                    {label: 'Customer ID', name: 'CustomerID'},
-                    {label: 'Order Date', name: 'OrderDate'},
-                    {label: 'Freight', name: 'Freight'},
-                    {label: 'Ship Name', name: 'ShipName'}
-                ],
+                data: responseData.rows,
+                datatype: "local",
+                colModel: model,
                 autowidth: true,
                 shrinkToFit: true,
                 width: null,

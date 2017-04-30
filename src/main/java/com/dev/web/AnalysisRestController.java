@@ -1,5 +1,7 @@
 package com.dev.web;
 
+import com.dev.domain.DTO.ExcelInfoDTO;
+import com.dev.service.ExcelService;
 import com.dev.service.exception.StorageException;
 import com.dev.service.validator.FileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class AnalysisRestController {
     private static final String SUCCESSFUL_CODE = "OK";
     private final FileValidator fileValidator;
+    private final ExcelService excelService;
 
     @Autowired
-    public AnalysisRestController(FileValidator fileValidator) {
+    public AnalysisRestController(FileValidator fileValidator, ExcelService excelService) {
         this.fileValidator = fileValidator;
+        this.excelService = excelService;
     }
 
-    @PostMapping(value = "/analysis", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/analysis", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity analyze(@RequestParam("file") MultipartFile file) {
         String validate = validate(file);
         if (!SUCCESSFUL_CODE.equals(validate)) {
@@ -29,9 +33,17 @@ public class AnalysisRestController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(validate);
         }
+        ExcelInfoDTO fileInfo;
+        try {
+            fileInfo = excelService.getFileInfo(file);
+        } catch (StorageException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body("OK");
+                .body(fileInfo);
     }
 
     private String validate(MultipartFile file) {
