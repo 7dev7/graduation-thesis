@@ -1,50 +1,49 @@
 <!doctype html>
 <html>
-<head>
-    <title>Regression</title>
-    <link rel="stylesheet" href="/css/bootstrap.css"/>
-    <script src="/js/jquery-3.2.0.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+<head th:include="fragments/common :: head">
 </head>
 <body>
 
 <div th:include="fragments/common :: header"></div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-            <div class="login-panel panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Вход:</h3>
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Вход:</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form" method="post">
+                            <fieldset>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Логин" name="username" type="text"
+                                           required="true" autofocus="true"/>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Пароль" name="password" type="password"
+                                           required="true"
+                                           value=""/>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="remember" type="checkbox" value="Запомнить"/>Запомнить
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-lg btn-primary btn-block">Войти</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <a href="/registration" class="btn btn-lg btn-primary btn-block">Регистрация</a>
                 </div>
-                <div class="panel-body">
-                    <form role="form" method="post">
-                        <fieldset>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="Логин" name="username" type="text"
-                                       required="true" autofocus="true"/>
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="Пароль" name="password" type="password"
-                                       required="true"
-                                       value=""/>
-                            </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input name="remember" type="checkbox" value="Запомнить"/>Запомнить
-                                </label>
-                            </div>
-                            <button type="submit" class="btn btn-lg btn-primary btn-block">Войти</button>
-                        </fieldset>
-                    </form>
-                </div>
-                <a href="/registration" class="btn btn-lg btn-primary btn-block">Регистрация</a>
             </div>
         </div>
     </div>
+
 </div>
-
-
-<div th:include="fragments/common :: footer"></div>
+<footer th:include="fragments/common :: footer"></footer>
 </body>
 </html>
