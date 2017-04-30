@@ -1,4 +1,4 @@
-package com.dev.web;
+package com.dev.web.rest;
 
 import com.dev.domain.DTO.ExcelInfoDTO;
 import com.dev.service.ExcelService;
