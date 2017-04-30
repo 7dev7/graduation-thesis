@@ -6,34 +6,52 @@
 
 <div th:include="fragments/common :: header"></div>
 
+<script>
+    $.jgrid.defaults.responsive = true;
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+</script>
+<script src="/js/jquery.form.js"></script>
+
 <div class="container">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="login-panel panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Загрузить Excel-файл:</h3>
+
+        <div id="load-excel-file-module">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Загрузить Excel-файл:</h3>
+                    </div>
+                    <h3 class="has-error error" id="message" hidden="hidden"/>
+                    <div class="panel-body">
+                        <form role="form" method="POST" enctype="multipart/form-data" action="/analysis"
+                              id="load-file-form">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label for="file" class="control-label"
+                                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">Excel
+                                        файл:</label>
+                                    <input class="form-control" name="file" type="file" id="file"/>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block" id="loadFileBtn">Загрузить
+                                    файл
+                                </button>
+                            </fieldset>
+                        </form>
+                    </div>
                 </div>
-                <div th:if="${message}">
-                    <h2 th:text="${message}"/>
-                </div>
-                <div class="panel-body">
-                    <form role="form" method="POST" enctype="multipart/form-data" action="/analysis">
-                        <fieldset>
-                            <div class="form-group">
-                                <label for="file" class="control-label"
-                                       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">Excel
-                                    файл:</label>
-                                <input class="form-control" name="file" type="file" id="file"/>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Загрузить файл</button>
-                        </fieldset>
-                    </form>
-                </div>
+            </div>
+        </div>
+
+        <div id="show-excel-file-module">
+            <div class="col-md-12">
+                <table id="jqGrid"></table>
+                <div id="jqGridPager"></div>
             </div>
         </div>
     </div>
 </div>
 
 <footer th:include="fragments/common :: footer"></footer>
+<script type="text/javascript" src="/js/excel-sheet.js"></script>
 </body>
 </html>
