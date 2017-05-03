@@ -74,17 +74,10 @@ $(function () {
 
     $("#load-file-form").ajaxForm(options);
 
-    $("#config-btn").on("click", function (event) {
-        event.preventDefault();
-
-        $("#show-excel-file-module").hide();
-        $("#config-model-module").show();
-    });
-
     $("#autoModeBtn").on("click", function (event) {
         event.preventDefault();
 
-        $("#config-model-module").hide();
+        $("#show-excel-file-module").hide();
         $("#automatic-mode-module").show();
     });
 
@@ -92,6 +85,17 @@ $(function () {
         event.preventDefault();
         var minNum = $("#mlpMinNumOfNeuron");
         var maxNum = $("#mlpMaxNumOfNeuron");
+
+        var hiddenLogisticFunc = $("#hiddenLogisticFunc");
+        var hiddenHyperbolicFunc = $("#hiddenHyperbolicFunc");
+        var hiddenExpFunc = $("#hiddenExpFunc");
+        var hiddenSinFunc = $("#hiddenSinFunc");
+
+
+        var outLogisticFunc = $("#outLogisticFunc");
+        var outHyperbolicFunc = $("#outHyperbolicFunc");
+        var outExpFunc = $("#outExpFunc");
+        var outSinFunc = $("#outSinFunc");
 
         minNum.prop('disabled', !minNum.prop('disabled'));
         maxNum.prop('disabled', !maxNum.prop('disabled'));
@@ -102,6 +106,15 @@ $(function () {
         if (maxNum.val() === "") {
             maxNum.val(10);
         }
+        hiddenLogisticFunc.prop('disabled', !hiddenLogisticFunc.prop('disabled'));
+        hiddenHyperbolicFunc.prop('disabled', !hiddenHyperbolicFunc.prop('disabled'));
+        hiddenExpFunc.prop('disabled', !hiddenExpFunc.prop('disabled'));
+        hiddenSinFunc.prop('disabled', !hiddenSinFunc.prop('disabled'));
+
+        outLogisticFunc.prop('disabled', !outLogisticFunc.prop('disabled'));
+        outHyperbolicFunc.prop('disabled', !outHyperbolicFunc.prop('disabled'));
+        outExpFunc.prop('disabled', !outExpFunc.prop('disabled'));
+        outSinFunc.prop('disabled', !outSinFunc.prop('disabled'));
     });
 
     $("#rbfCheckbox").on("change", function (event) {

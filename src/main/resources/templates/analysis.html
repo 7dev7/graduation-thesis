@@ -32,9 +32,11 @@
                                         файл:</label>
                                     <input class="form-control" name="file" type="file" id="file" required="required"/>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-block" id="loadFileBtn">Загрузить
-                                    файл
-                                </button>
+                                <div class="col-md-4 col-md-offset-4">
+                                    <button type="submit" class="btn btn-primary" id="loadFileBtn">Загрузить
+                                        файл
+                                    </button>
+                                </div>
                             </fieldset>
                         </form>
                     </div>
@@ -46,34 +48,27 @@
             <div class="col-md-12">
                 <table id="jqGrid"></table>
                 <div id="jqGridPager"></div>
-                <button id="config-btn" class="btn btn-primary">Конфигурация моделей</button>
-            </div>
-        </div>
-
-        <div id="config-model-module" hidden="hidden">
-            <div class="col-md-6">
-                <div class="login-panel panel panel-default">
-                    <button type="submit" class="btn btn-sm btn-primary btn-block" id="autoModeBtn">Автоматический
-                        режим
+                <br/>
+                <div class="col-md-6">
+                    <button class="btn btn-primary" id="autoModeBtn">Конфигурация моделей в автоматическом режиме
                     </button>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="login-panel panel panel-default">
-                    <button type="submit" class="btn btn-sm btn-primary btn-block" id="manualModeBtn">Ручной режим
-                    </button>
+                <div class="col-md-6">
+                    <button class="btn btn-primary" id="manualModeBtn">Конфигурация моделей в ручном режиме</button>
                 </div>
             </div>
         </div>
 
         <div id="automatic-mode-module" hidden="hidden">
-            <div class="col-md-6 col-md-offset-3">
-                <div class="login-panel panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Тип сети:</h3>
-                    </div>
-                    <div class="panel-body">
-                        <form role="form" method="post">
+
+            <form role="form" method="post">
+
+                <div class="col-md-6">
+                    <div class="login-panel panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Тип сети:</h3>
+                        </div>
+                        <div class="panel-body">
                             <fieldset>
                                 <div class="form-group">
                                     <label for="mlpCheckbox" class="control-label">Многослойный перцептрон: </label>
@@ -89,6 +84,7 @@
                                     <input class="form-control" type="number" min="3" max="30" value="10"
                                            name="mlpMaxNumOfNeuron" id="mlpMaxNumOfNeuron" required="required"/>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="rbfCheckbox" class="control-label">Сеть радиальных базисных
                                         функций: </label>
@@ -104,10 +100,89 @@
                                            id="rbfMaxNumOfNeuron" required="required" disabled="disabled"/>
                                 </div>
                             </fieldset>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <div class="col-md-6" id="mlpActivationFunctions">
+                    <div class="login-panel panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Функции активации многослойного перцептрона:</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-6">
+                                <h4 class="panel-title">Нейроны скрытого слоя:</h4>
+                                <div class="panel-body">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <label for="hiddenLogisticFunc" class="control-label">Логистическая</label>
+                                            <input id="hiddenLogisticFunc" name="hiddenLogisticFunc" type="checkbox"
+                                                   value="hiddenLogisticFunc"
+                                                   checked="checked"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hiddenHyperbolicFunc"
+                                                   class="control-label">Гиперболическая</label>
+                                            <input id="hiddenHyperbolicFunc" name="hiddenHyperbolicFunc" type="checkbox"
+                                                   value="hiddenHyperbolicFunc"
+                                                   checked="checked"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hiddenExpFunc" class="control-label">Экспонента</label>
+                                            <input id="hiddenExpFunc" name="hiddenExpFunc" type="checkbox"
+                                                   value="hiddenExpFunc"
+                                                   checked="checked"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hiddenSinFunc" class="control-label">Синус</label>
+                                            <input id="hiddenSinFunc" name="hiddenSinFunc" type="checkbox"
+                                                   value="hiddenSinFunc"/>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="panel-title">Нейроны выходного слоя:</h4>
+                                <div class="panel-body">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <label for="outLogisticFunc" class="control-label">Логистическая</label>
+                                            <input id="outLogisticFunc" name="outLogisticFunc" type="checkbox"
+                                                   value="outLogisticFunc"
+                                                   checked="checked"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="outHyperbolicFunc" class="control-label">Гиперболическая</label>
+                                            <input id="outHyperbolicFunc" name="outHyperbolicFunc" type="checkbox"
+                                                   value="outHyperbolicFunc"
+                                                   checked="checked"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="outExpFunc" class="control-label">Экспонента</label>
+                                            <input id="outExpFunc" name="outExpFunc" type="checkbox" value="outExpFunc"
+                                                   checked="checked"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="outSinFunc" class="control-label">Синус</label>
+                                            <input id="outSinFunc" name="outSinFunc" type="checkbox"
+                                                   value="outSinFunc"/>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary btn-block">Назад</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary btn-block">Обучить</button>
+                    </div>
+                </div>
+            </form>
+
         </div>
 
 
