@@ -1,6 +1,7 @@
 package com.dev.domain.model.doctor;
 
 import com.dev.domain.model.Patient;
+import com.dev.domain.model.Spreadsheet;
 import com.dev.domain.model.questionnaire.Questionnaire;
 
 import javax.persistence.*;
@@ -23,6 +24,9 @@ public class Doctor {
     private List<Role> roles;
     private boolean enabled;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    private List<Spreadsheet> spreadsheets;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor")
     private List<Patient> patients;
 
@@ -30,6 +34,7 @@ public class Doctor {
     private List<Questionnaire> questionnaires;
 
     public Doctor() {
+        spreadsheets = new ArrayList<>();
         patients = new ArrayList<>();
         questionnaires = new ArrayList<>();
     }
@@ -123,16 +128,29 @@ public class Doctor {
         this.lastName = lastName;
     }
 
+    public List<Spreadsheet> getSpreadsheets() {
+        return spreadsheets;
+    }
+
+    public void setSpreadsheets(List<Spreadsheet> spreadsheets) {
+        this.spreadsheets = spreadsheets;
+    }
+
     @Override
     public String toString() {
         return "Doctor{" +
                 "id=" + id +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", password='" + password + '\'' +
+                ", passwordConfirm='" + passwordConfirm + '\'' +
                 ", email='" + email + '\'' +
                 ", roles=" + roles +
                 ", enabled=" + enabled +
+                ", spreadsheets=" + spreadsheets +
+                ", patients=" + patients +
+                ", questionnaires=" + questionnaires +
                 '}';
     }
 }

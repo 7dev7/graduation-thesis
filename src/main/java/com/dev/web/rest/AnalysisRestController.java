@@ -2,6 +2,7 @@ package com.dev.web.rest;
 
 import com.dev.domain.DTO.ExcelInfoDTO;
 import com.dev.service.ExcelService;
+import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
 import com.dev.service.validator.FileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +14,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 @RestController
 public class AnalysisRestController {
     private static final String SUCCESSFUL_CODE = "OK";
     private final FileValidator fileValidator;
     private final ExcelService excelService;
+    private final SpreadsheetService spreadsheetService;
 
     @Autowired
-    public AnalysisRestController(FileValidator fileValidator, ExcelService excelService) {
+    public AnalysisRestController(FileValidator fileValidator, ExcelService excelService, SpreadsheetService spreadsheetService) {
         this.fileValidator = fileValidator;
         this.excelService = excelService;
+        this.spreadsheetService = spreadsheetService;
     }
 
     @PostMapping(value = "/analysis", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -41,6 +48,18 @@ public class AnalysisRestController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }
+
+        //TODO refactor it!!! remove temp file creation
+        try {
+            File convFile = new File(file.getOriginalFilename());
+            FileOutputStream fos = new FileOutputStream(convFile);
+            fos.write(file.getBytes());
+            fos.close();
+            spreadsheetService.saveSpreadsheet(convFile);
+        } catch (IOException e) {
+            //NOP
+        }
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(fileInfo);

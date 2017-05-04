@@ -3,6 +3,7 @@ package com.dev.web;
 import com.dev.domain.DTO.DoctorDTO;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.service.DoctorService;
+import com.dev.service.SpreadsheetService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,15 +15,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class DoctorController {
     private final DoctorService doctorService;
+    private final SpreadsheetService spreadsheetService;
 
-    public DoctorController(DoctorService doctorService) {
+    public DoctorController(DoctorService doctorService, SpreadsheetService spreadsheetService) {
         this.doctorService = doctorService;
+        this.spreadsheetService = spreadsheetService;
     }
 
     @RequestMapping(value = "/doctor", method = RequestMethod.GET)
     public String doctorPage(@RequestParam long id, Model model) {
         Doctor doctor = doctorService.findById(id);
         model.addAttribute("doctor", doctor);
+        model.addAttribute("spreadsheets", spreadsheetService.getActiveSpreadsheetsForDoctor(doctor));
         model.addAttribute("doctorDto", new DoctorDTO());
         return "doctor_page";
     }
