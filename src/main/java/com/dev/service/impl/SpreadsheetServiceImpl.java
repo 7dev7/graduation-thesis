@@ -7,8 +7,9 @@ import com.dev.service.DoctorService;
 import com.dev.service.SpreadsheetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,11 +39,15 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
     }
 
     @Override
-    public void saveSpreadsheet(File file) {
-        Spreadsheet spreadsheet = new Spreadsheet();
-        spreadsheet.setClosed(false);
-        spreadsheet.setExcelFile(file);
-        spreadsheet.setAuthor(doctorService.getCurrentDoctor());
-        spreadsheetRepository.save(spreadsheet);
+    public void saveSpreadsheet(MultipartFile file) {
+        try {
+            Spreadsheet spreadsheet = new Spreadsheet();
+            spreadsheet.setClosed(false);
+            spreadsheet.setExcelFile(file.getBytes());
+            spreadsheet.setAuthor(doctorService.getCurrentDoctor());
+            spreadsheetRepository.save(spreadsheet);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

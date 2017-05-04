@@ -14,10 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 @RestController
 public class AnalysisRestController {
     private static final String SUCCESSFUL_CODE = "OK";
@@ -48,17 +44,7 @@ public class AnalysisRestController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }
-
-        //TODO refactor it!!! remove temp file creation
-        try {
-            File convFile = new File(file.getOriginalFilename());
-            FileOutputStream fos = new FileOutputStream(convFile);
-            fos.write(file.getBytes());
-            fos.close();
-            spreadsheetService.saveSpreadsheet(convFile);
-        } catch (IOException e) {
-            //NOP
-        }
+        spreadsheetService.saveSpreadsheet(file);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

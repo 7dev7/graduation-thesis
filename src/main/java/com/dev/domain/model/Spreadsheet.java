@@ -3,7 +3,7 @@ package com.dev.domain.model;
 import com.dev.domain.model.doctor.Doctor;
 
 import javax.persistence.*;
-import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 
 @Entity
@@ -11,7 +11,8 @@ public class Spreadsheet {
     @Id
     @GeneratedValue
     private long id;
-    private File excelFile;
+    @Lob
+    private byte[] excelFile;
     @ManyToOne
     @JoinColumn(name = "doctorId")
     private Doctor author;
@@ -30,11 +31,11 @@ public class Spreadsheet {
         this.id = id;
     }
 
-    public File getExcelFile() {
+    public byte[] getExcelFile() {
         return excelFile;
     }
 
-    public void setExcelFile(File excelFile) {
+    public void setExcelFile(byte[] excelFile) {
         this.excelFile = excelFile;
     }
 
@@ -66,7 +67,7 @@ public class Spreadsheet {
     public String toString() {
         return "Spreadsheet{" +
                 "id=" + id +
-                ", excelFile=" + excelFile +
+                ", excelFile=" + Arrays.toString(excelFile) +
                 ", author=" + author +
                 ", lastUpdate=" + lastUpdate +
                 ", isClosed=" + isClosed +
