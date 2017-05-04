@@ -47,23 +47,16 @@
     </div>
 </div>
 
-<footer th:fragment="footer">
-    <div class="footer-top-area" id="footer-div">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-md-offset-3">
-                    <div class="footer-menu">
-                        <h2 class="footer-wid-title">Навигация</h2>
-                        <ul>
-                            <li><a href="/">Главная</a></li>
-                            <li><a href="/analysis">Анализ</a></li>
-                            <li><a href="#">Решение</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
+<div th:fragment="footer">
+    <footer class="footer-basic-centered">
+        <p class="footer-links">
+            <a href="#">Главная</a>
+            ·
+            <a href="#">Анализ</a>
+            ·
+            <a href="#">Решение</a>
+        </p>
+    </footer>
+</div>
 </body>
 </html>

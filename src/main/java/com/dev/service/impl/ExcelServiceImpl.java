@@ -5,6 +5,7 @@ import com.dev.service.ExcelService;
 import com.dev.service.exception.StorageException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,10 @@ public class ExcelServiceImpl implements ExcelService {
         List<String> columns = new ArrayList<>();
         while (cellIterator.hasNext()) {
             Cell cell = cellIterator.next();
-            columns.add(cell.getStringCellValue());
+            String stringCellValue = cell.getStringCellValue();
+            if (!StringUtils.isEmpty(stringCellValue)) {
+                columns.add(stringCellValue);
+            }
         }
         excelInfoDTO.setColumns(columns);
         return excelInfoDTO;

@@ -23,6 +23,18 @@ $(function () {
             for (var i = 0; i < cols.length; i++) {
                 model.push({label: cols[i], name: cols[i], editable: true});
             }
+            
+            $.each(cols, function (i, item) {
+                $('#inputColumns').append($('<option>', {
+                    value: i,
+                    text: item
+                }));
+                $('#outputColumns').append($('<option>', {
+                    value: i,
+                    text: item
+                }));
+            });
+
 
             $("#jqGrid").jqGrid({
                 data: responseData.rows,
