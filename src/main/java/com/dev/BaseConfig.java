@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Component
 public class BaseConfig {
-    public static final Map<String, Role> ROLES = new HashMap<>();
+    private static final Map<String, Role> ROLES = new HashMap<>();
 
     static {
         Role role1 = new Role();
@@ -32,6 +32,7 @@ public class BaseConfig {
     private final RoleRepository roleRepository;
     private final RoleServiceImpl roleManager;
     private final PatientRepository patientRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public BaseConfig(DoctorRepository doctorRepository, RoleRepository roleRepository,
@@ -57,8 +58,8 @@ public class BaseConfig {
         doctor.setLogin("doctor");
         doctor.setName("John");
         doctor.setLastName("Smith");
-        doctor.setPassword(new BCryptPasswordEncoder().encode("doctor"));
-        doctor.setPasswordConfirm(new BCryptPasswordEncoder().encode("doctor"));
+        doctor.setPassword(bCryptPasswordEncoder.encode("doctor"));
+        doctor.setPasswordConfirm(bCryptPasswordEncoder.encode("doctor"));
         doctor.setEmail("us.us@us.com");
         doctor.setEnabled(true);
         doctor.setRoles(Arrays.asList(roleManager.getRoleByRoleName("DOCTOR")));

@@ -1,14 +1,15 @@
 package com.dev.domain.model.doctor;
 
 import com.dev.domain.model.Patient;
-import com.dev.domain.model.Spreadsheet;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Doctor {
+public class Doctor implements Serializable {
     @Id
     @GeneratedValue
     private long id;
@@ -135,7 +136,6 @@ public class Doctor {
                 ", email='" + email + '\'' +
                 ", roles=" + roles +
                 ", enabled=" + enabled +
-                ", spreadsheets=" + spreadsheets +
                 ", patients=" + patients +
                 '}';
     }

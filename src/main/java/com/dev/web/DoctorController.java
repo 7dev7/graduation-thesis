@@ -2,6 +2,7 @@ package com.dev.web;
 
 import com.dev.domain.model.DTO.DoctorDTO;
 import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.DoctorService;
 import com.dev.service.SpreadsheetService;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 public class DoctorController {
@@ -26,7 +29,8 @@ public class DoctorController {
     public String doctorPage(@RequestParam long id, Model model) {
         Doctor doctor = doctorService.findById(id);
         model.addAttribute("doctor", doctor);
-        model.addAttribute("spreadsheets", spreadsheetService.getActiveSpreadsheetsForDoctor(doctor));
+        List<Spreadsheet> activeSpreadsheetsForDoctor = spreadsheetService.getActiveSpreadsheetsForDoctor(doctor);
+        model.addAttribute("spreadsheets", activeSpreadsheetsForDoctor);
         model.addAttribute("doctorDto", new DoctorDTO());
         return "doctor_page";
     }

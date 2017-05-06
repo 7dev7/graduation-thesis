@@ -3,9 +3,10 @@ package com.dev.domain.model;
 import com.dev.domain.model.doctor.Doctor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Patient {
+public class Patient implements Serializable {
     @Id
     @GeneratedValue
     private long id;

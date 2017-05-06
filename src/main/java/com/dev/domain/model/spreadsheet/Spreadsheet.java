@@ -1,18 +1,18 @@
-package com.dev.domain.model;
+package com.dev.domain.model.spreadsheet;
 
 import com.dev.domain.model.doctor.Doctor;
 
 import javax.persistence.*;
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Spreadsheet {
+public class Spreadsheet implements Serializable {
     @Id
     @GeneratedValue
     private long id;
     @Lob
-    private byte[] excelFile;
+    private SpreadsheetData spreadsheetData;
     @ManyToOne
     @JoinColumn(name = "doctorId")
     private Doctor author;
@@ -31,12 +31,12 @@ public class Spreadsheet {
         this.id = id;
     }
 
-    public byte[] getExcelFile() {
-        return excelFile;
+    public SpreadsheetData getSpreadsheetData() {
+        return spreadsheetData;
     }
 
-    public void setExcelFile(byte[] excelFile) {
-        this.excelFile = excelFile;
+    public void setSpreadsheetData(SpreadsheetData spreadsheetData) {
+        this.spreadsheetData = spreadsheetData;
     }
 
     public Doctor getAuthor() {
@@ -67,7 +67,7 @@ public class Spreadsheet {
     public String toString() {
         return "Spreadsheet{" +
                 "id=" + id +
-                ", excelFile=" + Arrays.toString(excelFile) +
+                ", spreadsheetData=" + spreadsheetData +
                 ", author=" + author +
                 ", lastUpdate=" + lastUpdate +
                 ", isClosed=" + isClosed +

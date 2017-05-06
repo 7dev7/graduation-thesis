@@ -1,7 +1,7 @@
 package com.dev.domain.converter;
 
 import com.dev.domain.model.DTO.SpreadsheetDataDTO;
-import com.dev.domain.model.SpreadsheetData;
+import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 

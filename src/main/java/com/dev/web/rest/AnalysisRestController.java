@@ -2,7 +2,7 @@ package com.dev.web.rest;
 
 import com.dev.domain.converter.SpreadsheetDataDTOConverter;
 import com.dev.domain.model.DTO.SpreadsheetDataDTO;
-import com.dev.domain.model.SpreadsheetData;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
 import com.dev.service.validator.FileValidator;
@@ -37,15 +37,13 @@ public class AnalysisRestController {
         }
         SpreadsheetDataDTO dataDTO;
         try {
-            SpreadsheetData spreadsheetData = spreadsheetService.getSpreadsheetData(file);
-            dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheetData);
+            Spreadsheet spreadsheet = spreadsheetService.createSpreadsheet(file);
+            dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheet.getSpreadsheetData());
         } catch (StorageException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }
-        spreadsheetService.saveSpreadsheet(file);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(dataDTO);

@@ -1,9 +1,9 @@
 package com.dev.service.impl;
 
 import com.dev.domain.dao.SpreadsheetRepository;
-import com.dev.domain.model.Spreadsheet;
-import com.dev.domain.model.SpreadsheetData;
 import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
+import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.DoctorService;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
@@ -111,15 +111,18 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
     }
 
     @Override
-    public void saveSpreadsheet(MultipartFile file) {
+    public Spreadsheet createSpreadsheet(MultipartFile excelFile) throws StorageException {
+        Spreadsheet spreadsheet = new Spreadsheet();
         try {
-            Spreadsheet spreadsheet = new Spreadsheet();
             spreadsheet.setClosed(false);
-            spreadsheet.setExcelFile(file.getBytes());
+            SpreadsheetData spreadsheetData = getSpreadsheetData(excelFile);
+            spreadsheetData.setSpreadsheet(spreadsheet);
+            spreadsheet.setSpreadsheetData(spreadsheetData);
             spreadsheet.setAuthor(doctorService.getCurrentDoctor());
             spreadsheetRepository.save(spreadsheet);
-        } catch (IOException e) {
+        } catch (StorageException e) {
             System.err.println(e.getMessage());
         }
+        return spreadsheet;
     }
 }

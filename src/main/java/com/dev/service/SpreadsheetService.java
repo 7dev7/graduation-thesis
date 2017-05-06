@@ -1,8 +1,8 @@
 package com.dev.service;
 
-import com.dev.domain.model.Spreadsheet;
-import com.dev.domain.model.SpreadsheetData;
 import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
+import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.exception.StorageException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,5 +15,5 @@ public interface SpreadsheetService {
 
     List<Spreadsheet> getActiveSpreadsheetsForDoctor(Doctor doctor);
 
-    void saveSpreadsheet(MultipartFile file);
+    Spreadsheet createSpreadsheet(MultipartFile excelFile) throws StorageException;
 }

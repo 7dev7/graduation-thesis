@@ -1,7 +1,7 @@
 package com.dev.domain.dao;
 
-import com.dev.domain.model.Spreadsheet;
 import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
