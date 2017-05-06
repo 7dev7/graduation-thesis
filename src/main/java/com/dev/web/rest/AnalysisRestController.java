@@ -3,6 +3,7 @@ package com.dev.web.rest;
 import com.dev.domain.converter.SpreadsheetDataDTOConverter;
 import com.dev.domain.model.DTO.SpreadsheetDataDTO;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
+import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
 import com.dev.service.validator.FileValidator;
@@ -14,6 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class AnalysisRestController {
@@ -47,6 +52,37 @@ public class AnalysisRestController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(dataDTO);
+    }
+
+    @PostMapping("/analysis/add")
+    public void add(@RequestParam Map<String, Object> map) {
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
+
+        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
+        Map<String, Object> row = new HashMap<>();
+        for (String column : spreadsheetData.getColumns()) {
+            Object o = map.get(column);
+            if (o != null) {
+                row.put(column, o);
+            }
+        }
+        spreadsheetData.getRows().add(row);
+        spreadsheetService.updateSpreadsheet(spreadsheet);
+    }
+
+    @PostMapping("/analysis/edit")
+    public void edit(@RequestParam Map<String, Object> map) {
+        //TODO implement it
+        String s = "awd";
+        int x = 5 + 6;
+    }
+
+    @PostMapping("/analysis/delete")
+    public void delete(@RequestParam Map<String, Object> map) {
+        //TODO implement it
+        String s = "awd";
+        int x = 5 + 6;
     }
 
     private String validate(MultipartFile file) {

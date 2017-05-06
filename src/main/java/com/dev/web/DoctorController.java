@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class DoctorController {
@@ -29,8 +29,9 @@ public class DoctorController {
     public String doctorPage(@RequestParam long id, Model model) {
         Doctor doctor = doctorService.findById(id);
         model.addAttribute("doctor", doctor);
-        List<Spreadsheet> activeSpreadsheetsForDoctor = spreadsheetService.getActiveSpreadsheetsForDoctor(doctor);
-        model.addAttribute("spreadsheets", activeSpreadsheetsForDoctor);
+
+        Optional<Spreadsheet> activeSpreadsheetForDoctor = spreadsheetService.getActiveSpreadsheetForDoctor(doctor);
+        activeSpreadsheetForDoctor.ifPresent(spreadsheet -> model.addAttribute("spreadsheet", spreadsheet));
         model.addAttribute("doctorDto", new DoctorDTO());
         return "doctor_page";
     }

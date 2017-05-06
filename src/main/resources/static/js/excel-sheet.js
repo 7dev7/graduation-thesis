@@ -46,7 +46,17 @@ $(function () {
                 pager: '#jqGridPager',
                 cellsubmit: 'clientArray',
                 editurl: 'clientArray'
-            }).navGrid('#jqGridPager', {}, {reloadAfterSubmit: false}, {reloadAfterSubmit: false}, {reloadAfterSubmit: false}, {}, {});
+            }).navGrid('#jqGridPager', {}, {
+                reloadAfterSubmit: false,
+                url: '/analysis/edit'
+            }, {
+                reloadAfterSubmit: false,
+                url: '/analysis/add',
+                position: "last"
+            }, {
+                reloadAfterSubmit: false,
+                url: '/analysis/delete'
+            }, {}, {});
         }
     };
 

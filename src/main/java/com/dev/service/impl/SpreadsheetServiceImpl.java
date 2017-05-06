@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class SpreadsheetServiceImpl implements SpreadsheetService {
@@ -98,20 +97,32 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
     }
 
     @Override
-    public List<Spreadsheet> getActiveSpreadsheetsForDoctor(long doctorId) {
+    public Optional<Spreadsheet> getActiveSpreadsheetForDoctor(long doctorId) {
         Doctor author = doctorService.findById(doctorId);
         List<Spreadsheet> spreadsheetsByAuthor = spreadsheetRepository.getSpreadsheetsByAuthor(author);
-        return spreadsheetsByAuthor.stream().filter(i -> !i.isClosed()).collect(Collectors.toList());
+        return spreadsheetsByAuthor.stream().filter(i -> !i.isClosed()).findFirst();
     }
 
     @Override
-    public List<Spreadsheet> getActiveSpreadsheetsForDoctor(Doctor doctor) {
+    public Optional<Spreadsheet> getActiveSpreadsheetForDoctor(Doctor doctor) {
         List<Spreadsheet> spreadsheetsByAuthor = spreadsheetRepository.getSpreadsheetsByAuthor(doctor);
-        return spreadsheetsByAuthor.stream().filter(i -> !i.isClosed()).collect(Collectors.toList());
+        return spreadsheetsByAuthor.stream().filter(i -> !i.isClosed()).findFirst();
+    }
+
+    @Override
+    public Optional<Spreadsheet> getActiveSpreadsheetForCurrentDoctor() {
+        return getActiveSpreadsheetForDoctor(doctorService.getCurrentDoctor());
     }
 
     @Override
     public Spreadsheet createSpreadsheet(MultipartFile excelFile) throws StorageException {
+        Optional<Spreadsheet> activeSpreadsheetForCurrentDoctor1 = getActiveSpreadsheetForCurrentDoctor();
+        activeSpreadsheetForCurrentDoctor1.ifPresent(spreadsheet -> {
+            spreadsheet.setClosed(true);
+            spreadsheet.setLastUpdate(new Date());
+            spreadsheetRepository.save(spreadsheet);
+        });
+
         Spreadsheet spreadsheet = new Spreadsheet();
         try {
             spreadsheet.setClosed(false);
@@ -124,5 +135,10 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
             System.err.println(e.getMessage());
         }
         return spreadsheet;
+    }
+
+    @Override
+    public void updateSpreadsheet(Spreadsheet spreadsheet) {
+        spreadsheetRepository.save(spreadsheet);
     }
 }

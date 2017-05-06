@@ -38,9 +38,9 @@
                 <button type="submit" class="btn btn-default">Обновить значения</button>
             </form>
 
-            <ul th:each="spr : ${spreadsheets}">
-                <li th:text="${spr.lastUpdate}"></li>
-            </ul>
+            <div th:if="${spreadsheet}">
+                <span th:text="${spreadsheet.lastUpdate}"></span>
+            </div>
         </div>
     </div>
 </div>
