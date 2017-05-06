@@ -37,44 +37,16 @@ $(function () {
                 datatype: "local",
                 colModel: model,
                 autowidth: true,
-                cellEdit: true,
                 shrinkToFit: true,
                 width: null,
                 scroll: true,
                 viewrecords: true,
                 height: 500,
                 rowNum: 25,
-                pager: "#jqGridPager",
+                pager: '#jqGridPager',
                 cellsubmit: 'clientArray',
-                editurl: 'clientArray',
-                editoptions: {
-                    dataInit: function (elem) {
-                        $(elem).focus(function () {
-                            this.select();
-                        })
-                    },
-                    dataEvents: [
-                        {
-                            type: 'keydown',
-                            fn: function (e) {
-                                var key = e.charCode || e.keyCode;
-                                if (key === 9)//tab
-                                {
-                                    var grid = $('#jqGrid');
-                                    //Save editing for current row
-                                    grid.jqGrid('saveRow', selIRow, false, 'clientArray');
-                                    //If at bottom of grid, create new row
-                                    if (selIRow++ === grid.getDataIDs().length) {
-                                        grid.addRowData(selIRow, {});
-                                    }
-                                    //Enter edit row for next row in grid
-                                    grid.jqGrid('editRow', selIRow, false, 'clientArray');
-                                }
-                            }
-                        }
-                    ]
-                }
-            });
+                editurl: 'clientArray'
+            }).navGrid('#jqGridPager', {}, {reloadAfterSubmit: false}, {reloadAfterSubmit: false}, {reloadAfterSubmit: false}, {}, {});
         }
     };
 
@@ -83,9 +55,41 @@ $(function () {
     $("#autoModeBtn").on("click", function (event) {
         event.preventDefault();
 
+        var inputColumnIndexes = [];
+        $('#inputColumns').find('option:selected').each(function (i, item) {
+            inputColumnIndexes.push(item.value);
+        });
+
+        var outputColumnIndexes = [];
+        $('#outputColumns').find('option:selected').each(function (i, item) {
+            outputColumnIndexes.push(item.value);
+        });
+
+        var res = intersection(inputColumnIndexes, outputColumnIndexes);
+        if (res.length > 0) {
+            var msg = $("#inOutErrorMessage");
+            var errorBlock = $("#inOutErrorBlock");
+
+            msg.html("Присутствует одинаковое входное и выходное значение");
+            errorBlock.show();
+            return;
+        }
+        $("#inOutErrorBlock").hide();
+
         $("#show-excel-file-module").hide();
         $("#automatic-mode-module").show();
     });
+
+    function intersection(a, b) {
+        var m = a.length, n = b.length, c = 0, res = [];
+        for (var i = 0; i < m; i++) {
+            var j = 0, k = 0;
+            while (b[j] !== a[i] && j < n) j++;
+            while (res[k] !== a[i] && k < c) k++;
+            if (j !== n && k === c) res[c++] = a[i];
+        }
+        return res;
+    }
 
     $("#mlpCheckbox").on("change", function (event) {
         event.preventDefault();

@@ -49,11 +49,14 @@
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
     <br/>
-
     <div class="container">
         <div class="row">
             <div>
                 <form action="">
+                    <div class="alert alert-danger alert-dismissable fade in" id="inOutErrorBlock" hidden="hidden">
+                        <a href="#" class="close" aria-label="close">&times;</a>
+                        <span id="inOutErrorMessage"></span>
+                    </div>
                     <div class="col-md-6">
                         <div class="col-md-6 col-md-offset-3">
                             <label for="inputColumns" class="control-label">Входные значения: </label>
