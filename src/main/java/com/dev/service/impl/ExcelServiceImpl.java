@@ -74,7 +74,12 @@ public class ExcelServiceImpl implements ExcelService {
                         jsonObject.put(key, cell.getStringCellValue());
                         break;
                     case NUMERIC:
-                        jsonObject.put(key, String.valueOf(cell.getNumericCellValue()));
+                        double numericCellValue = cell.getNumericCellValue();
+                        if (numericCellValue % 1 == 0) {
+                            jsonObject.put(key, (int) numericCellValue);
+                        } else {
+                            jsonObject.put(key, String.valueOf(numericCellValue));
+                        }
                         break;
                 }
             }

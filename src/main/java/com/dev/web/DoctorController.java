@@ -7,9 +7,9 @@ import com.dev.service.SpreadsheetService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -22,7 +22,7 @@ public class DoctorController {
         this.spreadsheetService = spreadsheetService;
     }
 
-    @RequestMapping(value = "/doctor", method = RequestMethod.GET)
+    @GetMapping("/doctor")
     public String doctorPage(@RequestParam long id, Model model) {
         Doctor doctor = doctorService.findById(id);
         model.addAttribute("doctor", doctor);
@@ -31,7 +31,7 @@ public class DoctorController {
         return "doctor_page";
     }
 
-    @RequestMapping(value = "/doctor", method = RequestMethod.POST)
+    @PostMapping("/doctor")
     public String doctorPage(@ModelAttribute("doctorDTO") DoctorDTO doctorDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "redirect:doctor?id=" + doctorDTO.getId();

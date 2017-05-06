@@ -9,8 +9,9 @@ $(function () {
         },
         complete: function (response) {
             if (response.status !== 201) {
-                $("#message").show();
-                $("#message").text(response.responseText);
+                var msgField = $("#message");
+                msgField.show();
+                msgField.text(response.responseText);
                 return;
             }
 
@@ -23,7 +24,7 @@ $(function () {
             for (var i = 0; i < cols.length; i++) {
                 model.push({label: cols[i], name: cols[i], editable: true});
             }
-            
+
             $.each(cols, function (i, item) {
                 $('#inputColumns').append($('<option>', {
                     value: i,
@@ -144,4 +145,52 @@ $(function () {
             maxNum.val(10);
         }
     });
+
+    $("#backBtnInAutoModule").on("click", function (event) {
+        event.preventDefault();
+        $("#automatic-mode-module").hide();
+        $("#show-excel-file-module").show();
+    });
+
+    $("#trainBtn").on("click", function (event) {
+        event.preventDefault();
+        var data = loadData();
+        var jsData = JSON.stringify(data);
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            data: jsData,
+            url: '/train'
+        });
+    });
+
+    function loadData() {
+        var data = {
+            isMLPNeeded: $("#mlpCheckbox").prop("checked"),
+            isRBFNeeded: $("#rbfCheckbox").prop("checked")
+        };
+
+        data['mlpMinNumOfNeuron'] = $("#mlpMinNumOfNeuron").val();
+        data['mlpMaxNumOfNeuron'] = $("#mlpMaxNumOfNeuron").val();
+
+        data['rbfMinNumOfNeuron'] = $("#rbfMinNumOfNeuron").val();
+        data['rbfMaxNumOfNeuron'] = $("#rbfMaxNumOfNeuron").val();
+
+        var inputs = [];
+        var outs = [];
+
+        $('#inputColumns').find('option:selected').each(function (i, item) {
+            inputs.push(item.value);
+        });
+
+        $('#outputColumns').find('option:selected').each(function (i, item) {
+            outs.push(item.value);
+        });
+
+        data['inputColumnIndexes'] = inputs;
+        data['outputColumnIndexes'] = outs;
+
+        return data;
+    }
 });

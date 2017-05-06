@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -28,25 +28,25 @@ public class AuthController {
         this.doctorValidator = doctorValidator;
     }
 
-    @RequestMapping("/login")
+    @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error,
                         Model model) {
         model.addAttribute("error", error != null ? "Неправильный логин или пароль" : null);
         return "login";
     }
 
-    @RequestMapping("/logout")
+    @GetMapping("/logout")
     public String logout() {
         return "logout";
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.GET)
+    @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("doctorForm", new Doctor());
         return "registration";
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @PostMapping("/registration")
     public String registration(@ModelAttribute("doctorForm") Doctor doctorForm, BindingResult bindingResult) {
         doctorValidator.validate(doctorForm, bindingResult);
         if (bindingResult.hasErrors()) {

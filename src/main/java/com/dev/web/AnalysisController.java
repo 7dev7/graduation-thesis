@@ -1,20 +1,18 @@
 package com.dev.web;
 
-import com.dev.service.ExcelService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dev.domain.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.ActivationFunction;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 
 @Controller
 public class AnalysisController {
-
-    private final ExcelService excelService;
-
-    @Autowired
-    public AnalysisController(ExcelService excelService) {
-        this.excelService = excelService;
-    }
 
     @GetMapping("/excel_sheet")
     public String excelSheet() {
@@ -23,6 +21,13 @@ public class AnalysisController {
 
     @GetMapping("/analysis")
     public String analyze() {
+        return "analysis";
+    }
+
+    @PostMapping(value = "/train", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String train(@RequestBody AutoModeTrainInfoDTO trainInfoDTO) {
+        //TODO handle it
+        List<ActivationFunction> outNeuronsFuncs = trainInfoDTO.getOutNeuronsFuncs();
         return "analysis";
     }
 }
