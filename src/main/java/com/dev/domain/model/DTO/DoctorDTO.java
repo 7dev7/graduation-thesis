@@ -1,4 +1,4 @@
-package com.dev.domain.DTO;
+package com.dev.domain.model.DTO;
 
 public class DoctorDTO {
     private long id;

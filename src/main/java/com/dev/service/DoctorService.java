@@ -1,6 +1,6 @@
 package com.dev.service;
 
-import com.dev.domain.DTO.DoctorDTO;
+import com.dev.domain.model.DTO.DoctorDTO;
 import com.dev.domain.model.doctor.Doctor;
 
 public interface DoctorService {

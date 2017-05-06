@@ -1,7 +1,8 @@
 package com.dev.web.rest;
 
-import com.dev.domain.DTO.ExcelInfoDTO;
-import com.dev.service.ExcelService;
+import com.dev.domain.converter.SpreadsheetDataDTOConverter;
+import com.dev.domain.model.DTO.SpreadsheetDataDTO;
+import com.dev.domain.model.SpreadsheetData;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
 import com.dev.service.validator.FileValidator;
@@ -18,13 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class AnalysisRestController {
     private static final String SUCCESSFUL_CODE = "OK";
     private final FileValidator fileValidator;
-    private final ExcelService excelService;
     private final SpreadsheetService spreadsheetService;
 
     @Autowired
-    public AnalysisRestController(FileValidator fileValidator, ExcelService excelService, SpreadsheetService spreadsheetService) {
+    public AnalysisRestController(FileValidator fileValidator, SpreadsheetService spreadsheetService) {
         this.fileValidator = fileValidator;
-        this.excelService = excelService;
         this.spreadsheetService = spreadsheetService;
     }
 
@@ -36,9 +35,10 @@ public class AnalysisRestController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(validate);
         }
-        ExcelInfoDTO fileInfo;
+        SpreadsheetDataDTO dataDTO;
         try {
-            fileInfo = excelService.getFileInfo(file);
+            SpreadsheetData spreadsheetData = spreadsheetService.getSpreadsheetData(file);
+            dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheetData);
         } catch (StorageException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -48,7 +48,7 @@ public class AnalysisRestController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(fileInfo);
+                .body(dataDTO);
     }
 
     private String validate(MultipartFile file) {

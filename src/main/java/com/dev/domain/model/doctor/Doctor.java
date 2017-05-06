@@ -2,7 +2,6 @@ package com.dev.domain.model.doctor;
 
 import com.dev.domain.model.Patient;
 import com.dev.domain.model.Spreadsheet;
-import com.dev.domain.model.questionnaire.Questionnaire;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -30,13 +29,9 @@ public class Doctor {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor")
     private List<Patient> patients;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "items")
-    private List<Questionnaire> questionnaires;
-
     public Doctor() {
         spreadsheets = new ArrayList<>();
         patients = new ArrayList<>();
-        questionnaires = new ArrayList<>();
     }
 
     public long getId() {
@@ -103,14 +98,6 @@ public class Doctor {
         this.patients = patients;
     }
 
-    public List<Questionnaire> getQuestionnaires() {
-        return questionnaires;
-    }
-
-    public void setQuestionnaires(List<Questionnaire> questionnaires) {
-        this.questionnaires = questionnaires;
-    }
-
     @Transient
     public String getPasswordConfirm() {
         return passwordConfirm;
@@ -150,7 +137,6 @@ public class Doctor {
                 ", enabled=" + enabled +
                 ", spreadsheets=" + spreadsheets +
                 ", patients=" + patients +
-                ", questionnaires=" + questionnaires +
                 '}';
     }
 }

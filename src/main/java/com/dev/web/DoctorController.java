@@ -1,6 +1,6 @@
 package com.dev.web;
 
-import com.dev.domain.DTO.DoctorDTO;
+import com.dev.domain.model.DTO.DoctorDTO;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.service.DoctorService;
 import com.dev.service.SpreadsheetService;

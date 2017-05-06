@@ -1,14 +1,13 @@
-package com.dev.domain.DTO;
+package com.dev.domain.model.DTO;
 
 import net.minidev.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExcelInfoDTO {
+public class SpreadsheetDataDTO {
     private List<String> columns = new ArrayList<>();
-    private int records;
-    private int total;
+    private int numOfRecords;
     private JSONArray rows;
 
     public List<String> getColumns() {
@@ -19,20 +18,12 @@ public class ExcelInfoDTO {
         this.columns = columns;
     }
 
-    public int getRecords() {
-        return records;
+    public int getNumOfRecords() {
+        return numOfRecords;
     }
 
-    public void setRecords(int records) {
-        this.records = records;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
+    public void setNumOfRecords(int numOfRecords) {
+        this.numOfRecords = numOfRecords;
     }
 
     public JSONArray getRows() {
@@ -45,10 +36,9 @@ public class ExcelInfoDTO {
 
     @Override
     public String toString() {
-        return "ExcelInfoDTO{" +
+        return "SpreadsheetDataDTO{" +
                 "columns=" + columns +
-                ", records=" + records +
-                ", total=" + total +
+                ", numOfRecords=" + numOfRecords +
                 ", rows=" + rows +
                 '}';
     }

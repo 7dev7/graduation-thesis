@@ -1,6 +1,6 @@
 package com.dev.web;
 
-import com.dev.domain.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

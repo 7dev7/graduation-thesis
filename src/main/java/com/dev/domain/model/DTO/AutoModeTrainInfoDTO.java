@@ -1,4 +1,4 @@
-package com.dev.domain.DTO;
+package com.dev.domain.model.DTO;
 
 import com.dev.domain.model.ActivationFunction;
 
