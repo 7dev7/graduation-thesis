@@ -1,12 +1,5 @@
 $(function () {
     var options = {
-        beforeSend: function () {
-        },
-        uploadProgress: function (event, position, total, percentComplete) {
-        },
-        success: function (data) {
-
-        },
         complete: function (response) {
             if (response.status !== 201) {
                 var msgField = $("#message");
@@ -36,6 +29,8 @@ $(function () {
                 }));
             });
 
+            $('#inputColumns').selectpicker('refresh');
+            $('#outputColumns').selectpicker('refresh');
 
             $("#jqGrid").jqGrid({
                 data: responseData.rows,
@@ -80,8 +75,6 @@ $(function () {
                     ]
                 }
             });
-        },
-        error: function (data) {
         }
     };
 
@@ -154,22 +147,89 @@ $(function () {
 
     $("#trainBtn").on("click", function (event) {
         event.preventDefault();
-        var data = loadData();
-        var jsData = JSON.stringify(data);
+        if (!validate()) {
+            return;
+        }
+        hideErrors();
 
+        var data = loadData();
         $.ajax({
             type: "POST",
             contentType: "application/json",
-            data: jsData,
+            data: JSON.stringify(data),
             url: '/train'
         });
     });
 
+    $('.alert .close').on('click', function (e) {
+        $(this).parent().hide();
+    });
+
+    function validate() {
+        var msg = $("#autoModeErrorMessage");
+        var errorBlock = $("#autoModeErrorBlock");
+
+        var mlp = $("#mlpCheckbox");
+        var rbf = $("#rbfCheckbox");
+
+        var mlpMinNum = $("#mlpMinNumOfNeuron");
+        var mlpMaxNum = $("#mlpMaxNumOfNeuron");
+
+        var rbfMinNum = $("#rbfMinNumOfNeuron");
+        var rfbMaxNum = $("#rbfMaxNumOfNeuron");
+
+        if (!mlp.prop("checked") && !rbf.prop("checked")) {
+            msg.html("Выберите хотя бы один тип сети");
+            errorBlock.show();
+            return false;
+        }
+
+        if (mlp.prop("checked") && mlpMinNum.val() === "") {
+            msg.html("Минимальное число нейронов скрытого слоя для многослойного перцептрона не заполнено");
+            errorBlock.show();
+            return false;
+        }
+
+        if (mlp.prop("checked") && mlpMaxNum.val() === "") {
+            msg.html("Максимальное число нейронов скрытого слоя для многослойного перцептрона не заполнено");
+            errorBlock.show();
+            return false;
+        }
+
+        if (rbf.prop("checked") && rbfMinNum.val() === "") {
+            msg.html("Минимальное число нейронов для сети радиальных базисных функций не заполнено");
+            errorBlock.show();
+            return false;
+        }
+
+        if (rbf.prop("checked") && rfbMaxNum.val() === "") {
+            msg.html("Максимальное число нейронов для сети радиальных базисных функций не заполнено");
+            errorBlock.show();
+            return false;
+        }
+
+        if (mlp.prop("checked") && $('#hiddenFuncs').find('input:checked').length === 0) {
+            msg.html("Выберите хотя бы одну функцию активации для скрытого слоя");
+            errorBlock.show();
+            return false;
+        }
+
+        if (mlp.prop("checked") && $('#outFuncs').find('input:checked').length === 0) {
+            msg.html("Выберите хотя бы одну функцию активации для выходного слоя");
+            errorBlock.show();
+            return false;
+        }
+        return true;
+    }
+
+    function hideErrors() {
+        $("#autoModeErrorBlock").hide();
+    }
+
     function loadData() {
-        var data = {
-            isMLPNeeded: $("#mlpCheckbox").prop("checked"),
-            isRBFNeeded: $("#rbfCheckbox").prop("checked")
-        };
+        var data = {};
+        data['isMLPNeeded'] = $("#mlpCheckbox").prop("checked");
+        data['isRBFNeeded'] = $("#rbfCheckbox").prop("checked");
 
         data['mlpMinNumOfNeuron'] = $("#mlpMinNumOfNeuron").val();
         data['mlpMaxNumOfNeuron'] = $("#mlpMaxNumOfNeuron").val();
@@ -177,19 +237,29 @@ $(function () {
         data['rbfMinNumOfNeuron'] = $("#rbfMinNumOfNeuron").val();
         data['rbfMaxNumOfNeuron'] = $("#rbfMaxNumOfNeuron").val();
 
-        var inputs = [];
-        var outs = [];
-
+        var inputColumnIndexes = [];
         $('#inputColumns').find('option:selected').each(function (i, item) {
-            inputs.push(item.value);
+            inputColumnIndexes.push(item.value);
         });
+        data['inputColumnIndexes'] = inputColumnIndexes;
 
+        var outputColumnIndexes = [];
         $('#outputColumns').find('option:selected').each(function (i, item) {
-            outs.push(item.value);
+            outputColumnIndexes.push(item.value);
         });
+        data['outputColumnIndexes'] = outputColumnIndexes;
 
-        data['inputColumnIndexes'] = inputs;
-        data['outputColumnIndexes'] = outs;
+        var hiddenNeuronsFuncs = [];
+        $('#hiddenFuncs').find('input:checked').each(function (i, item) {
+            hiddenNeuronsFuncs.push(item.value);
+        });
+        data['hiddenNeuronsFuncs'] = hiddenNeuronsFuncs;
+
+        var outNeuronsFuncs = [];
+        $('#outFuncs').find('input:checked').each(function (i, item) {
+            outNeuronsFuncs.push(item.value);
+        });
+        data['outNeuronsFuncs'] = outNeuronsFuncs;
 
         return data;
     }

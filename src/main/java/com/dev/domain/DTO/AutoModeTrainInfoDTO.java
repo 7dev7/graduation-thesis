@@ -43,14 +43,6 @@ public class AutoModeTrainInfoDTO {
         this.outputColumnIndexes = outputColumnIndexes;
     }
 
-    public Boolean isMLPNeeded() {
-        return isMLPNeeded;
-    }
-
-    public void setMLPNeeded(Boolean MLPNeeded) {
-        isMLPNeeded = MLPNeeded;
-    }
-
     public Integer getMlpMinNumOfNeuron() {
         return mlpMinNumOfNeuron;
     }
@@ -65,14 +57,6 @@ public class AutoModeTrainInfoDTO {
 
     public void setMlpMaxNumOfNeuron(Integer mlpMaxNumOfNeuron) {
         this.mlpMaxNumOfNeuron = mlpMaxNumOfNeuron;
-    }
-
-    public Boolean isRBFNeeded() {
-        return isRBFNeeded;
-    }
-
-    public void setRBFNeeded(Boolean RBFNeeded) {
-        isRBFNeeded = RBFNeeded;
     }
 
     public Integer getRbfMinNumOfNeuron() {
@@ -107,15 +91,31 @@ public class AutoModeTrainInfoDTO {
         this.outNeuronsFuncs = outNeuronsFuncs;
     }
 
+    public Boolean getIsMLPNeeded() {
+        return isMLPNeeded;
+    }
+
+    public void setIsMLPNeeded(Boolean isMLPNeeded) {
+        this.isMLPNeeded = isMLPNeeded;
+    }
+
+    public Boolean getIsRBFNeeded() {
+        return isRBFNeeded;
+    }
+
+    public void setIsRBFNeeded(Boolean isRBFNeeded) {
+        this.isRBFNeeded = isRBFNeeded;
+    }
+
     @Override
     public String toString() {
         return "AutoModeTrainInfoDTO{" +
                 "inputColumnIndexes=" + inputColumnIndexes +
                 ", outputColumnIndexes=" + outputColumnIndexes +
-                ", isMLPNeeded=" + isMLPNeeded +
+                ", isMLPNeeded='" + isMLPNeeded + '\'' +
                 ", mlpMinNumOfNeuron=" + mlpMinNumOfNeuron +
                 ", mlpMaxNumOfNeuron=" + mlpMaxNumOfNeuron +
-                ", isRBFNeeded=" + isRBFNeeded +
+                ", isRBFNeeded='" + isRBFNeeded + '\'' +
                 ", rbfMinNumOfNeuron=" + rbfMinNumOfNeuron +
                 ", rbfMaxNumOfNeuron=" + rbfMaxNumOfNeuron +
                 ", hiddenNeuronsFuncs=" + hiddenNeuronsFuncs +

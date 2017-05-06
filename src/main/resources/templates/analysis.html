@@ -57,14 +57,16 @@
                     <div class="col-md-6">
                         <div class="col-md-6 col-md-offset-3">
                             <label for="inputColumns" class="control-label">Входные значения: </label>
-                            <select class="form-control" multiple="multiple" id="inputColumns">
+                            <select class="selectpicker" multiple="multiple" data-live-search="true"
+                                    data-done-button="true" data-selected-text-format="count > 3" id="inputColumns">
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="col-md-6 col-md-offset-3">
                             <label for="outputColumns" class="control-label">Выходные значения: </label>
-                            <select class="form-control" multiple="multiple" id="outputColumns">
+                            <select class="selectpicker" multiple="multiple" data-live-search="true"
+                                    data-done-button="true" data-selected-text-format="count > 3" id="outputColumns">
                             </select>
                         </div>
                     </div>
@@ -73,13 +75,13 @@
             <br/><br/>
             <hr/>
             <div class="col-md-6">
-                <div class="col-md-4 col-md-offset-4">
+                <div class="col-md-6 col-md-offset-3">
                     <button class="btn btn-primary" id="autoModeBtn">Конфигурация моделей в автоматическом режиме
                     </button>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="col-md-4 col-md-offset-4">
+                <div class="col-md-6 col-md-offset-3">
                     <button class="btn btn-primary" id="manualModeBtn">Конфигурация моделей в ручном режиме</button>
                 </div>
             </div>
@@ -90,9 +92,11 @@
 <div class="container">
     <div class="row">
         <form action="">
-
             <div id="automatic-mode-module" hidden="hidden">
-
+                <div class="alert alert-danger alert-dismissable fade in" id="autoModeErrorBlock" hidden="hidden">
+                    <a href="#" class="close" aria-label="close">&times;</a>
+                    <span id="autoModeErrorMessage"></span>
+                </div>
                 <div class="col-md-6">
                     <div class="login-panel panel panel-default">
                         <div class="panel-heading">
@@ -143,30 +147,29 @@
                             <div class="col-md-6">
                                 <h4 class="panel-title">Нейроны скрытого слоя:</h4>
                                 <div class="panel-body">
-                                    <fieldset>
+                                    <fieldset id="hiddenFuncs">
                                         <div class="form-group">
                                             <label for="hiddenLogisticFunc" class="control-label">Логистическая</label>
                                             <input id="hiddenLogisticFunc" name="hiddenLogisticFunc" type="checkbox"
-                                                   value="hiddenLogisticFunc"
+                                                   value="0"
                                                    checked="checked"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="hiddenHyperbolicFunc"
                                                    class="control-label">Гиперболическая</label>
                                             <input id="hiddenHyperbolicFunc" name="hiddenHyperbolicFunc" type="checkbox"
-                                                   value="hiddenHyperbolicFunc"
+                                                   value="1"
                                                    checked="checked"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="hiddenExpFunc" class="control-label">Экспонента</label>
                                             <input id="hiddenExpFunc" name="hiddenExpFunc" type="checkbox"
-                                                   value="hiddenExpFunc"
+                                                   value="2"
                                                    checked="checked"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="hiddenSinFunc" class="control-label">Синус</label>
-                                            <input id="hiddenSinFunc" name="hiddenSinFunc" type="checkbox"
-                                                   value="hiddenSinFunc"/>
+                                            <input id="hiddenSinFunc" name="hiddenSinFunc" type="checkbox" value="3"/>
                                         </div>
                                     </fieldset>
                                 </div>
@@ -174,28 +177,27 @@
                             <div class="col-md-6">
                                 <h4 class="panel-title">Нейроны выходного слоя:</h4>
                                 <div class="panel-body">
-                                    <fieldset>
+                                    <fieldset id="outFuncs">
                                         <div class="form-group">
                                             <label for="outLogisticFunc" class="control-label">Логистическая</label>
                                             <input id="outLogisticFunc" name="outLogisticFunc" type="checkbox"
-                                                   value="outLogisticFunc"
+                                                   value="0"
                                                    checked="checked"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="outHyperbolicFunc" class="control-label">Гиперболическая</label>
                                             <input id="outHyperbolicFunc" name="outHyperbolicFunc" type="checkbox"
-                                                   value="outHyperbolicFunc"
+                                                   value="1"
                                                    checked="checked"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="outExpFunc" class="control-label">Экспонента</label>
-                                            <input id="outExpFunc" name="outExpFunc" type="checkbox" value="outExpFunc"
+                                            <input id="outExpFunc" name="outExpFunc" type="checkbox" value="2"
                                                    checked="checked"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="outSinFunc" class="control-label">Синус</label>
-                                            <input id="outSinFunc" name="outSinFunc" type="checkbox"
-                                                   value="outSinFunc"/>
+                                            <input id="outSinFunc" name="outSinFunc" type="checkbox" value="3"/>
                                         </div>
                                     </fieldset>
                                 </div>
@@ -211,9 +213,7 @@
                         <button type="submit" class="btn btn-primary btn-block" id="trainBtn">Обучить</button>
                     </div>
                 </div>
-
             </div>
-
         </form>
     </div>
 </div>
