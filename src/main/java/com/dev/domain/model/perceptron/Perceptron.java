@@ -8,8 +8,10 @@ import org.encog.engine.network.activation.ActivationStep;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 
+import java.io.Serializable;
 
-public class Perceptron {
+
+public class Perceptron implements Serializable {
     private BasicNetwork network;
     private ActivationFunction hiddenActivationFunc;
     private ActivationFunction outActivationFunc;
@@ -18,7 +20,7 @@ public class Perceptron {
     private int outNeurons;
 
     public Perceptron(int inNeurons, int neuronsOnHiddenLayer, int outNeurons) {
-        this.inputNeurons = inputNeurons;
+        this.inputNeurons = inNeurons;
         this.hiddenNeurons = neuronsOnHiddenLayer;
         this.outNeurons = outNeurons;
         network = new BasicNetwork();

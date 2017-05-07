@@ -129,13 +129,13 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
     @Override
     public Optional<Spreadsheet> getActiveSpreadsheetForDoctor(long doctorId) {
         Doctor author = doctorService.findById(doctorId);
-        List<Spreadsheet> spreadsheetsByAuthor = spreadsheetRepository.getSpreadsheetsByAuthor(author);
+        List<Spreadsheet> spreadsheetsByAuthor = spreadsheetRepository.getSpreadsheetsByOwner(author);
         return spreadsheetsByAuthor.stream().filter(i -> !i.isClosed()).findFirst();
     }
 
     @Override
     public Optional<Spreadsheet> getActiveSpreadsheetForDoctor(Doctor doctor) {
-        List<Spreadsheet> spreadsheetsByAuthor = spreadsheetRepository.getSpreadsheetsByAuthor(doctor);
+        List<Spreadsheet> spreadsheetsByAuthor = spreadsheetRepository.getSpreadsheetsByOwner(doctor);
         return spreadsheetsByAuthor.stream().filter(i -> !i.isClosed()).findFirst();
     }
 
@@ -159,7 +159,7 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
             SpreadsheetData spreadsheetData = getSpreadsheetData(excelFile);
             spreadsheetData.setSpreadsheet(spreadsheet);
             spreadsheet.setSpreadsheetData(spreadsheetData);
-            spreadsheet.setAuthor(doctorService.getCurrentDoctor());
+            spreadsheet.setOwner(doctorService.getCurrentDoctor());
             spreadsheetRepository.save(spreadsheet);
         } catch (StorageException e) {
             System.err.println(e.getMessage());

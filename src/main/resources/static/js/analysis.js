@@ -116,11 +116,16 @@ $(function () {
         hideErrors();
 
         var data = loadData();
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            url: '/train'
+        Pace.track(function () {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                url: '/train',
+                success: function (data) {
+                    window.location.replace("/network_models");
+                }
+            });
         });
     });
 

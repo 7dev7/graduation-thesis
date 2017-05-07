@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head th:include="fragments/common :: head">
+</head>
+<body>
+<div th:include="fragments/common :: header"></div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-2">
+            <h3>Мои модели: </h3>
+            <div th:each="model : ${networkModels}">
+                <h3 th:text="${model.name}"></h3>
+                <h4 th:text="${model.error}"></h4>
+                <h4 th:text="${model.hiddenActivationFunction}"></h4>
+                <h4 th:text="${model.outActivationFunction}"></h4>
+                <hr/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:include="fragments/common :: footer"></div>
+</body>
+</html>

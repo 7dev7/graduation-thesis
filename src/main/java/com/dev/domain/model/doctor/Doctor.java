@@ -1,5 +1,6 @@
 package com.dev.domain.model.doctor;
 
+import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.Patient;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
 
@@ -24,8 +25,11 @@ public class Doctor implements Serializable {
     private List<Role> roles;
     private boolean enabled;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
     private List<Spreadsheet> spreadsheets;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    private List<NetworkModel> networkInfos;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor")
     private List<Patient> patients;

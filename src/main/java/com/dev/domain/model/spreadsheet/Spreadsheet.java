@@ -15,7 +15,7 @@ public class Spreadsheet implements Serializable {
     private SpreadsheetData spreadsheetData;
     @ManyToOne
     @JoinColumn(name = "doctorId")
-    private Doctor author;
+    private Doctor owner;
     private Date lastUpdate;
     private boolean isClosed;
 
@@ -39,12 +39,12 @@ public class Spreadsheet implements Serializable {
         this.spreadsheetData = spreadsheetData;
     }
 
-    public Doctor getAuthor() {
-        return author;
+    public Doctor getOwner() {
+        return owner;
     }
 
-    public void setAuthor(Doctor author) {
-        this.author = author;
+    public void setOwner(Doctor owner) {
+        this.owner = owner;
     }
 
     public Date getLastUpdate() {
@@ -68,7 +68,7 @@ public class Spreadsheet implements Serializable {
         return "Spreadsheet{" +
                 "id=" + id +
                 ", spreadsheetData=" + spreadsheetData +
-                ", author=" + author +
+                ", owner=" + owner +
                 ", lastUpdate=" + lastUpdate +
                 ", isClosed=" + isClosed +
                 '}';

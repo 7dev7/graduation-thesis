@@ -11,6 +11,7 @@
     $.jgrid.defaults.responsive = true;
     $.jgrid.defaults.styleUI = 'Bootstrap';
 </script>
+
 <script src="/js/jquery.form.js"></script>
 <script type="text/javascript" src="/js/analysis.js"></script>
 <script type="text/javascript" src="/js/module-switcher.js"></script>
@@ -167,12 +168,12 @@
                                            checked="checked"/><br/>
                                     <label for="mlpMinNumOfNeuron" class="control-label">Минимальное число нейронов на
                                         скрытом слое:</label>
-                                    <input class="form-control" type="number" min="3" max="30" value="3"
+                                    <input class="form-control" type="number" min="3" max="20" value="3"
                                            name="mlpMinNumOfNeuron" id="mlpMinNumOfNeuron" required="required"/>
 
                                     <label for="mlpMaxNumOfNeuron" class="control-label">Максимальное число нейронов на
                                         скрытом слое:</label>
-                                    <input class="form-control" type="number" min="3" max="30" value="10"
+                                    <input class="form-control" type="number" min="3" max="20" value="10"
                                            name="mlpMaxNumOfNeuron" id="mlpMaxNumOfNeuron" required="required"/>
                                 </div>
 
@@ -182,12 +183,12 @@
                                     <input id="rbfCheckbox" name="rbf" type="checkbox" value="RBF"/><br/>
                                     <label for="rbfMinNumOfNeuron" class="control-label">Минимальное число нейронов на
                                         скрытом слое:</label>
-                                    <input class="form-control" type="number" min="3" max="30" name="rbfMinNumOfNeuron"
+                                    <input class="form-control" type="number" min="3" max="20" name="rbfMinNumOfNeuron"
                                            id="rbfMinNumOfNeuron" required="required" disabled="disabled"/>
 
                                     <label for="rbfMaxNumOfNeuron" class="control-label">Максимальное число нейронов на
                                         скрытом слое:</label>
-                                    <input class="form-control" type="number" min="3" max="30" name="rbfMaxNumOfNeuron"
+                                    <input class="form-control" type="number" min="3" max="20" name="rbfMaxNumOfNeuron"
                                            id="rbfMaxNumOfNeuron" required="required" disabled="disabled"/>
                                 </div>
                             </fieldset>
