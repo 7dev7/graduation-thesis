@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutoModeTrainInfoDTO {
-    private List<Integer> inputColumnIndexes;
-    private List<Integer> outputColumnIndexes;
+    private List<Integer> inputContinuousColumnIndexes;
+    private List<Integer> inputCategorialColumnIndexes;
+    private List<Integer> outputContinuousColumnIndexes;
 
     private Boolean isMLPNeeded;
     private Integer mlpMinNumOfNeuron;
@@ -21,26 +22,26 @@ public class AutoModeTrainInfoDTO {
     private List<ActivationFunction> outNeuronsFuncs;
 
     public AutoModeTrainInfoDTO() {
-        this.inputColumnIndexes = new ArrayList<>();
-        this.outputColumnIndexes = new ArrayList<>();
+        this.inputContinuousColumnIndexes = new ArrayList<>();
+        this.outputContinuousColumnIndexes = new ArrayList<>();
         this.hiddenNeuronsFuncs = new ArrayList<>();
         this.outNeuronsFuncs = new ArrayList<>();
     }
 
-    public List<Integer> getInputColumnIndexes() {
-        return inputColumnIndexes;
+    public List<Integer> getInputContinuousColumnIndexes() {
+        return inputContinuousColumnIndexes;
     }
 
-    public void setInputColumnIndexes(List<Integer> inputColumnIndexes) {
-        this.inputColumnIndexes = inputColumnIndexes;
+    public void setInputContinuousColumnIndexes(List<Integer> inputContinuousColumnIndexes) {
+        this.inputContinuousColumnIndexes = inputContinuousColumnIndexes;
     }
 
-    public List<Integer> getOutputColumnIndexes() {
-        return outputColumnIndexes;
+    public List<Integer> getOutputContinuousColumnIndexes() {
+        return outputContinuousColumnIndexes;
     }
 
-    public void setOutputColumnIndexes(List<Integer> outputColumnIndexes) {
-        this.outputColumnIndexes = outputColumnIndexes;
+    public void setOutputContinuousColumnIndexes(List<Integer> outputContinuousColumnIndexes) {
+        this.outputContinuousColumnIndexes = outputContinuousColumnIndexes;
     }
 
     public Integer getMlpMinNumOfNeuron() {
@@ -107,11 +108,19 @@ public class AutoModeTrainInfoDTO {
         this.isRBFNeeded = isRBFNeeded;
     }
 
+    public List<Integer> getInputCategorialColumnIndexes() {
+        return inputCategorialColumnIndexes;
+    }
+
+    public void setInputCategorialColumnIndexes(List<Integer> inputCategorialColumnIndexes) {
+        this.inputCategorialColumnIndexes = inputCategorialColumnIndexes;
+    }
+
     @Override
     public String toString() {
         return "AutoModeTrainInfoDTO{" +
-                "inputColumnIndexes=" + inputColumnIndexes +
-                ", outputColumnIndexes=" + outputColumnIndexes +
+                "inputContinuousColumnIndexes=" + inputContinuousColumnIndexes +
+                ", outputContinuousColumnIndexes=" + outputContinuousColumnIndexes +
                 ", isMLPNeeded='" + isMLPNeeded + '\'' +
                 ", mlpMinNumOfNeuron=" + mlpMinNumOfNeuron +
                 ", mlpMaxNumOfNeuron=" + mlpMaxNumOfNeuron +

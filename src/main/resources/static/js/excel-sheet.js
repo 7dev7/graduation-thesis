@@ -27,18 +27,23 @@ $(function () {
                 }
 
                 $.each(cols, function (i, item) {
-                    $('#inputColumns').append($('<option>', {
+                    $('#inputContinuousColumns').append($('<option>', {
                         value: i,
                         text: item
                     }));
-                    $('#outputColumns').append($('<option>', {
+                    $('#inputCategorialColumns').append($('<option>', {
+                        value: i,
+                        text: item
+                    }));
+                    $('#outputContinuousColumns').append($('<option>', {
                         value: i,
                         text: item
                     }));
                 });
 
-                $('#inputColumns').selectpicker('refresh');
-                $('#outputColumns').selectpicker('refresh');
+                $('#inputContinuousColumns').selectpicker('refresh');
+                $('#inputCategorialColumns').selectpicker('refresh');
+                $('#outputContinuousColumns').selectpicker('refresh');
 
                 $("#jqGrid").jqGrid({
                     data: responseData.rows,
@@ -96,25 +101,57 @@ $(function () {
     $("#autoModeBtn").on("click", function (event) {
         event.preventDefault();
 
-        var inputColumnIndexes = [];
-        $('#inputColumns').find('option:selected').each(function (i, item) {
-            inputColumnIndexes.push(item.value);
+        var inputContinuousColumnIndexes = [];
+        $('#inputContinuousColumns').find('option:selected').each(function (i, item) {
+            inputContinuousColumnIndexes.push(item.value);
         });
 
-        var outputColumnIndexes = [];
-        $('#outputColumns').find('option:selected').each(function (i, item) {
-            outputColumnIndexes.push(item.value);
+        var inputCategorialColumnIndexes = [];
+        $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
+            inputCategorialColumnIndexes.push(item.value);
         });
 
-        var res = intersection(inputColumnIndexes, outputColumnIndexes);
-        if (res.length > 0) {
-            var msg = $("#inOutErrorMessage");
-            var errorBlock = $("#inOutErrorBlock");
+        var outputContinuousColumnIndexes = [];
+        $('#outputContinuousColumns').find('option:selected').each(function (i, item) {
+            outputContinuousColumnIndexes.push(item.value);
+        });
 
-            msg.html("Присутствует одинаковое входное и выходное значение");
+        var msg = $("#inOutErrorMessage");
+        var errorBlock = $("#inOutErrorBlock");
+
+        var intersect1 = intersection(inputContinuousColumnIndexes, inputCategorialColumnIndexes);
+        if (intersect1.length > 0) {
+            msg.html("Одинаковый признак во входных непрерывных и категориальных значениях");
             errorBlock.show();
             return;
         }
+
+        var intersect2 = intersection(inputCategorialColumnIndexes, outputContinuousColumnIndexes);
+        if (intersect2.length > 0) {
+            msg.html("Одинаковый признак во входных категориальных и выходных значениях");
+            errorBlock.show();
+            return;
+        }
+
+        var intersect3 = intersection(inputContinuousColumnIndexes, outputContinuousColumnIndexes);
+        if (intersect3.length > 0) {
+            msg.html("Одинаковый признак во входных непрерывных и выходных значениях");
+            errorBlock.show();
+            return;
+        }
+
+        if (inputContinuousColumnIndexes.length === 0) {
+            msg.html("Выберите входные значения");
+            errorBlock.show();
+            return;
+        }
+
+        if (outputContinuousColumnIndexes.length === 0) {
+            msg.html("Выберите выходные значения");
+            errorBlock.show();
+            return;
+        }
+
         $("#inOutErrorBlock").hide();
 
         $("#show-excel-file-module").hide();
@@ -221,7 +258,7 @@ $(function () {
         var mlpMaxNum = $("#mlpMaxNumOfNeuron");
 
         var rbfMinNum = $("#rbfMinNumOfNeuron");
-        var rfbMaxNum = $("#rbfMaxNumOfNeuron");
+        var rbfMaxNum = $("#rbfMaxNumOfNeuron");
 
         if (!mlp.prop("checked") && !rbf.prop("checked")) {
             msg.html("Выберите хотя бы один тип сети");
@@ -241,14 +278,28 @@ $(function () {
             return false;
         }
 
+        if (parseInt(mlpMinNum.val()) > parseInt(mlpMaxNum.val())) {
+            msg.html("Минимальное число нейронов больше максимального числа нейронов");
+            errorBlock.show();
+            return false;
+        }
+
         if (rbf.prop("checked") && rbfMinNum.val() === "") {
             msg.html("Минимальное число нейронов для сети радиальных базисных функций не заполнено");
             errorBlock.show();
             return false;
         }
 
-        if (rbf.prop("checked") && rfbMaxNum.val() === "") {
+        if (rbf.prop("checked") && rbfMaxNum.val() === "") {
             msg.html("Максимальное число нейронов для сети радиальных базисных функций не заполнено");
+            errorBlock.show();
+            return false;
+        }
+
+        //TODO implement int number validation
+
+        if (parseInt(rbfMinNum.val()) > parseInt(rbfMaxNum.val())) {
+            msg.html("Минимальное число нейронов больше максимального числа нейронов");
             errorBlock.show();
             return false;
         }
@@ -282,17 +333,26 @@ $(function () {
         data['rbfMinNumOfNeuron'] = $("#rbfMinNumOfNeuron").val();
         data['rbfMaxNumOfNeuron'] = $("#rbfMaxNumOfNeuron").val();
 
-        var inputColumnIndexes = [];
-        $('#inputColumns').find('option:selected').each(function (i, item) {
-            inputColumnIndexes.push(item.value);
+        var inputContinuousColumnIndexes = [];
+        $('#inputContinuousColumns').find('option:selected').each(function (i, item) {
+            inputContinuousColumnIndexes.push(item.value);
         });
-        data['inputColumnIndexes'] = inputColumnIndexes;
+        data['inputContinuousColumnIndexes'] = inputContinuousColumnIndexes;
 
-        var outputColumnIndexes = [];
-        $('#outputColumns').find('option:selected').each(function (i, item) {
-            outputColumnIndexes.push(item.value);
+
+        var inputCategorialColumnIndexes = [];
+        $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
+            inputCategorialColumnIndexes.push(item.value);
         });
-        data['outputColumnIndexes'] = outputColumnIndexes;
+        data['inputCategorialColumnIndexes'] = inputCategorialColumnIndexes;
+
+
+        var outputContinuousColumnIndexes = [];
+        $('#outputContinuousColumns').find('option:selected').each(function (i, item) {
+            outputContinuousColumnIndexes.push(item.value);
+        });
+        data['outputContinuousColumnIndexes'] = outputContinuousColumnIndexes;
+
 
         var hiddenNeuronsFuncs = [];
         $('#hiddenFuncs').find('input:checked').each(function (i, item) {

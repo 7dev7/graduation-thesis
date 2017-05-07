@@ -1,11 +1,8 @@
 package com.dev;
 
-import com.dev.domain.neuralnetwork.perceptron.Perceptron;
 import com.dev.service.PerceptronTrainingService;
 import com.dev.service.impl.BackpropagationTrainingService;
 import com.dev.service.impl.NormalizationService;
-import org.encog.ml.data.MLDataSet;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.junit.Test;
 
 public class PerceptronTest {
@@ -46,19 +43,19 @@ public class PerceptronTest {
 
     @Test
     public void test() {
-        Perceptron perceptron = new Perceptron(1, 8, 1);
-        double[][] normalizedIn = normalizationService.normalizeData(in, 1, 0);
-        double[][] normalizedOut = normalizationService.normalizeData(out, 100, 0);
-
-        MLDataSet dataSet = new BasicNeuralDataSet(normalizedIn, normalizedOut);
-        double error = trainingService.train(perceptron, dataSet);
-        System.out.println("Error: " + error);
-
-        double testIn = normalizationService.normalizeData(0.98, 1, 0);
-        double[] testInArr = {testIn};
-        double[] outArr = new double[1];
-
-        perceptron.getNetwork().compute(testInArr, outArr);
-        System.out.println(normalizationService.deNormalizeValue(outArr[0], 100, 0));
+//        Perceptron perceptron = new Perceptron(1, 8, 1);
+//        double[][] normalizedIn = normalizationService.normalizeData(in, 1, 0);
+//        double[][] normalizedOut = normalizationService.normalizeData(out, 100, 0);
+//
+//        MLDataSet dataSet = new BasicNeuralDataSet(normalizedIn, normalizedOut);
+//        double error = trainingService.train(perceptron, dataSet);
+//        System.out.println("Error: " + error);
+//
+//        double testIn = normalizationService.normalizeData(0.98, 1, 0);
+//        double[] testInArr = {testIn};
+//        double[] outArr = new double[1];
+//
+//        perceptron.getNetwork().compute(testInArr, outArr);
+//        System.out.println(normalizationService.deNormalizeValue(outArr[0], 100, 0));
     }
 }

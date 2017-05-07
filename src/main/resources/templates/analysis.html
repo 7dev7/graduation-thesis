@@ -57,26 +57,40 @@
                         <a href="#" class="close" aria-label="close">&times;</a>
                         <span id="inOutErrorMessage"></span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="col-md-6 col-md-offset-3">
-                            <label for="inputColumns" class="control-label">Входные значения: </label>
+                            <label for="inputContinuousColumns" class="control-label">Входные непрерывные
+                                значения: </label>
                             <select class="selectpicker" multiple="multiple" data-live-search="true"
-                                    data-done-button="true" data-selected-text-format="count > 3" id="inputColumns">
+                                    data-done-button="true" data-selected-text-format="count > 3"
+                                    id="inputContinuousColumns">
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="col-md-6 col-md-offset-3">
-                            <label for="outputColumns" class="control-label">Выходные значения: </label>
+                            <label for="inputCategorialColumns" class="control-label">Входные категориальные
+                                значения: </label>
                             <select class="selectpicker" multiple="multiple" data-live-search="true"
-                                    data-done-button="true" data-selected-text-format="count > 3" id="outputColumns">
+                                    data-done-button="true" data-selected-text-format="count > 3"
+                                    id="inputCategorialColumns">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col-md-6 col-md-offset-3">
+                            <label for="outputContinuousColumns" class="control-label">Выходные непрерывные
+                                значения: </label>
+                            <select class="selectpicker" multiple="multiple" data-live-search="true"
+                                    data-done-button="true" data-selected-text-format="count > 3"
+                                    id="outputContinuousColumns">
                             </select>
                         </div>
                     </div>
                 </form>
             </div>
             <br/><br/>
-            <hr/>
+            <div class="col-md-12"></div>
             <div class="col-md-6">
                 <div class="col-md-6 col-md-offset-3">
                     <button class="btn btn-primary" id="autoModeBtn">Конфигурация моделей в автоматическом режиме
