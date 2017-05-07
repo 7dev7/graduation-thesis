@@ -21,6 +21,7 @@ $(function () {
             type: 'POST',
             success: function (responseData) {
                 var cols = responseData.columns;
+                var colTypes = responseData.columnTypes;
                 var model = [];
                 for (var i = 0; i < cols.length; i++) {
                     model.push({label: cols[i], name: cols[i], editable: true});
@@ -61,7 +62,16 @@ $(function () {
                     rowNum: 25,
                     pager: '#jqGridPager',
                     cellsubmit: 'clientArray',
-                    editurl: 'clientArray'
+                    editurl: 'clientArray',
+                    ondblClickRow: function (rowid, iRow, iCol, e) {
+                        var colName = cols[iCol];
+                        $("#columnName").val(colName);
+                        $("#columnId").val(iCol);
+                        var template = '[value=' + colTypes[iCol] + ']';
+                        $("#chooseTypeSelect").find(template).attr("selected", "selected");
+                        $('.selectpicker').selectpicker('refresh');
+                        $("#myModal").modal();
+                    }
                 }).navGrid('#jqGridPager', {}, {
                     reloadAfterSubmit: true,
                     url: '/analysis/edit',
@@ -240,6 +250,25 @@ $(function () {
             contentType: "application/json",
             data: JSON.stringify(data),
             url: '/train'
+        });
+    });
+
+    $("#saveColumnBtn").on("click", function (event) {
+        event.preventDefault();
+        var columnName = $("#columnName").val();
+        var columnId = $("#columnId").val();
+        var columnType = $('#chooseTypeSelect').find('option:selected').val();
+
+        $("#jqGrid").jqGrid('setLabel', columnId, columnName);
+        $("#myModal").modal('hide');
+        $.ajax({
+            type: "POST",
+            data: {
+                columnId: columnId,
+                columnName: columnName,
+                columnType: columnType
+            },
+            url: '/analysis/update_column'
         });
     });
 

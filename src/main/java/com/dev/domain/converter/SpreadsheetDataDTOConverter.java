@@ -12,7 +12,8 @@ public class SpreadsheetDataDTOConverter {
     public static SpreadsheetDataDTO convert(SpreadsheetData spreadsheetData) {
         SpreadsheetDataDTO spreadsheetDataDTO = new SpreadsheetDataDTO();
         spreadsheetDataDTO.setNumOfRecords(spreadsheetData.getNumOfRecords());
-        spreadsheetDataDTO.setColumns(spreadsheetData.getColumns());
+        spreadsheetDataDTO.setColumns(spreadsheetData.getColumnNames());
+        spreadsheetDataDTO.setColumnTypes(spreadsheetData.getColumnTypesIndexes());
 
         JSONArray rows = new JSONArray();
         int index = 0;

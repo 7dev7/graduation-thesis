@@ -2,12 +2,13 @@ package com.dev.service.impl;
 
 import com.dev.domain.dao.SpreadsheetRepository;
 import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.model.spreadsheet.ColumnType;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
+import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.DoctorService;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +46,45 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
 
     private SpreadsheetData buildDataWithBasicInfo(Sheet sheet) {
         SpreadsheetData spreadsheetData = new SpreadsheetData();
+        spreadsheetData.setColumns(buildColumns(sheet));
+        return spreadsheetData;
+    }
+
+    private List<SpreadsheetColumn> buildColumns(Sheet sheet) {
         Iterator<Cell> cellIterator = sheet.getRow(0).cellIterator();
-        List<String> columns = new ArrayList<>();
+        List<SpreadsheetColumn> result = new ArrayList<>();
         while (cellIterator.hasNext()) {
             Cell cell = cellIterator.next();
-            String stringCellValue = cell.getStringCellValue();
-            if (!StringUtils.isEmpty(stringCellValue)) {
-                columns.add(stringCellValue);
+            SpreadsheetColumn spreadsheetColumn = new SpreadsheetColumn();
+            spreadsheetColumn.setName(cell.getStringCellValue());
+
+            List<Cell> cellsForColumn = getCellsForColumn(sheet, cell.getColumnIndex());
+            ColumnType type = chooseColumnType(cellsForColumn);
+            spreadsheetColumn.setType(type);
+            result.add(spreadsheetColumn);
+        }
+        return result;
+    }
+
+    private List<Cell> getCellsForColumn(Sheet sheet, int columnIndex) {
+        List<Cell> cells = new ArrayList<>();
+        Iterator<Row> rowIterator = sheet.rowIterator();
+        rowIterator.next();
+        while (rowIterator.hasNext()) {
+            Row next = rowIterator.next();
+            cells.add(next.getCell(columnIndex));
+        }
+        return cells;
+    }
+
+    private ColumnType chooseColumnType(List<Cell> cells) {
+        boolean isNominal = false;
+        for (Cell cell : cells) {
+            if (cell != null && CellType.STRING.equals(cell.getCellTypeEnum())) {
+                isNominal = true;
             }
         }
-        spreadsheetData.setColumns(columns);
-        return spreadsheetData;
+        return isNominal ? ColumnType.NOMINAL : ColumnType.CONTINUOUS;
     }
 
     private SpreadsheetData fillRows(Sheet sheet, SpreadsheetData spreadsheetData) {
@@ -73,7 +102,7 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
             while (cellIterator.hasNext() && index < spreadsheetData.getColumns().size()) {
                 Cell cell = cellIterator.next();
                 CellType cellTypeEnum = cell.getCellTypeEnum();
-                String key = spreadsheetData.getColumns().get(index++);
+                String key = spreadsheetData.getColumns().get(index++).getName();
                 switch (cellTypeEnum) {
                     case STRING:
                         dataRow.put(key, cell.getStringCellValue());

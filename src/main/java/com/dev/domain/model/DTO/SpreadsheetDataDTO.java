@@ -7,6 +7,7 @@ import java.util.List;
 
 public class SpreadsheetDataDTO {
     private List<String> columns = new ArrayList<>();
+    private List<Integer> columnTypes = new ArrayList<>();
     private int numOfRecords;
     private JSONArray rows;
 
@@ -32,6 +33,14 @@ public class SpreadsheetDataDTO {
 
     public void setRows(JSONArray rows) {
         this.rows = rows;
+    }
+
+    public List<Integer> getColumnTypes() {
+        return columnTypes;
+    }
+
+    public void setColumnTypes(List<Integer> columnTypes) {
+        this.columnTypes = columnTypes;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.dev.domain.model;
 
-import com.dev.domain.neuralnetwork.perceptron.Perceptron;
+import com.dev.domain.model.perceptron.Perceptron;
 
 public class TrainedNetworkInfo {
     private long id;

@@ -3,7 +3,7 @@ package com.dev.service.impl;
 import com.dev.domain.model.ActivationFunction;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.TrainedNetworkInfo;
-import com.dev.domain.neuralnetwork.perceptron.Perceptron;
+import com.dev.domain.model.perceptron.Perceptron;
 import com.dev.service.PerceptronTrainingService;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;

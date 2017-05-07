@@ -1,4 +1,4 @@
-package com.dev.domain.neuralnetwork.perceptron;
+package com.dev.domain.model.perceptron;
 
 import com.dev.domain.model.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLOG;

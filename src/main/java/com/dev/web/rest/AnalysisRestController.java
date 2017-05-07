@@ -2,7 +2,9 @@ package com.dev.web.rest;
 
 import com.dev.domain.converter.SpreadsheetDataDTOConverter;
 import com.dev.domain.model.DTO.SpreadsheetDataDTO;
+import com.dev.domain.model.spreadsheet.ColumnType;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
+import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
@@ -71,7 +73,7 @@ public class AnalysisRestController {
 
         SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
         Map<String, Object> row = new HashMap<>();
-        for (String column : spreadsheetData.getColumns()) {
+        for (String column : spreadsheetData.getColumnNames()) {
             Object o = map.get(column);
             if (o != null) {
                 row.put(column, o);
@@ -90,12 +92,25 @@ public class AnalysisRestController {
         SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
         Map<String, Object> row = spreadsheetData.getRows().get(id);
 
-        for (String column : spreadsheetData.getColumns()) {
+        for (String column : spreadsheetData.getColumnNames()) {
             Object o = map.get(column);
             if (o != null) {
                 row.put(column, o);
             }
         }
+        spreadsheetService.updateSpreadsheet(spreadsheet);
+    }
+
+    @PostMapping(value = "/analysis/update_column")
+    public void update_column(@RequestParam Map<String, Object> map) {
+        Integer id = Integer.valueOf((String) map.get("columnId"));
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
+        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
+
+        ColumnType type = ColumnType.values()[Integer.valueOf((String) map.get("columnType"))];
+
+        spreadsheetData.getColumns().set(id, new SpreadsheetColumn((String) map.get("columnName"), type));
         spreadsheetService.updateSpreadsheet(spreadsheet);
     }
 
