@@ -13,8 +13,14 @@ public class Perceptron {
     private BasicNetwork network;
     private ActivationFunction hiddenActivationFunc;
     private ActivationFunction outActivationFunc;
+    private int inputNeurons;
+    private int hiddenNeurons;
+    private int outNeurons;
 
     public Perceptron(int inNeurons, int neuronsOnHiddenLayer, int outNeurons) {
+        this.inputNeurons = inputNeurons;
+        this.hiddenNeurons = neuronsOnHiddenLayer;
+        this.outNeurons = outNeurons;
         network = new BasicNetwork();
         network.addLayer(new BasicLayer(null, true, inNeurons));
         network.addLayer(new BasicLayer(new ActivationSigmoid(), true, neuronsOnHiddenLayer));
@@ -25,6 +31,9 @@ public class Perceptron {
 
     public Perceptron(int inNeurons, int neuronsOnHiddenLayer, int outNeurons, ActivationFunction hiddenActivationFunc,
                       ActivationFunction outActivationFunc) {
+        this.inputNeurons = inNeurons;
+        this.hiddenNeurons = neuronsOnHiddenLayer;
+        this.outNeurons = outNeurons;
         this.hiddenActivationFunc = hiddenActivationFunc;
         this.outActivationFunc = outActivationFunc;
         network = new BasicNetwork();
@@ -77,5 +86,29 @@ public class Perceptron {
 
     public void setOutActivationFunc(ActivationFunction outActivationFunc) {
         this.outActivationFunc = outActivationFunc;
+    }
+
+    public int getInputNeurons() {
+        return inputNeurons;
+    }
+
+    public void setInputNeurons(int inputNeurons) {
+        this.inputNeurons = inputNeurons;
+    }
+
+    public int getHiddenNeurons() {
+        return hiddenNeurons;
+    }
+
+    public void setHiddenNeurons(int hiddenNeurons) {
+        this.hiddenNeurons = hiddenNeurons;
+    }
+
+    public int getOutNeurons() {
+        return outNeurons;
+    }
+
+    public void setOutNeurons(int outNeurons) {
+        this.outNeurons = outNeurons;
     }
 }

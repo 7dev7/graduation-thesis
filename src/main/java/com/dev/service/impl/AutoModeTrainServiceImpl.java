@@ -24,7 +24,7 @@ public class AutoModeTrainServiceImpl implements AutoModeTrainService {
     @Override
     public List<TrainedNetworkInfo> train(AutoModeTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) {
         if (trainInfoDTO.getIsMLPNeeded()) {
-            return perceptronTrainingService.train(trainInfoDTO);
+            return perceptronTrainingService.train(trainInfoDTO, spreadsheetData);
         }
         return null;
     }

@@ -9,6 +9,7 @@ import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.DoctorService;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +56,13 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         List<SpreadsheetColumn> result = new ArrayList<>();
         while (cellIterator.hasNext()) {
             Cell cell = cellIterator.next();
+            String stringCellValue = cell.getStringCellValue();
+            if (StringUtils.isEmpty(stringCellValue)) {
+                continue;
+            }
+
             SpreadsheetColumn spreadsheetColumn = new SpreadsheetColumn();
-            spreadsheetColumn.setName(cell.getStringCellValue());
+            spreadsheetColumn.setName(stringCellValue);
 
             List<Cell> cellsForColumn = getCellsForColumn(sheet, cell.getColumnIndex());
             ColumnType type = chooseColumnType(cellsForColumn);
