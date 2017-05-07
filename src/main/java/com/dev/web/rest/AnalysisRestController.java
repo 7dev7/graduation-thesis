@@ -54,8 +54,18 @@ public class AnalysisRestController {
                 .body(dataDTO);
     }
 
-    @PostMapping("/analysis/add")
-    public void add(@RequestParam Map<String, Object> map) {
+    @PostMapping(value = "/current_spreadsheet", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity current_spreadsheet() {
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
+        SpreadsheetDataDTO dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheet.getSpreadsheetData());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(dataDTO);
+    }
+
+    @PostMapping(value = "/analysis/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public int add(@RequestParam Map<String, Object> map) {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
 
@@ -69,20 +79,34 @@ public class AnalysisRestController {
         }
         spreadsheetData.getRows().add(row);
         spreadsheetService.updateSpreadsheet(spreadsheet);
+        return spreadsheetData.getRows().size() - 1;
     }
 
     @PostMapping("/analysis/edit")
     public void edit(@RequestParam Map<String, Object> map) {
-        //TODO implement it
-        String s = "awd";
-        int x = 5 + 6;
+        Integer id = Integer.valueOf((String) map.get("___#$RowId$#___"));
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
+        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
+        Map<String, Object> row = spreadsheetData.getRows().get(id);
+
+        for (String column : spreadsheetData.getColumns()) {
+            Object o = map.get(column);
+            if (o != null) {
+                row.put(column, o);
+            }
+        }
+        spreadsheetService.updateSpreadsheet(spreadsheet);
     }
 
     @PostMapping("/analysis/delete")
     public void delete(@RequestParam Map<String, Object> map) {
-        //TODO implement it
-        String s = "awd";
-        int x = 5 + 6;
+        int index = Integer.valueOf((String) map.get("id"));
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
+        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
+        spreadsheetData.getRows().remove(index);
+        spreadsheetService.updateSpreadsheet(spreadsheet);
     }
 
     private String validate(MultipartFile file) {

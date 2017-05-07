@@ -11,54 +11,85 @@ $(function () {
             $("#load-excel-file-module").hide();
             $("#show-excel-file-module").show();
 
-            var responseData = JSON.parse(response.responseText);
-            var cols = responseData.columns;
-            var model = [];
-            for (var i = 0; i < cols.length; i++) {
-                model.push({label: cols[i], name: cols[i], editable: true});
-            }
-
-            $.each(cols, function (i, item) {
-                $('#inputColumns').append($('<option>', {
-                    value: i,
-                    text: item
-                }));
-                $('#outputColumns').append($('<option>', {
-                    value: i,
-                    text: item
-                }));
-            });
-
-            $('#inputColumns').selectpicker('refresh');
-            $('#outputColumns').selectpicker('refresh');
-
-            $("#jqGrid").jqGrid({
-                data: responseData.rows,
-                datatype: "local",
-                colModel: model,
-                autowidth: true,
-                shrinkToFit: true,
-                width: null,
-                scroll: true,
-                viewrecords: true,
-                height: 500,
-                rowNum: 25,
-                pager: '#jqGridPager',
-                cellsubmit: 'clientArray',
-                editurl: 'clientArray'
-            }).navGrid('#jqGridPager', {}, {
-                reloadAfterSubmit: false,
-                url: '/analysis/edit'
-            }, {
-                reloadAfterSubmit: false,
-                url: '/analysis/add',
-                position: "last"
-            }, {
-                reloadAfterSubmit: false,
-                url: '/analysis/delete'
-            }, {}, {});
+            loadSpreadsheetData();
         }
     };
+
+    function loadSpreadsheetData() {
+        $.ajax({
+            url: "/current_spreadsheet",
+            type: 'POST',
+            success: function (responseData) {
+                var cols = responseData.columns;
+                var model = [];
+                for (var i = 0; i < cols.length; i++) {
+                    model.push({label: cols[i], name: cols[i], editable: true});
+                }
+
+                $.each(cols, function (i, item) {
+                    $('#inputColumns').append($('<option>', {
+                        value: i,
+                        text: item
+                    }));
+                    $('#outputColumns').append($('<option>', {
+                        value: i,
+                        text: item
+                    }));
+                });
+
+                $('#inputColumns').selectpicker('refresh');
+                $('#outputColumns').selectpicker('refresh');
+
+                $("#jqGrid").jqGrid({
+                    data: responseData.rows,
+                    datatype: "local",
+                    colModel: model,
+                    localReader: {
+                        id: "___#$RowId$#___"
+                    },
+                    autowidth: true,
+                    shrinkToFit: true,
+                    width: null,
+                    scroll: true,
+                    viewrecords: true,
+                    height: 500,
+                    rowNum: 25,
+                    pager: '#jqGridPager',
+                    cellsubmit: 'clientArray',
+                    editurl: 'clientArray'
+                }).navGrid('#jqGridPager', {}, {
+                    reloadAfterSubmit: true,
+                    url: '/analysis/edit',
+                    closeAfterEdit: true,
+                    closeOnEscape: true,
+                    beforeSubmit: function (postdata, formid) {
+                        postdata['___#$RowId$#___'] = postdata['jqGrid_id'];
+                        delete postdata['jqGrid_id'];
+                        return [true, ""];
+                    },
+                    afterSubmit: function (postdata, formid) {
+                        $.each(cols, function (i, item) {
+                            $("#jqGrid").jqGrid('setCell', formid['___#$RowId$#___'], item, formid[item]);
+                        });
+                    }
+                }, {
+                    reloadAfterSubmit: false,
+                    url: '/analysis/add',
+                    position: "last",
+                    closeAfterAdd: true,
+                    closeOnEscape: true,
+                    afterSubmit: function (response, postdata) {
+                        return [true, "", $.parseJSON(response.responseText)];
+                    }
+                }, {
+                    reloadAfterSubmit: false,
+                    closeAfterDelete: true,
+                    closeOnEscape: true,
+                    url: '/analysis/delete'
+                }, {}, {});
+            }
+        });
+    }
 
     $("#load-file-form").ajaxForm(options);
 

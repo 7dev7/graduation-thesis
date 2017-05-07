@@ -8,7 +8,6 @@ import java.util.Map;
 public class SpreadsheetData implements Serializable {
     private List<String> columns = new ArrayList<>();
     private List<Map<String, Object>> rows = new ArrayList<>();
-    private int numOfRecords;
     private Spreadsheet spreadsheet;
 
     public List<String> getColumns() {
@@ -28,11 +27,7 @@ public class SpreadsheetData implements Serializable {
     }
 
     public int getNumOfRecords() {
-        return numOfRecords;
-    }
-
-    public void setNumOfRecords(int numOfRecords) {
-        this.numOfRecords = numOfRecords;
+        return rows.size();
     }
 
     public Spreadsheet getSpreadsheet() {

@@ -45,8 +45,6 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
 
     private SpreadsheetData buildDataWithBasicInfo(Sheet sheet) {
         SpreadsheetData spreadsheetData = new SpreadsheetData();
-        spreadsheetData.setNumOfRecords(sheet.getLastRowNum() - 1);
-
         Iterator<Cell> cellIterator = sheet.getRow(0).cellIterator();
         List<String> columns = new ArrayList<>();
         while (cellIterator.hasNext()) {
