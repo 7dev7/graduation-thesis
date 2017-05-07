@@ -16,93 +16,95 @@ $(function () {
     };
 
     function loadSpreadsheetData() {
-        $.ajax({
-            url: "/current_spreadsheet",
-            type: 'POST',
-            success: function (responseData) {
-                var cols = responseData.columns;
-                var colTypes = responseData.columnTypes;
-                var model = [];
-                for (var i = 0; i < cols.length; i++) {
-                    model.push({label: cols[i], name: cols[i], editable: true});
+        Pace.track(function () {
+            $.ajax({
+                url: "/current_spreadsheet",
+                type: 'POST',
+                success: function (responseData) {
+                    var cols = responseData.columns;
+                    var colTypes = responseData.columnTypes;
+                    var model = [];
+                    for (var i = 0; i < cols.length; i++) {
+                        model.push({label: cols[i], name: cols[i], editable: true});
+                    }
+
+                    $.each(cols, function (i, item) {
+                        $('#inputContinuousColumns').append($('<option>', {
+                            value: i,
+                            text: item
+                        }));
+                        $('#inputCategorialColumns').append($('<option>', {
+                            value: i,
+                            text: item
+                        }));
+                        $('#outputContinuousColumns').append($('<option>', {
+                            value: i,
+                            text: item
+                        }));
+                    });
+
+                    $('#inputContinuousColumns').selectpicker('refresh');
+                    $('#inputCategorialColumns').selectpicker('refresh');
+                    $('#outputContinuousColumns').selectpicker('refresh');
+
+                    $("#jqGrid").jqGrid({
+                        data: responseData.rows,
+                        datatype: "local",
+                        colModel: model,
+                        localReader: {
+                            id: "___#$RowId$#___"
+                        },
+                        autowidth: true,
+                        shrinkToFit: true,
+                        width: null,
+                        scroll: true,
+                        viewrecords: true,
+                        height: 500,
+                        rowNum: 25,
+                        pager: '#jqGridPager',
+                        cellsubmit: 'clientArray',
+                        editurl: 'clientArray',
+                        ondblClickRow: function (rowid, iRow, iCol, e) {
+                            var colName = cols[iCol];
+                            $("#columnName").val(colName);
+                            $("#columnId").val(iCol);
+                            var template = '[value=' + colTypes[iCol] + ']';
+                            $("#chooseTypeSelect").find(template).attr("selected", "selected");
+                            $('.selectpicker').selectpicker('refresh');
+                            $("#myModal").modal();
+                        }
+                    }).navGrid('#jqGridPager', {}, {
+                        reloadAfterSubmit: true,
+                        url: '/analysis/edit',
+                        closeAfterEdit: true,
+                        closeOnEscape: true,
+                        beforeSubmit: function (postdata, formid) {
+                            postdata['___#$RowId$#___'] = postdata['jqGrid_id'];
+                            delete postdata['jqGrid_id'];
+                            return [true, ""];
+                        },
+                        afterSubmit: function (postdata, formid) {
+                            $.each(cols, function (i, item) {
+                                $("#jqGrid").jqGrid('setCell', formid['___#$RowId$#___'], item, formid[item]);
+                            });
+                        }
+                    }, {
+                        reloadAfterSubmit: false,
+                        url: '/analysis/add',
+                        position: "last",
+                        closeAfterAdd: true,
+                        closeOnEscape: true,
+                        afterSubmit: function (response, postdata) {
+                            return [true, "", $.parseJSON(response.responseText)];
+                        }
+                    }, {
+                        reloadAfterSubmit: false,
+                        closeAfterDelete: true,
+                        closeOnEscape: true,
+                        url: '/analysis/delete'
+                    }, {}, {});
                 }
-
-                $.each(cols, function (i, item) {
-                    $('#inputContinuousColumns').append($('<option>', {
-                        value: i,
-                        text: item
-                    }));
-                    $('#inputCategorialColumns').append($('<option>', {
-                        value: i,
-                        text: item
-                    }));
-                    $('#outputContinuousColumns').append($('<option>', {
-                        value: i,
-                        text: item
-                    }));
-                });
-
-                $('#inputContinuousColumns').selectpicker('refresh');
-                $('#inputCategorialColumns').selectpicker('refresh');
-                $('#outputContinuousColumns').selectpicker('refresh');
-
-                $("#jqGrid").jqGrid({
-                    data: responseData.rows,
-                    datatype: "local",
-                    colModel: model,
-                    localReader: {
-                        id: "___#$RowId$#___"
-                    },
-                    autowidth: true,
-                    shrinkToFit: true,
-                    width: null,
-                    scroll: true,
-                    viewrecords: true,
-                    height: 500,
-                    rowNum: 25,
-                    pager: '#jqGridPager',
-                    cellsubmit: 'clientArray',
-                    editurl: 'clientArray',
-                    ondblClickRow: function (rowid, iRow, iCol, e) {
-                        var colName = cols[iCol];
-                        $("#columnName").val(colName);
-                        $("#columnId").val(iCol);
-                        var template = '[value=' + colTypes[iCol] + ']';
-                        $("#chooseTypeSelect").find(template).attr("selected", "selected");
-                        $('.selectpicker').selectpicker('refresh');
-                        $("#myModal").modal();
-                    }
-                }).navGrid('#jqGridPager', {}, {
-                    reloadAfterSubmit: true,
-                    url: '/analysis/edit',
-                    closeAfterEdit: true,
-                    closeOnEscape: true,
-                    beforeSubmit: function (postdata, formid) {
-                        postdata['___#$RowId$#___'] = postdata['jqGrid_id'];
-                        delete postdata['jqGrid_id'];
-                        return [true, ""];
-                    },
-                    afterSubmit: function (postdata, formid) {
-                        $.each(cols, function (i, item) {
-                            $("#jqGrid").jqGrid('setCell', formid['___#$RowId$#___'], item, formid[item]);
-                        });
-                    }
-                }, {
-                    reloadAfterSubmit: false,
-                    url: '/analysis/add',
-                    position: "last",
-                    closeAfterAdd: true,
-                    closeOnEscape: true,
-                    afterSubmit: function (response, postdata) {
-                        return [true, "", $.parseJSON(response.responseText)];
-                    }
-                }, {
-                    reloadAfterSubmit: false,
-                    closeAfterDelete: true,
-                    closeOnEscape: true,
-                    url: '/analysis/delete'
-                }, {}, {});
-            }
+            });
         });
     }
 
