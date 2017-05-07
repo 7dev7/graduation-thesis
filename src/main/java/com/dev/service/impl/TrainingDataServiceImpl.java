@@ -4,6 +4,7 @@ import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.TrainingDataService;
+import com.dev.service.exception.TrainingException;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +25,7 @@ public class TrainingDataServiceImpl implements TrainingDataService {
     }
 
     @Override
-    public MLDataSet buildDataset(SpreadsheetData spreadsheetData, AutoModeTrainInfoDTO trainInfoDTO) {
+    public MLDataSet buildDataset(SpreadsheetData spreadsheetData, AutoModeTrainInfoDTO trainInfoDTO) throws TrainingException {
         double[][] inputs = buildData(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes());
         double[][] outputs = buildData(spreadsheetData, trainInfoDTO.getOutputContinuousColumnIndexes());
 
@@ -31,15 +33,19 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         double[][] normIn = normalizationService.normalizeData(inputs, 1, 0);
         double[][] normOut = normalizationService.normalizeData(outputs, 100, 0);
 
-        MLDataSet dataSet = new BasicNeuralDataSet(normIn, normOut);
-        return dataSet;
+        return new BasicNeuralDataSet(normIn, normOut);
     }
 
-    private double[][] buildData(SpreadsheetData spreadsheetData, List<Integer> columnIndexes) {
+    private double[][] buildData(SpreadsheetData spreadsheetData, List<Integer> columnIndexes) throws TrainingException {
         List<List<Double>> result = new ArrayList<>();
         for (Integer columnIndex : columnIndexes) {
-            SpreadsheetColumn column = spreadsheetData.getColumns().get(columnIndex);
-            List<Object> collect = spreadsheetData.getRows().stream().map(i -> i.get(column.getName())).collect(Collectors.toCollection(ArrayList::new));
+            Optional<SpreadsheetColumn> columnOptional = spreadsheetData.getColumns().stream().filter(i -> i.getIndex() == columnIndex).findFirst();
+            if (!columnOptional.isPresent()) {
+                throw new TrainingException("Incorrect column index");
+            }
+            List<Object> collect = spreadsheetData.getRows().stream()
+                    .map(i -> i.getElements().get(columnOptional.get().getName()))
+                    .collect(Collectors.toCollection(ArrayList::new));
             result.add(cast(collect));
         }
         return transformToArray(result);

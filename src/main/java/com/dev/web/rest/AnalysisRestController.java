@@ -2,10 +2,7 @@ package com.dev.web.rest;
 
 import com.dev.domain.converter.SpreadsheetDataDTOConverter;
 import com.dev.domain.model.DTO.SpreadsheetDataDTO;
-import com.dev.domain.model.spreadsheet.ColumnType;
-import com.dev.domain.model.spreadsheet.Spreadsheet;
-import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
-import com.dev.domain.model.spreadsheet.SpreadsheetData;
+import com.dev.domain.model.spreadsheet.*;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
 import com.dev.service.validator.FileValidator;
@@ -72,16 +69,17 @@ public class AnalysisRestController {
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
 
         SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
-        Map<String, Object> row = new HashMap<>();
+        Map<String, Object> elements = new HashMap<>();
         for (String column : spreadsheetData.getColumnNames()) {
             Object o = map.get(column);
             if (o != null) {
-                row.put(column, o);
+                elements.put(column, o);
             }
         }
-        spreadsheetData.getRows().add(row);
+        SpreadsheetRow spreadsheetRow = new SpreadsheetRow(spreadsheetData.getMaxRowIndex() + 1, elements);
+        spreadsheetData.getRows().add(spreadsheetRow);
         spreadsheetService.updateSpreadsheet(spreadsheet);
-        return spreadsheetData.getRows().size() - 1;
+        return spreadsheetRow.getIndex();
     }
 
     @PostMapping("/analysis/edit")
@@ -90,14 +88,17 @@ public class AnalysisRestController {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
         SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
-        Map<String, Object> row = spreadsheetData.getRows().get(id);
 
-        for (String column : spreadsheetData.getColumnNames()) {
-            Object o = map.get(column);
-            if (o != null) {
-                row.put(column, o);
+        Optional<SpreadsheetRow> spreadsheetRowOptional = spreadsheetData.getRows().stream().filter(i -> i.getIndex() == id).findFirst();
+        spreadsheetRowOptional.ifPresent(i -> {
+            Map<String, Object> elements = i.getElements();
+            for (String column : spreadsheetData.getColumnNames()) {
+                Object o = map.get(column);
+                if (o != null) {
+                    elements.put(column, o);
+                }
             }
-        }
+        });
         spreadsheetService.updateSpreadsheet(spreadsheet);
     }
 
@@ -109,8 +110,7 @@ public class AnalysisRestController {
         SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
 
         ColumnType type = ColumnType.values()[Integer.valueOf((String) map.get("columnType"))];
-
-        spreadsheetData.getColumns().set(id, new SpreadsheetColumn((String) map.get("columnName"), type));
+        spreadsheetData.getColumns().set(id, new SpreadsheetColumn(id, (String) map.get("columnName"), type));
         spreadsheetService.updateSpreadsheet(spreadsheet);
     }
 
@@ -120,7 +120,9 @@ public class AnalysisRestController {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
         SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
-        spreadsheetData.getRows().remove(index);
+
+        Optional<SpreadsheetRow> spreadsheetRowOptional = spreadsheetData.getRows().stream().filter(i -> i.getIndex() == index).findFirst();
+        spreadsheetRowOptional.ifPresent(i -> spreadsheetData.getRows().remove(i));
         spreadsheetService.updateSpreadsheet(spreadsheet);
     }
 

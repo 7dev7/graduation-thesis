@@ -7,6 +7,7 @@ import com.dev.domain.model.perceptron.Perceptron;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.PerceptronTrainingService;
 import com.dev.service.TrainingDataService;
+import com.dev.service.exception.TrainingException;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
     }
 
     @Override
-    public List<TrainedNetworkInfo> train(AutoModeTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) {
+    public List<TrainedNetworkInfo> train(AutoModeTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
         Integer minNumOfNeuron = trainInfoDTO.getMlpMinNumOfNeuron();
         Integer maxNumOfNeuron = trainInfoDTO.getMlpMaxNumOfNeuron();
 

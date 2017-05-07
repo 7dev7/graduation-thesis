@@ -5,6 +5,7 @@ import com.dev.domain.model.TrainedNetworkInfo;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.AutoModeTrainService;
 import com.dev.service.SpreadsheetService;
+import com.dev.service.exception.TrainingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -41,7 +42,11 @@ public class AnalysisController {
     public String train(@RequestBody AutoModeTrainInfoDTO trainInfoDTO) {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
-        List<TrainedNetworkInfo> trainInfo = autoModeTrainService.train(trainInfoDTO, spreadsheet.getSpreadsheetData());
+        try {
+            List<TrainedNetworkInfo> trainInfo = autoModeTrainService.train(trainInfoDTO, spreadsheet.getSpreadsheetData());
+        } catch (TrainingException e) {
+
+        }
         return "analysis";
     }
 }

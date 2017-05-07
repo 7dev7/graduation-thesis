@@ -3,14 +3,17 @@
 <head th:include="fragments/common :: head">
 </head>
 <body>
-
 <div th:include="fragments/common :: header"></div>
 
+<script src="/js/grid.locale-ru.js"></script>
+<script type="text/ecmascript" src="/js/jquery.jqGrid.min.js"></script>
 <script>
     $.jgrid.defaults.responsive = true;
     $.jgrid.defaults.styleUI = 'Bootstrap';
 </script>
 <script src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/analysis.js"></script>
+<script type="text/javascript" src="/js/module-switcher.js"></script>
 
 <div class="container">
     <div class="row">
@@ -136,7 +139,7 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-6 col-md-offset-3">
-                    <button class="btn btn-primary" id="manualModeBtn">Конфигурация моделей в ручном режиме</button>
+                    <button class="btn btn-primary" id="manualModeBtn">Конфигурация пользовательской модели</button>
                 </div>
             </div>
         </div>
@@ -273,6 +276,5 @@
 </div>
 
 <div th:include="fragments/common :: footer"></div>
-<script type="text/javascript" src="/js/excel-sheet.js"></script>
 </body>
 </html>

@@ -2,10 +2,7 @@ package com.dev.service.impl;
 
 import com.dev.domain.dao.SpreadsheetRepository;
 import com.dev.domain.model.doctor.Doctor;
-import com.dev.domain.model.spreadsheet.ColumnType;
-import com.dev.domain.model.spreadsheet.Spreadsheet;
-import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
-import com.dev.domain.model.spreadsheet.SpreadsheetData;
+import com.dev.domain.model.spreadsheet.*;
 import com.dev.service.DoctorService;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
@@ -54,15 +51,16 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
     private List<SpreadsheetColumn> buildColumns(Sheet sheet) {
         Iterator<Cell> cellIterator = sheet.getRow(0).cellIterator();
         List<SpreadsheetColumn> result = new ArrayList<>();
+        int index = 0;
         while (cellIterator.hasNext()) {
             Cell cell = cellIterator.next();
             String stringCellValue = cell.getStringCellValue();
             if (StringUtils.isEmpty(stringCellValue)) {
                 continue;
             }
-
             SpreadsheetColumn spreadsheetColumn = new SpreadsheetColumn();
             spreadsheetColumn.setName(stringCellValue);
+            spreadsheetColumn.setIndex(index++);
 
             List<Cell> cellsForColumn = getCellsForColumn(sheet, cell.getColumnIndex());
             ColumnType type = chooseColumnType(cellsForColumn);
@@ -98,17 +96,16 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         //Miss column name's row
         rowIterator.next();
 
-        List<Map<String, Object>> rows = new ArrayList<>();
+        List<SpreadsheetRow> rows = new ArrayList<>();
+        int rowIndex = 0;
         while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
-
-            Iterator<Cell> cellIterator = row.cellIterator();
-            int index = 0;
+            Iterator<Cell> cellIterator = rowIterator.next().cellIterator();
+            int columnIndex = 0;
             Map<String, Object> dataRow = new HashMap<>();
-            while (cellIterator.hasNext() && index < spreadsheetData.getColumns().size()) {
+            while (cellIterator.hasNext() && columnIndex < spreadsheetData.getColumns().size()) {
                 Cell cell = cellIterator.next();
                 CellType cellTypeEnum = cell.getCellTypeEnum();
-                String key = spreadsheetData.getColumns().get(index++).getName();
+                String key = spreadsheetData.getColumns().get(columnIndex++).getName();
                 switch (cellTypeEnum) {
                     case STRING:
                         dataRow.put(key, cell.getStringCellValue());
@@ -123,7 +120,7 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
                         break;
                 }
             }
-            rows.add(dataRow);
+            rows.add(new SpreadsheetRow(rowIndex++, dataRow));
         }
         spreadsheetData.setRows(rows);
         return spreadsheetData;

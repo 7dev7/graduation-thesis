@@ -2,13 +2,13 @@ package com.dev.domain.model.spreadsheet;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SpreadsheetData implements Serializable {
     private List<SpreadsheetColumn> columns = new ArrayList<>();
-    private List<Map<String, Object>> rows = new ArrayList<>();
+    private List<SpreadsheetRow> rows = new ArrayList<>();
     private Spreadsheet spreadsheet;
 
     public List<SpreadsheetColumn> getColumns() {
@@ -19,11 +19,11 @@ public class SpreadsheetData implements Serializable {
         this.columns = columns;
     }
 
-    public List<Map<String, Object>> getRows() {
+    public List<SpreadsheetRow> getRows() {
         return rows;
     }
 
-    public void setRows(List<Map<String, Object>> rows) {
+    public void setRows(List<SpreadsheetRow> rows) {
         this.rows = rows;
     }
 
@@ -45,5 +45,9 @@ public class SpreadsheetData implements Serializable {
 
     public List<Integer> getColumnTypesIndexes() {
         return columns.stream().map(SpreadsheetColumn::getType).map(ColumnType::ordinal).collect(Collectors.toList());
+    }
+
+    public int getMaxRowIndex() {
+        return rows.stream().max(Comparator.comparingInt(SpreadsheetRow::getIndex)).get().getIndex();
     }
 }
