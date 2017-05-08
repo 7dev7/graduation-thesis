@@ -1,7 +1,8 @@
 package com.dev.domain.model;
 
 import com.dev.domain.model.doctor.Doctor;
-import com.dev.domain.model.perceptron.Perceptron;
+import com.dev.domain.model.network.Perceptron;
+import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,8 +14,13 @@ public class NetworkModel implements Serializable {
     private long id;
     private String name;
 
+    private boolean isPerceptronModel;
+
     @Lob
     private Perceptron perceptron;
+
+    @Lob
+    private RadialBasisFunctionsNetwork rbfNetwork;
 
     private double error;
     private ActivationFunction hiddenActivationFunction;
@@ -78,5 +84,21 @@ public class NetworkModel implements Serializable {
 
     public void setOwner(Doctor owner) {
         this.owner = owner;
+    }
+
+    public boolean isPerceptronModel() {
+        return isPerceptronModel;
+    }
+
+    public void setPerceptronModel(boolean perceptronModel) {
+        isPerceptronModel = perceptronModel;
+    }
+
+    public RadialBasisFunctionsNetwork getRbfNetwork() {
+        return rbfNetwork;
+    }
+
+    public void setRbfNetwork(RadialBasisFunctionsNetwork rbfNetwork) {
+        this.rbfNetwork = rbfNetwork;
     }
 }

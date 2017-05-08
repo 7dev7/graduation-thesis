@@ -3,6 +3,7 @@ package com.dev.service.impl;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
+import com.dev.service.NormalizationService;
 import com.dev.service.TrainingDataService;
 import com.dev.service.exception.TrainingException;
 import org.encog.ml.data.MLDataSet;
@@ -29,11 +30,30 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         double[][] inputs = buildData(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes());
         double[][] outputs = buildData(spreadsheetData, trainInfoDTO.getOutputContinuousColumnIndexes());
 
-        //TODO implement calculation low-high
-        double[][] normIn = normalizationService.normalizeData(inputs, 1, 0);
-        double[][] normOut = normalizationService.normalizeData(outputs, 100, 0);
+        double[][] normIn = normalizationService.normalizeData(inputs, getMaxValue(inputs), getMinValue(inputs));
+        double[][] normOut = normalizationService.normalizeData(outputs, getMaxValue(outputs), getMinValue(outputs));
 
         return new BasicNeuralDataSet(normIn, normOut);
+    }
+
+    private double getMinValue(double[][] data) {
+        double min = Double.MAX_VALUE;
+        for (double[] innerData : data) {
+            for (double val : innerData) {
+                min = (min > val) ? val : min;
+            }
+        }
+        return min;
+    }
+
+    private double getMaxValue(double[][] data) {
+        double max = Double.MIN_VALUE;
+        for (double[] innerData : data) {
+            for (double val : innerData) {
+                max = (max < val) ? val : max;
+            }
+        }
+        return max;
     }
 
     private double[][] buildData(SpreadsheetData spreadsheetData, List<Integer> columnIndexes) throws TrainingException {

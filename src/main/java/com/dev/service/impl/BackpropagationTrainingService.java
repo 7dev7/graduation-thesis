@@ -3,7 +3,7 @@ package com.dev.service.impl;
 import com.dev.domain.model.ActivationFunction;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
-import com.dev.domain.model.perceptron.Perceptron;
+import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.PerceptronTrainingService;
 import com.dev.service.TrainingDataService;
@@ -31,7 +31,7 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
     @Override
     public NetworkModel train(Perceptron perceptron, MLDataSet dataSet) {
         Backpropagation backpropagation = new Backpropagation(perceptron.getNetwork(), dataSet);
-        LOGGER.info("--> Train executed: " + perceptron);
+        LOGGER.info("--> Perceptron Train executed: " + perceptron);
 
         for (int i = 0; i < NUM_OF_ITERATIONS; i++) {
             backpropagation.iteration();
@@ -39,6 +39,7 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         NetworkModel networkModel = new NetworkModel();
         networkModel.setError(backpropagation.getError());
         networkModel.setPerceptron(perceptron);
+        networkModel.setPerceptronModel(true);
         networkModel.setHiddenActivationFunction(perceptron.getHiddenActivationFunc());
         networkModel.setOutActivationFunction(perceptron.getOutActivationFunc());
         networkModel.setName("MLP: " + perceptron.getInputNeurons() + " - " + perceptron.getHiddenNeurons() + " - " + perceptron.getOutNeurons());
@@ -56,16 +57,16 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         List<ActivationFunction> hiddenNeuronsFuncs = trainInfoDTO.getHiddenNeuronsFuncs();
         List<ActivationFunction> outNeuronsFuncs = trainInfoDTO.getOutNeuronsFuncs();
 
-        List<NetworkModel> infos = new ArrayList<>();
+        List<NetworkModel> models = new ArrayList<>();
         for (int i = minNumOfNeuron; i <= maxNumOfNeuron; i++) {
             for (ActivationFunction hiddenActivation : hiddenNeuronsFuncs) {
                 for (ActivationFunction outActivation : outNeuronsFuncs) {
                     Perceptron perceptron = new Perceptron(inputNeurons, i, outNeurons, hiddenActivation, outActivation);
-                    NetworkModel trainInfo = train(perceptron, trainingDataService.buildDataset(spreadsheetData, trainInfoDTO));
-                    infos.add(trainInfo);
+                    NetworkModel model = train(perceptron, trainingDataService.buildDataset(spreadsheetData, trainInfoDTO));
+                    models.add(model);
                 }
             }
         }
-        return infos;
+        return models;
     }
 }

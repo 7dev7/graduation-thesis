@@ -1,12 +1,14 @@
 package com.dev.service.impl;
 
+import com.dev.service.NormalizationService;
 import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.arrayutil.NormalizedField;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NormalizationService {
+public class NormalizationServiceImpl implements NormalizationService {
 
+    @Override
     public double[][] normalizeData(double[][] data, double actualHigh, double actualLow) {
         double[][] res = new double[data.length][];
         for (int i = 0; i < data.length; i++) {
@@ -17,10 +19,12 @@ public class NormalizationService {
         return res;
     }
 
+    @Override
     public double[] normalizeData(double[] data, double actualHigh, double actualLow) {
         return normalizeData(data, actualHigh, actualLow, 1, 0);
     }
 
+    @Override
     public double[] normalizeData(double[] data, double actualHigh, double actualLow, double normHigh, double normLow) {
         NormalizedField normalizedField = new NormalizedField(NormalizationAction.Normalize, "normalize",
                 actualHigh, actualLow, normHigh, normLow);
@@ -31,20 +35,24 @@ public class NormalizationService {
         return normalizedData;
     }
 
+    @Override
     public double normalizeData(double data, double actualHigh, double actualLow) {
         return normalizeData(data, actualHigh, actualLow, 1, 0);
     }
 
+    @Override
     public double normalizeData(double data, double actualHigh, double actualLow, double normHigh, double normLow) {
         NormalizedField normalizedField = new NormalizedField(NormalizationAction.Normalize, "normalize",
                 actualHigh, actualLow, normHigh, normLow);
         return normalizedField.normalize(data);
     }
 
+    @Override
     public double deNormalizeValue(double value, double actualHigh, double actualLow) {
         return deNormalizeValue(value, actualHigh, actualLow, 1, 0);
     }
 
+    @Override
     public double deNormalizeValue(double value, double actualHigh, double actualLow, double normHigh, double normLow) {
         NormalizedField normalizedField = new NormalizedField(NormalizationAction.Normalize, "normalize",
                 actualHigh, actualLow, normHigh, normLow);
