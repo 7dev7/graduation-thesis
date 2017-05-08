@@ -1,11 +1,11 @@
-package com.dev.service.impl;
+package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.NormalizationService;
-import com.dev.service.TrainingDataService;
 import com.dev.service.exception.TrainingException;
+import com.dev.service.train.TrainingDataService;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,7 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         double[][] inputs = buildData(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes());
         double[][] outputs = buildData(spreadsheetData, trainInfoDTO.getOutputContinuousColumnIndexes());
 
+        //TODO add normalization check needed
         double[][] normIn = normalizationService.normalizeData(inputs, getMaxValue(inputs), getMinValue(inputs));
         double[][] normOut = normalizationService.normalizeData(outputs, getMaxValue(outputs), getMinValue(outputs));
 

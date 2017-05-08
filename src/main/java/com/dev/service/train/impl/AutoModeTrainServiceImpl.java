@@ -1,12 +1,12 @@
-package com.dev.service.impl;
+package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
-import com.dev.service.AutoModeTrainService;
-import com.dev.service.PerceptronTrainingService;
-import com.dev.service.RBFTrainingService;
 import com.dev.service.exception.TrainingException;
+import com.dev.service.train.AutoModeTrainService;
+import com.dev.service.train.PerceptronTrainingService;
+import com.dev.service.train.RBFTrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,12 +1,12 @@
-package com.dev.service.impl;
+package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
-import com.dev.service.RBFTrainingService;
-import com.dev.service.TrainingDataService;
 import com.dev.service.exception.TrainingException;
+import com.dev.service.train.RBFTrainingService;
+import com.dev.service.train.TrainingDataService;
 import org.apache.log4j.Logger;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.rbf.training.SVDTraining;
@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class SVDTrainingService implements RBFTrainingService {
     private static final Logger LOGGER = Logger.getLogger(SVDTrainingService.class);
-    private static final int NUM_OF_ITERATIONS = 10_000;
+    private static final int NUM_OF_ITERATIONS = 500;
     private final TrainingDataService trainingDataService;
 
     @Autowired

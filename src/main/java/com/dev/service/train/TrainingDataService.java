@@ -1,4 +1,4 @@
-package com.dev.service;
+package com.dev.service.train;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
