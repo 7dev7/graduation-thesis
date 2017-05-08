@@ -57,7 +57,6 @@ public class AnalysisController {
     private List<NetworkModel> shrink(List<NetworkModel> networkModels, AutoModeTrainInfoDTO trainInfoDTO) {
         PriorityQueue<NetworkModel> queue = new PriorityQueue<>(trainInfoDTO.getNumOfSavedNetworks(), Comparator.comparingDouble(NetworkModel::getError));
         queue.addAll(networkModels);
-
         List<NetworkModel> result = new ArrayList<>();
         for (int i = 0; i < trainInfoDTO.getNumOfSavedNetworks(); i++) {
             result.add(queue.poll());

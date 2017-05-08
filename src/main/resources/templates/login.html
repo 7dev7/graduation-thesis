@@ -13,6 +13,9 @@
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
                 <div class="login-panel panel panel-default">
+                    <div class="alert alert-danger alert-dismissable fade in" id="loginErrorBlock" th:if="${error}">
+                        <span id="loginErrorField" th:text="${error}"></span>
+                    </div>
                     <div class="panel-heading">
                         <h3 class="panel-title">Вход:</h3>
                     </div>
@@ -20,11 +23,13 @@
                         <form role="form" method="post">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Логин" name="username" type="text"
+                                    <input class="form-control" placeholder="Логин" name="username" id="username"
+                                           type="text"
                                            required="true" autofocus="true"/>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Пароль" name="password" type="password"
+                                    <input class="form-control" placeholder="Пароль" name="password" id="password"
+                                           type="password"
                                            required="true"
                                            value=""/>
                                 </div>
@@ -48,6 +53,16 @@
     </div>
 
 </div>
+<script>
+    $(function () {
+        $("#username").on("change", function (event) {
+            $("#loginErrorBlock").hide();
+        });
+        $("#password").on("change", function (event) {
+            $("#loginErrorBlock").hide();
+        });
+    });
+</script>
 <div th:include="fragments/common :: footer"></div>
 </body>
 </html>
