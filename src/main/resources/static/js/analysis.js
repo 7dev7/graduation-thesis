@@ -273,6 +273,8 @@ $(function () {
         });
         data['outNeuronsFuncs'] = outNeuronsFuncs;
 
+        data['numOfSavedNetworks'] = $("#numOfSavedNetworks").val();
+
         return data;
     }
 });

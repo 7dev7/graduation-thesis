@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.PriorityQueue;
+import java.util.*;
 
 
 @Controller
@@ -52,18 +49,19 @@ public class AnalysisController {
             networkModels = autoModeTrainService.train(trainInfoDTO, spreadsheet.getSpreadsheetData());
         } catch (TrainingException e) {
         }
-        PriorityQueue<NetworkModel> models = restrict(networkModels);
-
-        NetworkModel model;
-        while ((model = models.poll()) != null) {
-            networkModelService.save(model);
-        }
+        List<NetworkModel> models = shrink(networkModels, trainInfoDTO);
+        models.forEach(networkModelService::save);
         return "analysis";
     }
 
-    private PriorityQueue<NetworkModel> restrict(List<NetworkModel> networkModels) {
-        PriorityQueue<NetworkModel> queue = new PriorityQueue<>(10, Comparator.comparingDouble(NetworkModel::getError));
+    private List<NetworkModel> shrink(List<NetworkModel> networkModels, AutoModeTrainInfoDTO trainInfoDTO) {
+        PriorityQueue<NetworkModel> queue = new PriorityQueue<>(trainInfoDTO.getNumOfSavedNetworks(), Comparator.comparingDouble(NetworkModel::getError));
         queue.addAll(networkModels);
-        return queue;
+
+        List<NetworkModel> result = new ArrayList<>();
+        for (int i = 0; i < trainInfoDTO.getNumOfSavedNetworks(); i++) {
+            result.add(queue.poll());
+        }
+        return result;
     }
 }

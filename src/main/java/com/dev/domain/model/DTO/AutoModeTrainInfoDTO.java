@@ -10,6 +10,8 @@ public class AutoModeTrainInfoDTO {
     private List<Integer> inputCategorialColumnIndexes;
     private List<Integer> outputContinuousColumnIndexes;
 
+    private Integer numOfSavedNetworks;
+
     private Boolean isMLPNeeded;
     private Integer mlpMinNumOfNeuron;
     private Integer mlpMaxNumOfNeuron;
@@ -116,15 +118,25 @@ public class AutoModeTrainInfoDTO {
         this.inputCategorialColumnIndexes = inputCategorialColumnIndexes;
     }
 
+    public Integer getNumOfSavedNetworks() {
+        return numOfSavedNetworks;
+    }
+
+    public void setNumOfSavedNetworks(Integer numOfSavedNetworks) {
+        this.numOfSavedNetworks = numOfSavedNetworks;
+    }
+
     @Override
     public String toString() {
         return "AutoModeTrainInfoDTO{" +
                 "inputContinuousColumnIndexes=" + inputContinuousColumnIndexes +
+                ", inputCategorialColumnIndexes=" + inputCategorialColumnIndexes +
                 ", outputContinuousColumnIndexes=" + outputContinuousColumnIndexes +
-                ", isMLPNeeded='" + isMLPNeeded + '\'' +
+                ", numOfSavedNetworks=" + numOfSavedNetworks +
+                ", isMLPNeeded=" + isMLPNeeded +
                 ", mlpMinNumOfNeuron=" + mlpMinNumOfNeuron +
                 ", mlpMaxNumOfNeuron=" + mlpMaxNumOfNeuron +
-                ", isRBFNeeded='" + isRBFNeeded + '\'' +
+                ", isRBFNeeded=" + isRBFNeeded +
                 ", rbfMinNumOfNeuron=" + rbfMinNumOfNeuron +
                 ", rbfMaxNumOfNeuron=" + rbfMaxNumOfNeuron +
                 ", hiddenNeuronsFuncs=" + hiddenNeuronsFuncs +
