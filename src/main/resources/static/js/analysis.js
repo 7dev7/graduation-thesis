@@ -18,7 +18,7 @@ $(function () {
     function loadSpreadsheetData() {
         Pace.track(function () {
             $.ajax({
-                url: "/current_spreadsheet",
+                url: "/spreadsheet/current",
                 type: 'POST',
                 success: function (responseData) {
                     var cols = responseData.columns;
@@ -67,6 +67,7 @@ $(function () {
                         ondblClickRow: function (rowid, iRow, iCol, e) {
                             var colName = cols[iCol];
                             $("#columnName").val(colName);
+                            $("#columnInitName").val(colName);
                             $("#columnId").val(iCol);
                             var template = '[value=' + colTypes[iCol] + ']';
                             $("#chooseTypeSelect").find(template).attr("selected", "selected");
@@ -75,7 +76,7 @@ $(function () {
                         }
                     }).navGrid('#jqGridPager', {}, {
                         reloadAfterSubmit: true,
-                        url: '/analysis/edit',
+                        url: '/row/edit',
                         closeAfterEdit: true,
                         closeOnEscape: true,
                         beforeSubmit: function (postdata, formid) {
@@ -90,7 +91,7 @@ $(function () {
                         }
                     }, {
                         reloadAfterSubmit: false,
-                        url: '/analysis/add',
+                        url: '/row/add',
                         position: "last",
                         closeAfterAdd: true,
                         closeOnEscape: true,
@@ -101,7 +102,7 @@ $(function () {
                         reloadAfterSubmit: false,
                         closeAfterDelete: true,
                         closeOnEscape: true,
-                        url: '/analysis/delete'
+                        url: '/row/remove'
                     }, {}, {});
                 }
             });
@@ -134,6 +135,7 @@ $(function () {
     $("#saveColumnBtn").on("click", function (event) {
         event.preventDefault();
         var columnName = $("#columnName").val();
+        var columnInitName = $("#columnInitName").val();
         var columnId = $("#columnId").val();
         var columnType = $('#chooseTypeSelect').find('option:selected').val();
 
@@ -144,9 +146,10 @@ $(function () {
             data: {
                 columnId: columnId,
                 columnName: columnName,
-                columnType: columnType
+                columnType: columnType,
+                initName: columnInitName
             },
-            url: '/analysis/update_column'
+            url: '/column/update'
         });
     });
 

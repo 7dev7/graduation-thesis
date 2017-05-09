@@ -146,12 +146,7 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
 
     @Override
     public Spreadsheet createSpreadsheet(MultipartFile excelFile) throws StorageException {
-        Optional<Spreadsheet> activeSpreadsheetForCurrentDoctor1 = getActiveSpreadsheetForCurrentDoctor();
-        activeSpreadsheetForCurrentDoctor1.ifPresent(spreadsheet -> {
-            spreadsheet.setClosed(true);
-            spreadsheet.setLastUpdate(new Date());
-            spreadsheetRepository.save(spreadsheet);
-        });
+        closeActiveSpreadsheet();
 
         Spreadsheet spreadsheet = new Spreadsheet();
         try {
@@ -167,8 +162,68 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         return spreadsheet;
     }
 
+    public Spreadsheet createSpreadsheet() {
+        closeActiveSpreadsheet();
+
+        Spreadsheet spreadsheet = new Spreadsheet();
+        spreadsheet.setClosed(false);
+        SpreadsheetData spreadsheetData = new SpreadsheetData();
+        spreadsheetData.setSpreadsheet(spreadsheet);
+        spreadsheet.setSpreadsheetData(spreadsheetData);
+        spreadsheet.setOwner(doctorService.getCurrentDoctor());
+        spreadsheetRepository.save(spreadsheet);
+        return spreadsheet;
+    }
+
+    private void closeActiveSpreadsheet() {
+        Optional<Spreadsheet> activeSpreadsheetForCurrentDoctor1 = getActiveSpreadsheetForCurrentDoctor();
+        activeSpreadsheetForCurrentDoctor1.ifPresent(spreadsheet -> {
+            spreadsheet.setClosed(true);
+            spreadsheet.setLastUpdate(new Date());
+            spreadsheetRepository.save(spreadsheet);
+        });
+    }
+
     @Override
     public void updateSpreadsheet(Spreadsheet spreadsheet) {
         spreadsheetRepository.save(spreadsheet);
+    }
+
+    @Override
+    public void removeColumnByIndex(int index, String initName) throws StorageException {
+        Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(this::createSpreadsheet);
+        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
+
+        Optional<SpreadsheetColumn> columnOptional = spreadsheetData.getColumns().stream().filter(i -> i.getName().equals(initName)).findFirst();
+        SpreadsheetColumn spreadsheetColumn = columnOptional.orElseThrow(StorageException::new);
+
+        for (SpreadsheetRow row : spreadsheetData.getRows()) {
+            Map<String, Object> elements = row.getElements();
+            elements.remove(spreadsheetColumn.getName());
+        }
+        spreadsheetData.getColumns().remove(spreadsheetColumn);
+        updateSpreadsheet(spreadsheet);
+    }
+
+    @Override
+    public void updateColumn(int index, String initName, String name, ColumnType type) throws StorageException {
+        Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(this::createSpreadsheet);
+        SpreadsheetData data = spreadsheet.getSpreadsheetData();
+
+        Optional<SpreadsheetColumn> columnOptional = data.getColumns().stream().filter(i -> i.getName().equals(initName)).findFirst();
+        SpreadsheetColumn column = columnOptional.orElseThrow(StorageException::new);
+
+        for (SpreadsheetRow row : data.getRows()) {
+            Map<String, Object> elements = row.getElements();
+            Object val = elements.get(column.getName());
+            elements.remove(column.getName());
+            elements.put(name, val);
+        }
+        data.getColumns().remove(column);
+        data.getColumns().add(new SpreadsheetColumn(index, name, type));
+
+        updateSpreadsheet(spreadsheet);
     }
 }

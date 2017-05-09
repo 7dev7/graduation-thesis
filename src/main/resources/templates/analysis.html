@@ -15,6 +15,7 @@
 <script src="/js/jquery.form.js"></script>
 <script type="text/javascript" src="/js/analysis.js"></script>
 <script type="text/javascript" src="/js/module-switcher.js"></script>
+<script type="text/javascript" src="/js/custom-table.js"></script>
 
 <div class="container">
     <div class="row">
@@ -23,7 +24,7 @@
             <div class="col-md-6 col-md-offset-3">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Загрузить Excel-файл:</h3>
+                        <h3 class="panel-title">Ввод данных:</h3>
                     </div>
                     <h3 class="has-error error" id="message" hidden="hidden"/>
                     <div class="panel-body">
@@ -44,11 +45,106 @@
                             </fieldset>
                         </form>
                     </div>
+                    <div class="panel-body">
+                        <button class="btn btn-primary" id="createTableBtn">Создать таблицу</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div id="create-table-module" hidden="hidden">
+    <table id="customTableJQGrid"></table>
+    <div id="customTableJQGridPager"></div>
+    <br/>
+    <div class="modal fade" id="addColumnModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Добавление столбца</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="hidden" id="addColumnId" name="addColumnId"/>
+                            <input type="text" class="form-control" id="addColumnName" placeholder="Название столбца"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="addColumnTypeSelect" class="control-label">Тип столбца:</label>
+                            <select class="selectpicker" data-live-search="true" id="addColumnTypeSelect">
+                                <option value="0">Непрерывная</option>
+                                <option value="1">Порядковая</option>
+                                <option value="2">Номинальная</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-default btn-success btn-block" id="createColumnBtn"><span
+                                class="glyphicon glyphicon-off"></span> Сохранить
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-default btn-default pull-left" data-dismiss="modal"><span
+                            class="glyphicon glyphicon-remove"></span> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editColumnModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Редактирование столбца</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="hidden" id="editColumnId" name="editColumnId"/>
+                            <input type="hidden" id="editInitColumnName" name="editInitColumnName"/>
+                            <input type="text" class="form-control" id="editColumnName" placeholder="Название столбца"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="editChooseTypeSelect" class="control-label">Тип столбца:</label>
+                            <select class="selectpicker" data-live-search="true" id="editChooseTypeSelect">
+                                <option value="0">Непрерывная</option>
+                                <option value="1">Порядковая</option>
+                                <option value="2">Номинальная</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-default btn-success btn-block" id="editColumnBtn"><span
+                                class="glyphicon glyphicon-off"></span> Сохранить
+                        </button>
+                        <br/>
+                        <button type="button" class="btn btn-danger" id="removeColumnBtn">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Удалить столбец
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-default btn-default pull-left" data-dismiss="modal"><span
+                            class="glyphicon glyphicon-remove"></span> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <button type="button" class="btn btn-default" id="addColumnBtn">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить столбец
+            </button>
+        </div>
+    </div>
+</div>
+
+
 <div id="show-excel-file-module" hidden="hidden">
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
@@ -60,17 +156,18 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Редактирование колонки</h4>
+                    <h4 class="modal-title">Редактирование столбца</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form">
                         <div class="form-group">
                             <input type="hidden" id="columnId" name="columnId"/>
-                            <input type="text" class="form-control" id="columnName" placeholder="Название колонки"
+                            <input type="hidden" id="columnInitName" name="columnInitName"/>
+                            <input type="text" class="form-control" id="columnName" placeholder="Название столбца"
                                    required="required"/>
                         </div>
                         <div class="form-group">
-                            <label for="chooseTypeSelect" class="control-label">Тип колонки:</label>
+                            <label for="chooseTypeSelect" class="control-label">Тип столбца:</label>
                             <select class="selectpicker" data-live-search="true" id="chooseTypeSelect">
                                 <option value="0">Непрерывная</option>
                                 <option value="1">Порядковая</option>

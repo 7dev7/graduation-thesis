@@ -1,6 +1,7 @@
 package com.dev.service;
 
 import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.model.spreadsheet.ColumnType;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.exception.StorageException;
@@ -20,5 +21,11 @@ public interface SpreadsheetService {
 
     Spreadsheet createSpreadsheet(MultipartFile excelFile) throws StorageException;
 
+    Spreadsheet createSpreadsheet();
+
     void updateSpreadsheet(Spreadsheet spreadsheet);
+
+    void removeColumnByIndex(int index, String initName) throws StorageException;
+
+    void updateColumn(int index, String initName, String name, ColumnType type) throws StorageException;
 }

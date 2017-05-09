@@ -48,6 +48,10 @@ public class SpreadsheetData implements Serializable {
     }
 
     public int getMaxRowIndex() {
-        return rows.stream().max(Comparator.comparingInt(SpreadsheetRow::getIndex)).get().getIndex();
+        return rows.stream().max(Comparator.comparingInt(SpreadsheetRow::getIndex)).orElseGet(SpreadsheetRow::new).getIndex();
+    }
+
+    public int getMaxColumnIndex() {
+        return columns.stream().max(Comparator.comparingInt(SpreadsheetColumn::getIndex)).orElseGet(SpreadsheetColumn::new).getIndex();
     }
 }
