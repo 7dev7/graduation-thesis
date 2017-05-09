@@ -30,13 +30,8 @@ public class AnalysisController {
         this.networkModelService = networkModelService;
     }
 
-    @GetMapping("/excel_sheet")
-    public String excelSheet() {
-        return "excel_sheet";
-    }
-
     @GetMapping("/analysis")
-    public String analyze() {
+    public String analysis() {
         return "analysis";
     }
 
@@ -48,6 +43,7 @@ public class AnalysisController {
         try {
             networkModels = autoModeTrainService.train(trainInfoDTO, spreadsheet.getSpreadsheetData());
         } catch (TrainingException e) {
+            e.getMessage();
         }
         List<NetworkModel> models = shrink(networkModels, trainInfoDTO);
         models.forEach(networkModelService::save);

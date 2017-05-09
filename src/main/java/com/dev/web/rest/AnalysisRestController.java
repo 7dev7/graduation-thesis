@@ -56,11 +56,17 @@ public class AnalysisRestController {
     @PostMapping(value = "/spreadsheet/current", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity currentSpreadsheet() {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
-        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(spreadsheetService::createSpreadsheet);
-        SpreadsheetDataDTO dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheet.getSpreadsheetData());
+        try {
+            Spreadsheet spreadsheet = spreadsheetOptional.orElseThrow(Exception::new);
+            SpreadsheetDataDTO dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheet.getSpreadsheetData());
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(dataDTO);
+        } catch (Exception e) {
+        }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(dataDTO);
+                .body(null);
     }
 
     @PostMapping(value = "/spreadsheet/create")

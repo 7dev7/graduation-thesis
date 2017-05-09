@@ -10,6 +10,7 @@ $(function () {
 
             $("#load-excel-file-module").hide();
             $("#show-excel-file-module").show();
+            $("#table-controls-module").show();
 
             loadSpreadsheetData();
         }
@@ -27,6 +28,10 @@ $(function () {
                     for (var i = 0; i < cols.length; i++) {
                         model.push({label: cols[i], name: cols[i], editable: true});
                     }
+
+                    $('#inputContinuousColumns option').remove();
+                    $('#inputCategorialColumns option').remove();
+                    $('#outputContinuousColumns option').remove();
 
                     $.each(cols, function (i, item) {
                         $('#inputContinuousColumns').append($('<option>', {

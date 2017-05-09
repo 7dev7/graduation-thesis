@@ -123,3 +123,7 @@ body {
         transform: rotate(359deg);
     }
 }
+
+.for-space {
+    visibility: hidden;
+}

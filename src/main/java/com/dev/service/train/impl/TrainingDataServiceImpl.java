@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,12 +59,12 @@ public class TrainingDataServiceImpl implements TrainingDataService {
     private double[][] buildData(SpreadsheetData spreadsheetData, List<Integer> columnIndexes) throws TrainingException {
         List<List<Double>> result = new ArrayList<>();
         for (Integer columnIndex : columnIndexes) {
-            Optional<SpreadsheetColumn> columnOptional = spreadsheetData.getColumns().stream().filter(i -> i.getIndex() == columnIndex).findFirst();
-            if (!columnOptional.isPresent()) {
+            SpreadsheetColumn spreadsheetColumn = spreadsheetData.getColumns().get(columnIndex);
+            if (spreadsheetColumn == null) {
                 throw new TrainingException("Incorrect column index");
             }
             List<Object> collect = spreadsheetData.getRows().stream()
-                    .map(i -> i.getElements().get(columnOptional.get().getName()))
+                    .map(i -> i.getElements().get(spreadsheetColumn.getName()))
                     .collect(Collectors.toCollection(ArrayList::new));
             result.add(cast(collect));
         }
@@ -88,7 +87,7 @@ public class TrainingDataServiceImpl implements TrainingDataService {
                 }
                 res.add(val);
             } catch (NumberFormatException e) {
-
+                System.err.println(e.getMessage());
             }
         }
         return res;

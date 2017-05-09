@@ -43,6 +43,10 @@ public class SpreadsheetData implements Serializable {
         return columns.stream().map(SpreadsheetColumn::getName).collect(Collectors.toList());
     }
 
+    public List<Integer> getColumnIndexes() {
+        return columns.stream().map(SpreadsheetColumn::getIndex).collect(Collectors.toList());
+    }
+
     public List<Integer> getColumnTypesIndexes() {
         return columns.stream().map(SpreadsheetColumn::getType).map(ColumnType::ordinal).collect(Collectors.toList());
     }

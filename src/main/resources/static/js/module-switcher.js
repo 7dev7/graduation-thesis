@@ -1,4 +1,12 @@
 $(function () {
+    $("#inputNewTableBtn").on('click', function (event) {
+        event.preventDefault();
+        $('#create-table-module').hide();
+        $('#show-excel-file-module').hide();
+        $("#table-controls-module").hide();
+        $('#load-excel-file-module').show();
+    });
+
     $("#autoModeBtn").on("click", function (event) {
         event.preventDefault();
         if (!isValidState()) {
@@ -6,7 +14,7 @@ $(function () {
         }
         $("#inOutErrorBlock").hide();
 
-        $("#show-excel-file-module").hide();
+        $("#table-module").hide();
         $("#automatic-mode-module").show();
     });
 
@@ -64,7 +72,8 @@ $(function () {
     $("#backBtnInAutoModule").on("click", function (event) {
         event.preventDefault();
         $("#automatic-mode-module").hide();
-        $("#show-excel-file-module").show();
+        // $("#show-excel-file-module").show();
+        $("#table-module").show();
     });
 });
 

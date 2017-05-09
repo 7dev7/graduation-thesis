@@ -1,8 +1,30 @@
 $(function () {
+    check_current_spreadsheet();
+
+    function check_current_spreadsheet() {
+        $.ajax({
+            url: '/spreadsheet/current',
+            type: 'POST',
+            success: function (data) {
+                if (data === "") {
+                    $("#table-module").show();
+                    $("#load-excel-file-module").show();
+                    $("#table-controls-module").hide();
+                } else {
+                    $("#table-module").show();
+                    $("#create-table-module").show();
+                    $("#table-controls-module").show();
+                    reloadTable();
+                }
+            }
+        });
+    }
+
     $("#createTableBtn").on("click", function (event) {
         event.preventDefault();
         $("#load-excel-file-module").hide();
         $("#create-table-module").show();
+        $("#table-controls-module").show();
 
         loadTable([], []);
     });
@@ -47,6 +69,29 @@ $(function () {
                 for (var i = 0; i < cols.length; i++) {
                     model.push({label: cols[i], name: cols[i], editable: true});
                 }
+
+                $('#inputContinuousColumns option').remove();
+                $('#inputCategorialColumns option').remove();
+                $('#outputContinuousColumns option').remove();
+
+                $.each(cols, function (i, item) {
+                    $('#inputContinuousColumns').append($('<option>', {
+                        value: i,
+                        text: item
+                    }));
+                    $('#inputCategorialColumns').append($('<option>', {
+                        value: i,
+                        text: item
+                    }));
+                    $('#outputContinuousColumns').append($('<option>', {
+                        value: i,
+                        text: item
+                    }));
+                });
+
+                $('#inputContinuousColumns').selectpicker('refresh');
+                $('#inputCategorialColumns').selectpicker('refresh');
+                $('#outputContinuousColumns').selectpicker('refresh');
 
                 $("#customTableJQGrid").jqGrid({
                     data: responseData.rows,
