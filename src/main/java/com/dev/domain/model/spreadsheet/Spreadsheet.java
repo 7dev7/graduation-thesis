@@ -68,7 +68,6 @@ public class Spreadsheet implements Serializable {
         return "Spreadsheet{" +
                 "id=" + id +
                 ", spreadsheetData=" + spreadsheetData +
-                ", owner=" + owner +
                 ", lastUpdate=" + lastUpdate +
                 ", isClosed=" + isClosed +
                 '}';

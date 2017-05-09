@@ -30,4 +30,9 @@ public class NetworkModelServiceImpl implements NetworkModelService {
     public List<NetworkModel> getModelsForCurrentDoctor() {
         return networkModelRepository.findAllByOwner(doctorService.getCurrentDoctor());
     }
+
+    @Override
+    public void removeModelById(long id) {
+        networkModelRepository.delete(id);
+    }
 }

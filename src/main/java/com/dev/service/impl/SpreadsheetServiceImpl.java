@@ -152,7 +152,6 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         try {
             spreadsheet.setClosed(false);
             SpreadsheetData spreadsheetData = getSpreadsheetData(excelFile);
-            spreadsheetData.setSpreadsheet(spreadsheet);
             spreadsheet.setSpreadsheetData(spreadsheetData);
             spreadsheet.setOwner(doctorService.getCurrentDoctor());
             spreadsheetRepository.save(spreadsheet);
@@ -168,7 +167,6 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         Spreadsheet spreadsheet = new Spreadsheet();
         spreadsheet.setClosed(false);
         SpreadsheetData spreadsheetData = new SpreadsheetData();
-        spreadsheetData.setSpreadsheet(spreadsheet);
         spreadsheet.setSpreadsheetData(spreadsheetData);
         spreadsheet.setOwner(doctorService.getCurrentDoctor());
         spreadsheetRepository.save(spreadsheet);

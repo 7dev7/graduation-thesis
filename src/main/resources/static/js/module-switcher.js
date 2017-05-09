@@ -4,7 +4,14 @@ $(function () {
         $('#create-table-module').hide();
         $('#show-excel-file-module').hide();
         $("#table-controls-module").hide();
-        $('#load-excel-file-module').show();
+
+        $.ajax({
+            type: 'POST',
+            url: '/spreadsheet/close',
+            success: function () {
+                $('#load-excel-file-module').show();
+            }
+        });
     });
 
     $("#autoModeBtn").on("click", function (event) {

@@ -131,9 +131,76 @@ $(function () {
                 data: JSON.stringify(data),
                 url: '/train',
                 success: function (data) {
-                    window.location.replace("/network_models");
+                    $('#automatic-mode-module').hide();
+                    $('#trained-models-module').show();
+                    showTrainedInfo(data);
                 }
             });
+        });
+    });
+
+    function showTrainedInfo(info) {
+        var formatStatus = function (cellValue) {
+            if (cellValue === true) return "Многослойный перцептрон";
+            return "Сеть радиально базисных функций";
+        };
+
+        var columns = [
+            {label: 'ID', name: 'id', editable: false, hidden: true},
+            {
+                name: '', editable: true, edittype: 'checkbox', editoptions: {value: "True:False"},
+                formatter: "checkbox", formatoptions: {disabled: false}
+            },
+            {label: 'Тип', name: 'perceptronModel', editable: false, formatter: formatStatus},
+            {label: 'Название модели', name: 'name', editable: false},
+            {label: 'Ошибка', name: 'error', editable: false},
+            {label: 'Функция Активации Скр. слой', name: 'hiddenActivationFunction', editable: false},
+            {label: 'Функция Активации Вых. слой', name: 'outActivationFunction', editable: false},
+        ];
+
+        $("#trainedModelsInfoJqGrid").jqGrid({
+            data: info,
+            datatype: "local",
+            colModel: columns,
+            autowidth: true,
+            shrinkToFit: true,
+            width: null,
+            scroll: true,
+            viewrecords: true,
+            height: 500,
+            rowNum: 25,
+            cellEdit: true,
+            pager: '#trainedModelsInfoJqGridPager',
+            cellsubmit: 'clientArray',
+            editurl: 'clientArray'
+        });
+    }
+
+    $('#saveModelsBtn').on('click', function (event) {
+        event.preventDefault();
+        var selectedModels = [];
+        var nonSelectedModels = [];
+
+        var data = $("#trainedModelsInfoJqGrid").jqGrid('getGridParam', 'data');
+        for (var i = 0; i < data.length; i++) {
+            var save = $('#trainedModelsInfoJqGrid').getCell(data[i].id, 1);
+            if (save === 'True') {
+                selectedModels.push(data[i].id);
+            } else {
+                nonSelectedModels.push(data[i].id);
+            }
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/models/save_trained',
+            contentType: "application/json",
+            data: JSON.stringify({
+                selectedModels: selectedModels,
+                nonSelectedModels: nonSelectedModels
+            }),
+            success: function (data) {
+                window.location.replace("/network_models");
+            }
         });
     });
 

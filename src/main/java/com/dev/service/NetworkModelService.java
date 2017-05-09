@@ -9,4 +9,6 @@ public interface NetworkModelService {
     void save(NetworkModel networkModel);
 
     List<NetworkModel> getModelsForCurrentDoctor();
+
+    void removeModelById(long id);
 }

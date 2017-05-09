@@ -1,34 +1,46 @@
 package com.dev.web.rest;
 
+import com.dev.domain.converter.NetworkModelDTOConverter;
 import com.dev.domain.converter.SpreadsheetDataDTOConverter;
+import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.DTO.SpreadsheetDataDTO;
+import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.spreadsheet.*;
+import com.dev.service.NetworkModelService;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
+import com.dev.service.exception.TrainingException;
+import com.dev.service.train.AutoModeTrainService;
 import com.dev.service.validator.FileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class AnalysisRestController {
     private static final String SUCCESSFUL_CODE = "OK";
-    private final FileValidator fileValidator;
+    private final AutoModeTrainService autoModeTrainService;
     private final SpreadsheetService spreadsheetService;
+    private final NetworkModelService networkModelService;
+    private final FileValidator fileValidator;
 
     @Autowired
-    public AnalysisRestController(FileValidator fileValidator, SpreadsheetService spreadsheetService) {
+    public AnalysisRestController(FileValidator fileValidator, SpreadsheetService spreadsheetService,
+                                  AutoModeTrainService autoModeTrainService, NetworkModelService networkModelService) {
         this.fileValidator = fileValidator;
         this.spreadsheetService = spreadsheetService;
+        this.autoModeTrainService = autoModeTrainService;
+        this.networkModelService = networkModelService;
     }
 
     @PostMapping(value = "/analysis", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -53,6 +65,35 @@ public class AnalysisRestController {
                 .body(dataDTO);
     }
 
+    @PostMapping(value = "/train", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity train(@RequestBody AutoModeTrainInfoDTO trainInfoDTO) {
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
+        List<NetworkModel> networkModels = null;
+        try {
+            networkModels = autoModeTrainService.train(trainInfoDTO, spreadsheet.getSpreadsheetData());
+        } catch (TrainingException e) {
+            e.printStackTrace();
+        }
+        List<NetworkModel> models = shrink(networkModels, trainInfoDTO);
+        models.forEach(networkModelService::save);
+        List<NetworkModelDTO> modelDTOS = models.stream().map(NetworkModelDTOConverter::convert).collect(Collectors.toCollection(ArrayList::new));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(modelDTOS);
+    }
+
+    private List<NetworkModel> shrink(List<NetworkModel> networkModels, AutoModeTrainInfoDTO trainInfoDTO) {
+        PriorityQueue<NetworkModel> queue = new PriorityQueue<>(trainInfoDTO.getNumOfSavedNetworks(), Comparator.comparingDouble(NetworkModel::getError));
+        queue.addAll(networkModels);
+        List<NetworkModel> result = new ArrayList<>();
+        for (int i = 0; i < trainInfoDTO.getNumOfSavedNetworks(); i++) {
+            result.add(queue.poll());
+        }
+        return result;
+    }
+
     @PostMapping(value = "/spreadsheet/current", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity currentSpreadsheet() {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
@@ -63,6 +104,7 @@ public class AnalysisRestController {
                     .status(HttpStatus.CREATED)
                     .body(dataDTO);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -72,6 +114,16 @@ public class AnalysisRestController {
     @PostMapping(value = "/spreadsheet/create")
     public void createSpreadsheet() {
         Spreadsheet spreadsheet = spreadsheetService.createSpreadsheet();
+    }
+
+    @PostMapping(value = "/spreadsheet/close")
+    public void closeSpreadsheet() {
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        spreadsheetOptional.ifPresent(i -> {
+            i.setLastUpdate(new Date());
+            i.setClosed(true);
+            spreadsheetService.updateSpreadsheet(i);
+        });
     }
 
     @PostMapping(value = "/column/add")
@@ -96,6 +148,7 @@ public class AnalysisRestController {
         try {
             spreadsheetService.updateColumn(index, initName, columnName, type);
         } catch (StorageException e) {
+            e.printStackTrace();
         }
     }
 
@@ -106,6 +159,7 @@ public class AnalysisRestController {
         try {
             spreadsheetService.removeColumnByIndex(index, initName);
         } catch (StorageException e) {
+            e.printStackTrace();
         }
     }
 

@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 public class SpreadsheetData implements Serializable {
     private List<SpreadsheetColumn> columns = new ArrayList<>();
     private List<SpreadsheetRow> rows = new ArrayList<>();
-    private Spreadsheet spreadsheet;
 
     public List<SpreadsheetColumn> getColumns() {
         return columns;
@@ -29,14 +28,6 @@ public class SpreadsheetData implements Serializable {
 
     public int getNumOfRecords() {
         return rows.size();
-    }
-
-    public Spreadsheet getSpreadsheet() {
-        return spreadsheet;
-    }
-
-    public void setSpreadsheet(Spreadsheet spreadsheet) {
-        this.spreadsheet = spreadsheet;
     }
 
     public List<String> getColumnNames() {
