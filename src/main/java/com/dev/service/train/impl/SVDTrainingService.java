@@ -39,6 +39,7 @@ public class SVDTrainingService implements RBFTrainingService {
         NetworkModel networkModel = new NetworkModel();
         networkModel.setError(svdTraining.getError());
         networkModel.setRbfNetwork(rbfNetwork);
+        networkModel.setDescription("Сеть радиальных базисных функций с " + rbfNetwork.getHiddenNeurons() + " скрытыми нейронами");
         networkModel.setPerceptronModel(false);
         networkModel.setName("RBF: " + rbfNetwork.getInputNeurons() + " - " + rbfNetwork.getHiddenNeurons() + " - " + rbfNetwork.getOutNeurons());
         return networkModel;

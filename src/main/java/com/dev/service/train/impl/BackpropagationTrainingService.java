@@ -42,6 +42,7 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         networkModel.setError(backpropagation.getError());
         networkModel.setPerceptron(perceptron);
         networkModel.setPerceptronModel(true);
+        networkModel.setDescription("Многослойный перцептрон с " + perceptron.getHiddenNeurons() + " скрытыми нейронами");
         networkModel.setHiddenActivationFunction(perceptron.getHiddenActivationFunc());
         networkModel.setOutActivationFunction(perceptron.getOutActivationFunc());
         networkModel.setName("MLP: " + perceptron.getInputNeurons() + " - " + perceptron.getHiddenNeurons() + " - " + perceptron.getOutNeurons());

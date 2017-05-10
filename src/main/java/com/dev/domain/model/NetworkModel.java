@@ -13,6 +13,7 @@ public class NetworkModel implements Serializable {
     @GeneratedValue
     private long id;
     private String name;
+    private String description;
 
     private boolean isPerceptronModel;
 
@@ -100,5 +101,13 @@ public class NetworkModel implements Serializable {
 
     public void setRbfNetwork(RadialBasisFunctionsNetwork rbfNetwork) {
         this.rbfNetwork = rbfNetwork;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

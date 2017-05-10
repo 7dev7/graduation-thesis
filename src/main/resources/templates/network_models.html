@@ -7,13 +7,16 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-2">
+        <div class="col-md-8 col-md-offset-2">
             <h3>Мои модели: </h3>
+            <hr/>
             <div th:each="model : ${networkModels}">
                 <h3 th:text="${model.name}"></h3>
-                <h4 th:text="${model.error}"></h4>
+                Ошибка: <h4 th:text="${model.error}"></h4>
                 <h4 th:text="${model.hiddenActivationFunction}"></h4>
                 <h4 th:text="${model.outActivationFunction}"></h4>
+                Описание:
+                <h5 th:text="${model.description}"></h5>
                 <hr/>
             </div>
         </div>
