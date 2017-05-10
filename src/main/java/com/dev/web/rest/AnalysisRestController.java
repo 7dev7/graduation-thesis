@@ -5,6 +5,7 @@ import com.dev.domain.converter.SpreadsheetDataDTOConverter;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.DTO.SpreadsheetDataDTO;
+import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.spreadsheet.*;
 import com.dev.service.NetworkModelService;
@@ -78,6 +79,20 @@ public class AnalysisRestController {
         List<NetworkModel> models = shrink(networkModels, trainInfoDTO);
         models.forEach(networkModelService::save);
         List<NetworkModelDTO> modelDTOS = models.stream().map(NetworkModelDTOConverter::convert).collect(Collectors.toCollection(ArrayList::new));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(modelDTOS);
+    }
+
+    @PostMapping(value = "/train_user_model", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity trainUserModel(@RequestBody UserModelTrainInfoDTO userModelTrainInfo) {
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
+
+        List<NetworkModel> networkModels = Collections.singletonList(new NetworkModel());
+        //TODO train
+        List<NetworkModelDTO> modelDTOS = networkModels.stream().map(NetworkModelDTOConverter::convert).collect(Collectors.toCollection(ArrayList::new));
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

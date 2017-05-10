@@ -25,6 +25,7 @@ public class AutoModeTrainInfoDTO {
 
     public AutoModeTrainInfoDTO() {
         this.inputContinuousColumnIndexes = new ArrayList<>();
+        this.inputCategorialColumnIndexes = new ArrayList<>();
         this.outputContinuousColumnIndexes = new ArrayList<>();
         this.hiddenNeuronsFuncs = new ArrayList<>();
         this.outNeuronsFuncs = new ArrayList<>();

@@ -431,6 +431,71 @@
                 </div>
             </div>
 
+
+            <div id="user-model-module" hidden="hidden">
+                <div class="alert alert-danger alert-dismissable fade in" id="userModelErrorBlock" hidden="hidden">
+                    <a href="#" class="close" aria-label="close">&times;</a>
+                    <span id="userModelErrorMessage"></span>
+                </div>
+                <div class="col-md-6">
+                    <div class="login-panel panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Выбор сети:</h3>
+                        </div>
+                        <div class="panel-body">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label for="mlpRadio" class="control-label">Многослойный перцептрон: </label>
+                                    <input id="mlpRadio" name="networkType" type="radio" value="MLP"
+                                           checked="checked"/><br/>
+                                    <label for="mlpNumOfNeurons" class="control-label">Количество нейронов на
+                                        скрытом слое:</label>
+                                    <input class="form-control" type="number" min="3" max="20" value="3"
+                                           name="mlpNumOfNeurons" id="mlpNumOfNeurons" required="required"/>
+
+                                    <label for="mlpHiddenFuncSelect" class="control-label">Функция активации скрытых
+                                        нейронов:</label>
+                                    <select class="selectpicker" id="mlpHiddenFuncSelect">
+                                        <option value="0">Логистическая</option>
+                                        <option value="1">Гиперболическая</option>
+                                        <option value="2">Экспонента</option>
+                                        <option value="3">Синус</option>
+                                    </select>
+
+                                    <label for="mlpOutFuncSelect" class="control-label">Функция активации выходных
+                                        нейронов:</label>
+                                    <select class="selectpicker" id="mlpOutFuncSelect">
+                                        <option value="0">Логистическая</option>
+                                        <option value="1">Гиперболическая</option>
+                                        <option value="2">Экспонента</option>
+                                        <option value="3">Синус</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rbfRadio" class="control-label">Сеть радиальных базисных
+                                        функций: </label>
+                                    <input id="rbfRadio" name="networkType" type="radio" value="RBF"/><br/>
+                                    <label for="rbfNumOfNeurons" class="control-label">Количество нейронов на
+                                        скрытом слое:</label>
+                                    <input class="form-control" type="number" min="3" max="20" name="rbfNumOfNeurons"
+                                           id="rbfNumOfNeurons" required="required" disabled="disabled"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="col-md-6">
+                        <button class="btn btn-primary btn-block" id="backBtnInUserModelModule">Назад</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary btn-block" id="trainUserModelBtn">Обучить</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="trained-models-module" hidden="hidden">
                 <table id="trainedModelsInfoJqGrid"></table>
                 <div id="trainedModelsInfoJqGridPager"></div>

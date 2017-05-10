@@ -25,6 +25,42 @@ $(function () {
         $("#automatic-mode-module").show();
     });
 
+    $('#manualModeBtn').on('click', function (event) {
+        event.preventDefault();
+        if (!isValidState()) {
+            return;
+        }
+        $("#inOutErrorBlock").hide();
+        $("#table-module").hide();
+        $("#user-model-module").show();
+    });
+
+    $('#mlpRadio').on('change', function (event) {
+        event.preventDefault();
+        if ($('#mlpRadio').is(':checked')) {
+            //disable rbf
+            $("#rbfNumOfNeurons").prop('disabled', true);
+
+            //enable mlp
+            $("#mlpNumOfNeurons").prop('disabled', false);
+            $('#mlpHiddenFuncSelect').attr('disabled', false);
+            $('#mlpOutFuncSelect').attr('disabled', false);
+        }
+    });
+
+    $('#rbfRadio').on('change', function (event) {
+        event.preventDefault();
+        if ($('#rbfRadio').is(':checked')) {
+            //disable mlp
+            $("#mlpNumOfNeurons").prop('disabled', true);
+            $('#mlpHiddenFuncSelect').attr('disabled', true);
+            $('#mlpOutFuncSelect').attr('disabled', true);
+
+            //enable rbf
+            $("#rbfNumOfNeurons").prop('disabled', false);
+        }
+    });
+
     $("#mlpCheckbox").on("change", function (event) {
         event.preventDefault();
         var minNum = $("#mlpMinNumOfNeuron");
@@ -79,7 +115,12 @@ $(function () {
     $("#backBtnInAutoModule").on("click", function (event) {
         event.preventDefault();
         $("#automatic-mode-module").hide();
-        // $("#show-excel-file-module").show();
+        $("#table-module").show();
+    });
+
+    $('#backBtnInUserModelModule').on('click', function (event) {
+        event.preventDefault();
+        $("#user-model-module").hide();
         $("#table-module").show();
     });
 });

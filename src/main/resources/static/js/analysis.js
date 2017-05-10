@@ -29,28 +29,32 @@ $(function () {
                         model.push({label: cols[i], name: cols[i], editable: true});
                     }
 
-                    $('#inputContinuousColumns option').remove();
-                    $('#inputCategorialColumns option').remove();
-                    $('#outputContinuousColumns option').remove();
+                    var inputContinuousColumns = $('#inputContinuousColumns');
+                    var inputCategorialColumns = $('#inputCategorialColumns');
+                    var outContinuousColumns = $('#outputContinuousColumns');
+
+                    inputContinuousColumns.find('option').remove();
+                    inputCategorialColumns.find('option').remove();
+                    outContinuousColumns.find('option').remove();
 
                     $.each(cols, function (i, item) {
-                        $('#inputContinuousColumns').append($('<option>', {
+                        inputContinuousColumns.append($('<option>', {
                             value: i,
                             text: item
                         }));
-                        $('#inputCategorialColumns').append($('<option>', {
+                        inputCategorialColumns.append($('<option>', {
                             value: i,
                             text: item
                         }));
-                        $('#outputContinuousColumns').append($('<option>', {
+                        outContinuousColumns.append($('<option>', {
                             value: i,
                             text: item
                         }));
                     });
 
-                    $('#inputContinuousColumns').selectpicker('refresh');
-                    $('#inputCategorialColumns').selectpicker('refresh');
-                    $('#outputContinuousColumns').selectpicker('refresh');
+                    inputContinuousColumns.selectpicker('refresh');
+                    inputCategorialColumns.selectpicker('refresh');
+                    outContinuousColumns.selectpicker('refresh');
 
                     $("#jqGrid").jqGrid({
                         data: responseData.rows,
@@ -69,7 +73,7 @@ $(function () {
                         pager: '#jqGridPager',
                         cellsubmit: 'clientArray',
                         editurl: 'clientArray',
-                        ondblClickRow: function (rowid, iRow, iCol, e) {
+                        ondblClickRow: function (rowid, iRow, iCol) {
                             var colName = cols[iCol];
                             $("#columnName").val(colName);
                             $("#columnInitName").val(colName);
@@ -84,7 +88,7 @@ $(function () {
                         url: '/row/edit',
                         closeAfterEdit: true,
                         closeOnEscape: true,
-                        beforeSubmit: function (postdata, formid) {
+                        beforeSubmit: function (postdata) {
                             postdata['___#$RowId$#___'] = postdata['jqGrid_id'];
                             delete postdata['jqGrid_id'];
                             return [true, ""];
@@ -100,7 +104,7 @@ $(function () {
                         position: "last",
                         closeAfterAdd: true,
                         closeOnEscape: true,
-                        afterSubmit: function (response, postdata) {
+                        afterSubmit: function (response) {
                             return [true, "", $.parseJSON(response.responseText)];
                         }
                     }, {
@@ -139,6 +143,29 @@ $(function () {
         });
     });
 
+    $('#trainUserModelBtn').on('click', function (event) {
+        event.preventDefault();
+        if (!validateUserModel()) {
+            return;
+        }
+        //TODO hide errors
+
+        var data = loadUserModelData();
+        Pace.track(function () {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                url: '/train_user_model',
+                success: function (data) {
+                    $('#user-model-module').hide();
+                    $('#trained-models-module').show();
+                    showTrainedInfo(data);
+                }
+            });
+        });
+    });
+
     function showTrainedInfo(info) {
         var formatStatus = function (cellValue) {
             if (cellValue === true) return "Многослойный перцептрон";
@@ -155,7 +182,7 @@ $(function () {
             {label: 'Название модели', name: 'name', editable: false},
             {label: 'Ошибка', name: 'error', editable: false},
             {label: 'Функция Активации Скр. слой', name: 'hiddenActivationFunction', editable: false},
-            {label: 'Функция Активации Вых. слой', name: 'outActivationFunction', editable: false},
+            {label: 'Функция Активации Вых. слой', name: 'outActivationFunction', editable: false}
         ];
 
         $("#trainedModelsInfoJqGrid").jqGrid({
@@ -181,9 +208,10 @@ $(function () {
         var selectedModels = [];
         var nonSelectedModels = [];
 
-        var data = $("#trainedModelsInfoJqGrid").jqGrid('getGridParam', 'data');
+        var grid = $("#trainedModelsInfoJqGrid");
+        var data = grid.jqGrid('getGridParam', 'data');
         for (var i = 0; i < data.length; i++) {
-            var save = $('#trainedModelsInfoJqGrid').getCell(data[i].id, 1);
+            var save = grid.getCell(data[i].id, 1);
             if (save === 'True') {
                 selectedModels.push(data[i].id);
             } else {
@@ -198,7 +226,7 @@ $(function () {
                 selectedModels: selectedModels,
                 nonSelectedModels: nonSelectedModels
             }),
-            success: function (data) {
+            success: function () {
                 window.location.replace("/network_models");
             }
         });
@@ -225,9 +253,13 @@ $(function () {
         });
     });
 
-    $('.alert .close').on('click', function (e) {
+    $('.alert .close').on('click', function () {
         $(this).parent().hide();
     });
+
+    function validateUserModel() {
+        return true;
+    }
 
     function validate() {
         var msg = $("#autoModeErrorMessage");
@@ -302,6 +334,40 @@ $(function () {
 
     function hideErrors() {
         $("#autoModeErrorBlock").hide();
+    }
+
+    function loadUserModelData() {
+        var data = {};
+        var isMlpModel = $("#mlpRadio").is(':checked');
+        data['isMLPModel'] = isMlpModel;
+        if (isMlpModel) {
+            data['numOfNeurons'] = $("#mlpNumOfNeurons").val();
+            data['hiddenActivationFunction'] = $('#mlpHiddenFuncSelect').find('option:selected').val();
+            data['outActivationFunction'] = $('#mlpOutFuncSelect').find('option:selected').val();
+        } else {
+            data['numOfNeurons'] = $("#rbfNumOfNeurons").val();
+        }
+
+        var inputContinuousColumnIndexes = [];
+        $('#inputContinuousColumns').find('option:selected').each(function (i, item) {
+            inputContinuousColumnIndexes.push(item.value);
+        });
+        data['inputContinuousColumnIndexes'] = inputContinuousColumnIndexes;
+
+
+        var inputCategorialColumnIndexes = [];
+        $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
+            inputCategorialColumnIndexes.push(item.value);
+        });
+        data['inputCategorialColumnIndexes'] = inputCategorialColumnIndexes;
+
+
+        var outputContinuousColumnIndexes = [];
+        $('#outputContinuousColumns').find('option:selected').each(function (i, item) {
+            outputContinuousColumnIndexes.push(item.value);
+        });
+        data['outputContinuousColumnIndexes'] = outputContinuousColumnIndexes;
+        return data;
     }
 
     function loadData() {
