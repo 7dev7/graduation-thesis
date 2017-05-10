@@ -1,6 +1,7 @@
 package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
@@ -58,5 +59,15 @@ public class SVDTrainingService implements RBFTrainingService {
             models.add(model);
         }
         return models;
+    }
+
+    @Override
+    public NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
+        int inputNeurons = trainInfoDTO.getInputContinuousColumnIndexes().size();
+        int hiddenNurons = trainInfoDTO.getNumOfNeurons();
+        int outNeurons = trainInfoDTO.getOutputContinuousColumnIndexes().size();
+
+        RadialBasisFunctionsNetwork rbfNetwork = new RadialBasisFunctionsNetwork(inputNeurons, hiddenNurons, outNeurons);
+        return train(rbfNetwork, trainingDataService.buildDataset(spreadsheetData, trainInfoDTO));
     }
 }

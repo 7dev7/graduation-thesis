@@ -1,6 +1,7 @@
 package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.NormalizationService;
@@ -29,6 +30,17 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         double[][] inputs = buildData(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes());
         double[][] outputs = buildData(spreadsheetData, trainInfoDTO.getOutputContinuousColumnIndexes());
 
+        //TODO add normalization check needed
+        double[][] normIn = normalizationService.normalizeData(inputs, getMaxValue(inputs), getMinValue(inputs));
+        double[][] normOut = normalizationService.normalizeData(outputs, getMaxValue(outputs), getMinValue(outputs));
+
+        return new BasicNeuralDataSet(normIn, normOut);
+    }
+
+    @Override
+    public MLDataSet buildDataset(SpreadsheetData spreadsheetData, UserModelTrainInfoDTO trainInfoDTO) throws TrainingException {
+        double[][] inputs = buildData(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes());
+        double[][] outputs = buildData(spreadsheetData, trainInfoDTO.getOutputContinuousColumnIndexes());
         //TODO add normalization check needed
         double[][] normIn = normalizationService.normalizeData(inputs, getMaxValue(inputs), getMinValue(inputs));
         double[][] normOut = normalizationService.normalizeData(outputs, getMaxValue(outputs), getMinValue(outputs));

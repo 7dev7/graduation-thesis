@@ -1,6 +1,7 @@
 package com.dev.service.train;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
@@ -13,4 +14,6 @@ public interface PerceptronTrainingService {
     NetworkModel train(Perceptron perceptron, MLDataSet dataSet);
 
     List<NetworkModel> train(AutoModeTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException;
+
+    NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException;
 }

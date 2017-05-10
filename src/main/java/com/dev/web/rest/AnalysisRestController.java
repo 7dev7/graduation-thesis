@@ -13,6 +13,7 @@ import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
 import com.dev.service.exception.TrainingException;
 import com.dev.service.train.AutoModeTrainService;
+import com.dev.service.train.UserModelTrainService;
 import com.dev.service.validator.FileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,17 +32,20 @@ import java.util.stream.Collectors;
 public class AnalysisRestController {
     private static final String SUCCESSFUL_CODE = "OK";
     private final AutoModeTrainService autoModeTrainService;
+    private final UserModelTrainService userModelTrainService;
     private final SpreadsheetService spreadsheetService;
     private final NetworkModelService networkModelService;
     private final FileValidator fileValidator;
 
     @Autowired
     public AnalysisRestController(FileValidator fileValidator, SpreadsheetService spreadsheetService,
-                                  AutoModeTrainService autoModeTrainService, NetworkModelService networkModelService) {
+                                  AutoModeTrainService autoModeTrainService, NetworkModelService networkModelService,
+                                  UserModelTrainService userModelTrainService) {
         this.fileValidator = fileValidator;
         this.spreadsheetService = spreadsheetService;
         this.autoModeTrainService = autoModeTrainService;
         this.networkModelService = networkModelService;
+        this.userModelTrainService = userModelTrainService;
     }
 
     @PostMapping(value = "/analysis", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -90,13 +94,18 @@ public class AnalysisRestController {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
 
-        List<NetworkModel> networkModels = Collections.singletonList(new NetworkModel());
-        //TODO train
-        List<NetworkModelDTO> modelDTOS = networkModels.stream().map(NetworkModelDTOConverter::convert).collect(Collectors.toCollection(ArrayList::new));
+        NetworkModel networkModel = null;
+        try {
+            networkModel = userModelTrainService.train(userModelTrainInfo, spreadsheet.getSpreadsheetData());
+        } catch (TrainingException e) {
+            e.printStackTrace();
+        }
+        networkModelService.save(networkModel);
+        NetworkModelDTO networkModelDTO = NetworkModelDTOConverter.convert(networkModel);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(modelDTOS);
+                .body(Collections.singletonList(networkModelDTO));
     }
 
     private List<NetworkModel> shrink(List<NetworkModel> networkModels, AutoModeTrainInfoDTO trainInfoDTO) {

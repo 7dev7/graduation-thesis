@@ -2,6 +2,7 @@ package com.dev.service.train.impl;
 
 import com.dev.domain.model.ActivationFunction;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
@@ -69,5 +70,17 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
             }
         }
         return models;
+    }
+
+    @Override
+    public NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
+        int inputNeurons = trainInfoDTO.getInputContinuousColumnIndexes().size();
+        int hiddenNeurons = trainInfoDTO.getNumOfNeurons();
+        int outNeurons = trainInfoDTO.getOutputContinuousColumnIndexes().size();
+        ActivationFunction hiddenActivationFunction = trainInfoDTO.getHiddenActivationFunction();
+        ActivationFunction outActivationFunction = trainInfoDTO.getOutActivationFunction();
+
+        Perceptron perceptron = new Perceptron(inputNeurons, hiddenNeurons, outNeurons, hiddenActivationFunction, outActivationFunction);
+        return train(perceptron, trainingDataService.buildDataset(spreadsheetData, trainInfoDTO));
     }
 }
