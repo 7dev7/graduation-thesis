@@ -84,7 +84,7 @@ public class TrainingDataServiceImpl implements TrainingDataService {
             for (int j = 0; j < data.length; j++) {
                 min = (min > data[j][i]) ? data[j][i] : min;
             }
-            mins.add(min);
+            mins.add(min * 1.25);
         }
         return mins;
     }
@@ -96,7 +96,7 @@ public class TrainingDataServiceImpl implements TrainingDataService {
             for (int j = 0; j < data.length; j++) {
                 max = (max < data[j][i]) ? data[j][i] : max;
             }
-            maxs.add(max);
+            maxs.add(max * 1.25);
         }
         return maxs;
     }

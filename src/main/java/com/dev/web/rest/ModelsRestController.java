@@ -2,6 +2,7 @@ package com.dev.web.rest;
 
 import com.dev.domain.converter.NetworkModelDTOConverter;
 import com.dev.domain.model.DTO.ComputeModelDataDTO;
+import com.dev.domain.model.DTO.ComputeResultDTO;
 import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.DTO.SaveTrainedModelsDTO;
 import com.dev.domain.model.NetworkModel;
@@ -78,9 +79,9 @@ public class ModelsRestController {
 
     @PostMapping(value = "/model/compute", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity compute(@RequestBody ComputeModelDataDTO computeModelDataDTO) {
-        networkModelService.compute(computeModelDataDTO);
+        ComputeResultDTO result = networkModelService.compute(computeModelDataDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(null);
+                .body(result);
     }
 }

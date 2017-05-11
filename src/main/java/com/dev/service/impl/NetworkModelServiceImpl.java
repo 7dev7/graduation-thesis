@@ -2,16 +2,21 @@ package com.dev.service.impl;
 
 import com.dev.domain.dao.NetworkModelRepository;
 import com.dev.domain.model.DTO.ComputeModelDataDTO;
+import com.dev.domain.model.DTO.ComputeResultDTO;
 import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.Perceptron;
+import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
 import com.dev.service.DoctorService;
 import com.dev.service.NetworkModelService;
 import com.dev.service.NormalizationService;
 import org.apache.commons.lang3.ArrayUtils;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.basic.BasicMLData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -60,7 +65,7 @@ public class NetworkModelServiceImpl implements NetworkModelService {
     }
 
     @Override
-    public void compute(ComputeModelDataDTO computeModelDataDTO) {
+    public ComputeResultDTO compute(ComputeModelDataDTO computeModelDataDTO) {
         NetworkModel model = findById(computeModelDataDTO.getModelId());
         double[] in = ArrayUtils.toPrimitive(computeModelDataDTO.getInputs().toArray(new Double[computeModelDataDTO.getInputs().size()]));
 
@@ -86,11 +91,41 @@ public class NetworkModelServiceImpl implements NetworkModelService {
                 double v = normalizationService.deNormalizeValue(out[i], max, min);
                 normOut[i] = v;
             }
-
-            perceptron.getClass();
+            List<Double> values = Arrays.asList(ArrayUtils.toObject(normOut));
+            ComputeResultDTO resultDTO = new ComputeResultDTO();
+            resultDTO.setValues(values);
+            resultDTO.setInputValues(computeModelDataDTO.getInputs());
+            resultDTO.setModelId(model.getId());
+            resultDTO.setModelName(model.getName());
+            return resultDTO;
 
         } else {
+            RadialBasisFunctionsNetwork rbfNetwork = model.getRbfNetwork();
+            double[] normIn = new double[in.length];
+            for (int i = 0; i < in.length; i++) {
+                Double min = rbfNetwork.getMinIns().get(i);
+                Double max = rbfNetwork.getMaxIns().get(i);
+                double v = normalizationService.normalizeData(in[i], max, min);
+                normIn[i] = v;
+            }
 
+            MLData compute = rbfNetwork.getNetwork().compute(new BasicMLData(normIn));
+            double[] out = compute.getData();
+
+            double[] normOut = new double[out.length];
+            for (int i = 0; i < out.length; i++) {
+                Double min = rbfNetwork.getMinOuts().get(i);
+                Double max = rbfNetwork.getMaxOuts().get(i);
+                double v = normalizationService.deNormalizeValue(out[i], max, min);
+                normOut[i] = v;
+            }
+            List<Double> values = Arrays.asList(ArrayUtils.toObject(normOut));
+            ComputeResultDTO resultDTO = new ComputeResultDTO();
+            resultDTO.setValues(values);
+            resultDTO.setInputValues(computeModelDataDTO.getInputs());
+            resultDTO.setModelId(model.getId());
+            resultDTO.setModelName(model.getName());
+            return resultDTO;
         }
     }
 }

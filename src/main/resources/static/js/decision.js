@@ -121,7 +121,20 @@ $(function () {
                 modelId: modelId
             }),
             success: function (data) {
-                alert(data);
+                $('#choose-model-module').hide();
+
+                $('#resultModelName').attr('href', '/model?id=' + data.modelId);
+                $('#resultModelName').html(data.modelName);
+
+                for (var i = 0; i < data.inputValues.length; i++) {
+                    $('#inputValues').append("<li class='list-group-item'>" + data.inputValues[i] + "</li>");
+                }
+
+                for (var i = 0; i < data.values.length; i++) {
+                    $('#outputValues').append("<li class='list-group-item'>" + data.values[i] + "</li>");
+                }
+
+                $('#show-result-module').show();
             }
         });
     }
