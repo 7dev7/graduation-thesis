@@ -45,7 +45,7 @@
                         </form>
                     </div>
                     <div class="panel-body">
-                        <button class="btn btn-primary" id="createTableBtn">Создать таблицу</button>
+                        <button class="btn btn-primary pull-right" id="createTableBtn">Создать таблицу</button>
                     </div>
                 </div>
             </div>
@@ -91,14 +91,14 @@
                                        placeholder="Название столбца"
                                        required="required"/>
                             </div>
-                            <div class="form-group">
-                                <label for="addColumnTypeSelect" class="control-label">Тип столбца:</label>
-                                <select class="selectpicker" data-live-search="true" id="addColumnTypeSelect">
-                                    <option value="0">Непрерывная</option>
-                                    <option value="1">Порядковая</option>
-                                    <option value="2">Номинальная</option>
-                                </select>
-                            </div>
+                            <!--<div class="form-group">-->
+                            <!--<label for="addColumnTypeSelect" class="control-label">Тип столбца:</label>-->
+                            <!--<select class="selectpicker" data-live-search="true" id="addColumnTypeSelect">-->
+                            <!--<option value="0">Непрерывная</option>-->
+                            <!--<option value="1">Порядковая</option>-->
+                            <!--<option value="2">Номинальная</option>-->
+                            <!--</select>-->
+                            <!--</div>-->
                             <button type="submit" class="btn btn-default btn-success btn-block"
                                     id="createColumnBtn"><span
                                     class="glyphicon glyphicon-off"></span> Сохранить
@@ -130,14 +130,14 @@
                                        placeholder="Название столбца"
                                        required="required"/>
                             </div>
-                            <div class="form-group">
-                                <label for="editChooseTypeSelect" class="control-label">Тип столбца:</label>
-                                <select class="selectpicker" data-live-search="true" id="editChooseTypeSelect">
-                                    <option value="0">Непрерывная</option>
-                                    <option value="1">Порядковая</option>
-                                    <option value="2">Номинальная</option>
-                                </select>
-                            </div>
+                            <!--<div class="form-group">-->
+                            <!--<label for="editChooseTypeSelect" class="control-label">Тип столбца:</label>-->
+                            <!--<select class="selectpicker" data-live-search="true" id="editChooseTypeSelect">-->
+                            <!--<option value="0">Непрерывная</option>-->
+                            <!--<option value="1">Порядковая</option>-->
+                            <!--<option value="2">Номинальная</option>-->
+                            <!--</select>-->
+                            <!--</div>-->
                             <button type="submit" class="btn btn-default btn-success btn-block" id="editColumnBtn"><span
                                     class="glyphicon glyphicon-off"></span> Сохранить
                             </button>
@@ -178,14 +178,14 @@
                                 <input type="text" class="form-control" id="columnName" placeholder="Название столбца"
                                        required="required"/>
                             </div>
-                            <div class="form-group">
-                                <label for="chooseTypeSelect" class="control-label">Тип столбца:</label>
-                                <select class="selectpicker" data-live-search="true" id="chooseTypeSelect">
-                                    <option value="0">Непрерывная</option>
-                                    <option value="1">Порядковая</option>
-                                    <option value="2">Номинальная</option>
-                                </select>
-                            </div>
+                            <!--<div class="form-group">-->
+                            <!--<label for="chooseTypeSelect" class="control-label">Тип столбца:</label>-->
+                            <!--<select class="selectpicker" data-live-search="true" id="chooseTypeSelect">-->
+                            <!--<option value="0">Непрерывная</option>-->
+                            <!--<option value="1">Порядковая</option>-->
+                            <!--<option value="2">Номинальная</option>-->
+                            <!--</select>-->
+                            <!--</div>-->
                             <button type="submit" class="btn btn-default btn-success btn-block" id="saveColumnBtn"><span
                                     class="glyphicon glyphicon-off"></span> Сохранить
                             </button>
@@ -209,7 +209,7 @@
                         <a href="#" class="close" aria-label="close">&times;</a>
                         <span id="inOutErrorMessage"></span>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="col-md-6 col-md-offset-3">
                             <label for="inputContinuousColumns" class="control-label">Входные непрерывные
                                 значения: </label>
@@ -219,17 +219,17 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="col-md-6 col-md-offset-3">
-                            <label for="inputCategorialColumns" class="control-label">Входные категориальные
-                                значения: </label>
-                            <select class="selectpicker" multiple="multiple" data-live-search="true"
-                                    data-done-button="true" data-selected-text-format="count > 3"
-                                    id="inputCategorialColumns">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
+                    <!--<div class="col-md-4">-->
+                    <!--<div class="col-md-6 col-md-offset-3">-->
+                    <!--<label for="inputCategorialColumns" class="control-label">Входные категориальные-->
+                    <!--значения: </label>-->
+                    <!--<select class="selectpicker" multiple="multiple" data-live-search="true"-->
+                    <!--data-done-button="true" data-selected-text-format="count > 3"-->
+                    <!--id="inputCategorialColumns">-->
+                    <!--</select>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <div class="col-md-6">
                         <div class="col-md-6 col-md-offset-3">
                             <label for="outputContinuousColumns" class="control-label">Выходные непрерывные
                                 значения: </label>

@@ -131,10 +131,10 @@ function isValidState() {
         inputContinuousColumnIndexes.push(item.value);
     });
 
-    var inputCategorialColumnIndexes = [];
-    $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
-        inputCategorialColumnIndexes.push(item.value);
-    });
+    // var inputCategorialColumnIndexes = [];
+    // $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
+    //     inputCategorialColumnIndexes.push(item.value);
+    // });
 
     var outputContinuousColumnIndexes = [];
     $('#outputContinuousColumns').find('option:selected').each(function (i, item) {
@@ -144,23 +144,23 @@ function isValidState() {
     var msg = $("#inOutErrorMessage");
     var errorBlock = $("#inOutErrorBlock");
 
-    var intersect1 = intersection(inputContinuousColumnIndexes, inputCategorialColumnIndexes);
-    if (intersect1.length > 0) {
-        msg.html("Одинаковый признак во входных непрерывных и категориальных значениях");
-        errorBlock.show();
-        return false;
-    }
-
-    var intersect2 = intersection(inputCategorialColumnIndexes, outputContinuousColumnIndexes);
-    if (intersect2.length > 0) {
-        msg.html("Одинаковый признак во входных категориальных и выходных значениях");
-        errorBlock.show();
-        return false;
-    }
+    // var intersect1 = intersection(inputContinuousColumnIndexes, inputCategorialColumnIndexes);
+    // if (intersect1.length > 0) {
+    //     msg.html("Одинаковый признак во входных непрерывных и категориальных значениях");
+    //     errorBlock.show();
+    //     return false;
+    // }
+    //
+    // var intersect2 = intersection(inputCategorialColumnIndexes, outputContinuousColumnIndexes);
+    // if (intersect2.length > 0) {
+    //     msg.html("Одинаковый признак во входных категориальных и выходных значениях");
+    //     errorBlock.show();
+    //     return false;
+    // }
 
     var intersect3 = intersection(inputContinuousColumnIndexes, outputContinuousColumnIndexes);
     if (intersect3.length > 0) {
-        msg.html("Одинаковый признак во входных непрерывных и выходных значениях");
+        msg.html("Одинаковый признак во входных и выходных значениях");
         errorBlock.show();
         return false;
     }

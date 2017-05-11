@@ -7,7 +7,6 @@ import com.dev.service.validator.DoctorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AuthController {
-
     private final DoctorService doctorService;
     private final DoctorValidator doctorValidator;
     private final SecurityService securityService;
@@ -47,9 +45,10 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public String registration(@ModelAttribute("doctorForm") Doctor doctorForm, BindingResult bindingResult) {
-        doctorValidator.validate(doctorForm, bindingResult);
-        if (bindingResult.hasErrors()) {
+    public String registration(@ModelAttribute("doctorForm") Doctor doctorForm, Model model) {
+        String msg = doctorValidator.validate(doctorForm);
+        if (!DoctorValidator.SUCCESSFUL_CODE.equalsIgnoreCase(msg)) {
+            model.addAttribute("error", msg);
             return "registration";
         }
         doctorService.save(doctorForm);

@@ -38,7 +38,8 @@ $(function () {
         event.preventDefault();
 
         var columnName = $("#addColumnName").val();
-        var columnType = $('#addColumnTypeSelect').find('option:selected').val();
+        //TODO implement it
+        // var columnType = $('#addColumnTypeSelect').find('option:selected').val();
 
         $("#addColumnModal").modal('hide');
 
@@ -47,7 +48,7 @@ $(function () {
                 type: "POST",
                 data: {
                     columnName: columnName,
-                    columnType: columnType
+                    columnType: 0
                 },
                 url: '/column/add',
                 success: function (data) {
@@ -71,7 +72,7 @@ $(function () {
                 }
 
                 $('#inputContinuousColumns option').remove();
-                $('#inputCategorialColumns option').remove();
+                // $('#inputCategorialColumns option').remove();
                 $('#outputContinuousColumns option').remove();
 
                 $.each(cols, function (i, item) {
@@ -79,10 +80,10 @@ $(function () {
                         value: i,
                         text: item
                     }));
-                    $('#inputCategorialColumns').append($('<option>', {
-                        value: i,
-                        text: item
-                    }));
+                    // $('#inputCategorialColumns').append($('<option>', {
+                    //     value: i,
+                    //     text: item
+                    // }));
                     $('#outputContinuousColumns').append($('<option>', {
                         value: i,
                         text: item
@@ -90,7 +91,7 @@ $(function () {
                 });
 
                 $('#inputContinuousColumns').selectpicker('refresh');
-                $('#inputCategorialColumns').selectpicker('refresh');
+                // $('#inputCategorialColumns').selectpicker('refresh');
                 $('#outputContinuousColumns').selectpicker('refresh');
 
                 $("#customTableJQGrid").jqGrid({
@@ -115,9 +116,9 @@ $(function () {
                         $("#editColumnName").val(colName);
                         $("#editInitColumnName").val(colName);
                         $("#editColumnId").val(iCol);
-                        var template = '[value=' + colTypes[iCol] + ']';
-                        $("#editChooseTypeSelect").find(template).attr("selected", "selected");
-                        $('.selectpicker').selectpicker('refresh');
+                        // var template = '[value=' + colTypes[iCol] + ']';
+                        // $("#editChooseTypeSelect").find(template).attr("selected", "selected");
+                        // $('.selectpicker').selectpicker('refresh');
                         $("#editColumnModal").modal();
                     }
                 }).navGrid('#customTableJQGridPager', {}, {
@@ -177,7 +178,7 @@ $(function () {
         var columnName = $("#editColumnName").val();
         var columnInitName = $("#editInitColumnName").val();
         var columnId = $("#editColumnId").val();
-        var columnType = $('#editChooseTypeSelect').find('option:selected').val();
+        // var columnType = $('#editChooseTypeSelect').find('option:selected').val();
 
         $("#customTableJQGrid").jqGrid('setLabel', columnId, columnName);
         $("#editColumnModal").modal('hide');
@@ -186,7 +187,7 @@ $(function () {
             data: {
                 columnId: columnId,
                 columnName: columnName,
-                columnType: columnType,
+                columnType: 0,
                 initName: columnInitName
             },
             url: '/column/update',

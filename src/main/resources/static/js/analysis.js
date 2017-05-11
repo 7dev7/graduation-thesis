@@ -30,11 +30,11 @@ $(function () {
                     }
 
                     var inputContinuousColumns = $('#inputContinuousColumns');
-                    var inputCategorialColumns = $('#inputCategorialColumns');
+                    // var inputCategorialColumns = $('#inputCategorialColumns');
                     var outContinuousColumns = $('#outputContinuousColumns');
 
                     inputContinuousColumns.find('option').remove();
-                    inputCategorialColumns.find('option').remove();
+                    // inputCategorialColumns.find('option').remove();
                     outContinuousColumns.find('option').remove();
 
                     $.each(cols, function (i, item) {
@@ -42,10 +42,10 @@ $(function () {
                             value: i,
                             text: item
                         }));
-                        inputCategorialColumns.append($('<option>', {
-                            value: i,
-                            text: item
-                        }));
+                        // inputCategorialColumns.append($('<option>', {
+                        //     value: i,
+                        //     text: item
+                        // }));
                         outContinuousColumns.append($('<option>', {
                             value: i,
                             text: item
@@ -53,7 +53,7 @@ $(function () {
                     });
 
                     inputContinuousColumns.selectpicker('refresh');
-                    inputCategorialColumns.selectpicker('refresh');
+                    // inputCategorialColumns.selectpicker('refresh');
                     outContinuousColumns.selectpicker('refresh');
 
                     $("#jqGrid").jqGrid({
@@ -78,9 +78,9 @@ $(function () {
                             $("#columnName").val(colName);
                             $("#columnInitName").val(colName);
                             $("#columnId").val(iCol);
-                            var template = '[value=' + colTypes[iCol] + ']';
-                            $("#chooseTypeSelect").find(template).attr("selected", "selected");
-                            $('.selectpicker').selectpicker('refresh');
+                            // var template = '[value=' + colTypes[iCol] + ']';
+                            // $("#chooseTypeSelect").find(template).attr("selected", "selected");
+                            // $('.selectpicker').selectpicker('refresh');
                             $("#myModal").modal();
                         }
                     }).navGrid('#jqGridPager', {}, {
@@ -237,7 +237,7 @@ $(function () {
         var columnName = $("#columnName").val();
         var columnInitName = $("#columnInitName").val();
         var columnId = $("#columnId").val();
-        var columnType = $('#chooseTypeSelect').find('option:selected').val();
+        // var columnType = $('#chooseTypeSelect').find('option:selected').val();
 
         $("#jqGrid").jqGrid('setLabel', columnId, columnName);
         $("#myModal").modal('hide');
@@ -246,7 +246,7 @@ $(function () {
             data: {
                 columnId: columnId,
                 columnName: columnName,
-                columnType: columnType,
+                columnType: 0,
                 initName: columnInitName
             },
             url: '/column/update'
@@ -258,6 +258,24 @@ $(function () {
     });
 
     function validateUserModel() {
+        var rbfNum = $('#rbfNumOfNeurons');
+        var mlpNum = $('#mlpNumOfNeurons');
+
+        var block = $('#userModelErrorBlock');
+        var msg = $('#userModelErrorMessage');
+
+        if (rbfNum.val() !== "" && parse(rbfNum) < 1) {
+            msg.html('Количество нейронов на скрытом слое для сети радиальных базисных функций должно быть больше 0');
+            block.show();
+            return false;
+        }
+
+        if (mlpNum.val() !== "" && parse(mlpNum) < 1) {
+            msg.html('Количество нейронов на скрытом слое для многослойного перцептрона должно быть больше 0');
+            block.show();
+            return false;
+        }
+
         return true;
     }
 
@@ -379,11 +397,11 @@ $(function () {
         data['inputContinuousColumnIndexes'] = inputContinuousColumnIndexes;
 
 
-        var inputCategorialColumnIndexes = [];
-        $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
-            inputCategorialColumnIndexes.push(item.value);
-        });
-        data['inputCategorialColumnIndexes'] = inputCategorialColumnIndexes;
+        // var inputCategorialColumnIndexes = [];
+        // $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
+        //     inputCategorialColumnIndexes.push(item.value);
+        // });
+        // data['inputCategorialColumnIndexes'] = inputCategorialColumnIndexes;
 
 
         var outputContinuousColumnIndexes = [];
@@ -412,11 +430,11 @@ $(function () {
         data['inputContinuousColumnIndexes'] = inputContinuousColumnIndexes;
 
 
-        var inputCategorialColumnIndexes = [];
-        $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
-            inputCategorialColumnIndexes.push(item.value);
-        });
-        data['inputCategorialColumnIndexes'] = inputCategorialColumnIndexes;
+        // var inputCategorialColumnIndexes = [];
+        // $('#inputCategorialColumns').find('option:selected').each(function (i, item) {
+        //     inputCategorialColumnIndexes.push(item.value);
+        // });
+        // data['inputCategorialColumnIndexes'] = inputCategorialColumnIndexes;
 
 
         var outputContinuousColumnIndexes = [];

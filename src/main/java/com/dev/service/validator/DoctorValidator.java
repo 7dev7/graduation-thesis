@@ -4,13 +4,10 @@ import com.dev.domain.model.doctor.Doctor;
 import com.dev.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 @Component
-public class DoctorValidator implements Validator {
-
+public class DoctorValidator {
+    public static final String SUCCESSFUL_CODE = "OK";
     private final DoctorService doctorService;
 
     @Autowired
@@ -18,30 +15,21 @@ public class DoctorValidator implements Validator {
         this.doctorService = doctorService;
     }
 
-    @Override
-    public boolean supports(Class<?> aClass) {
-        return Doctor.class.equals(aClass);
-    }
-
-    @Override
-    public void validate(Object object, Errors errors) {
-        Doctor doctor = (Doctor) object;
-
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "login", "NotEmpty");
+    public String validate(Doctor doctor) {
+        String msg = SUCCESSFUL_CODE;
         if (doctor.getLogin().length() < 4 || doctor.getLogin().length() > 32) {
-            errors.rejectValue("login", "Size");
+            msg = "Длина логина должна быть от 4 до 32 символов";
         }
         if (doctorService.findByLogin(doctor.getLogin()) != null) {
-            errors.rejectValue("login", "Duplicate");
+            msg = "Пользователь с таким логином уже существует";
         }
-        //TODO uncomment it
-//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
-//        if (doctor.getPassword().length() < 6 || doctor.getPassword().length() > 32) {
-//            errors.rejectValue("password", "Size");
-//        }
-
+        if (doctor.getPassword().length() < 6 || doctor.getPassword().length() > 32) {
+            msg = "Длина пароля должна быть от 6 до 32 символов";
+        }
         if (!doctor.getPasswordConfirm().equals(doctor.getPassword())) {
-            errors.rejectValue("passwordConfirm", "Diff");
+            msg = "Подтверждение пароля не соответствует паролю";
         }
+
+        return msg;
     }
 }
