@@ -1,13 +1,13 @@
 package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.TrainDataInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.NormalizationService;
 import com.dev.service.exception.TrainingException;
 import com.dev.service.train.TrainingDataService;
-import org.encog.ml.data.MLDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,46 +26,79 @@ public class TrainingDataServiceImpl implements TrainingDataService {
     }
 
     @Override
-    public MLDataSet buildDataset(SpreadsheetData spreadsheetData, AutoModeTrainInfoDTO trainInfoDTO) throws TrainingException {
-        double[][] inputs = buildData(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes());
-        double[][] outputs = buildData(spreadsheetData, trainInfoDTO.getOutputContinuousColumnIndexes());
-
-        //TODO add normalization check needed
-        double[][] normIn = normalizationService.normalizeData(inputs, getMaxValue(inputs), getMinValue(inputs));
-        double[][] normOut = normalizationService.normalizeData(outputs, getMaxValue(outputs), getMinValue(outputs));
-
-        return new BasicNeuralDataSet(normIn, normOut);
+    public TrainDataInfoDTO buildDataset(SpreadsheetData spreadsheetData, AutoModeTrainInfoDTO trainInfoDTO) throws TrainingException {
+        return build(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes(), trainInfoDTO.getOutputContinuousColumnIndexes());
     }
 
     @Override
-    public MLDataSet buildDataset(SpreadsheetData spreadsheetData, UserModelTrainInfoDTO trainInfoDTO) throws TrainingException {
-        double[][] inputs = buildData(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes());
-        double[][] outputs = buildData(spreadsheetData, trainInfoDTO.getOutputContinuousColumnIndexes());
+    public TrainDataInfoDTO buildDataset(SpreadsheetData spreadsheetData, UserModelTrainInfoDTO trainInfoDTO) throws TrainingException {
+        return build(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes(), trainInfoDTO.getOutputContinuousColumnIndexes());
+    }
+
+    private TrainDataInfoDTO build(SpreadsheetData spreadsheetData, List<Integer> inputContinuousColumnsIndexes,
+                                   List<Integer> outputContinuousColumnsIndexes) throws TrainingException {
+        double[][] inputs = buildData(spreadsheetData, inputContinuousColumnsIndexes);
+        double[][] outputs = buildData(spreadsheetData, outputContinuousColumnsIndexes);
+
         //TODO add normalization check needed
-        double[][] normIn = normalizationService.normalizeData(inputs, getMaxValue(inputs), getMinValue(inputs));
-        double[][] normOut = normalizationService.normalizeData(outputs, getMaxValue(outputs), getMinValue(outputs));
 
-        return new BasicNeuralDataSet(normIn, normOut);
+        List<Double> minIn = getMinValues(inputs);
+        List<Double> maxIn = getMaxValues(inputs);
+        double[][] normIn = normalize(inputs, minIn, maxIn);
+
+
+        List<Double> minOut = getMinValues(outputs);
+        List<Double> maxOut = getMaxValues(outputs);
+        double[][] normOut = normalize(outputs, minOut, maxOut);
+
+        BasicNeuralDataSet mlDataPairs = new BasicNeuralDataSet(normIn, normOut);
+        TrainDataInfoDTO dataInfoDTO = new TrainDataInfoDTO();
+        dataInfoDTO.setMlDataSet(mlDataPairs);
+        dataInfoDTO.setMinIns(minIn);
+        dataInfoDTO.setMaxIns(maxIn);
+        dataInfoDTO.setMinOuts(minOut);
+        dataInfoDTO.setMaxOuts(maxOut);
+        return dataInfoDTO;
     }
 
-    private double getMinValue(double[][] data) {
-        double min = Double.MAX_VALUE;
-        for (double[] innerData : data) {
-            for (double val : innerData) {
-                min = (min > val) ? val : min;
+    private double[][] normalize(double[][] data, List<Double> minValues, List<Double> maxValues) {
+        double[][] normIn = new double[data.length][];
+
+        for (int i = 0; i < data.length; i++) {
+            double[] nArr = new double[data[i].length];
+            for (int j = 0; j < data[i].length; j++) {
+                double min = minValues.get(j);
+                double max = maxValues.get(j);
+                double normed = normalizationService.normalizeData(data[i][j], max, min);
+                nArr[j] = normed;
             }
+            normIn[i] = nArr;
         }
-        return min;
+        return normIn;
     }
 
-    private double getMaxValue(double[][] data) {
-        double max = Double.MIN_VALUE;
-        for (double[] innerData : data) {
-            for (double val : innerData) {
-                max = (max < val) ? val : max;
+    private List<Double> getMinValues(double[][] data) {
+        List<Double> mins = new ArrayList<>();
+        for (int i = 0; i < data[0].length; i++) {
+            double min = Double.MAX_VALUE;
+            for (int j = 0; j < data.length; j++) {
+                min = (min > data[j][i]) ? data[j][i] : min;
             }
+            mins.add(min);
         }
-        return max;
+        return mins;
+    }
+
+    private List<Double> getMaxValues(double[][] data) {
+        List<Double> maxs = new ArrayList<>();
+        for (int i = 0; i < data[0].length; i++) {
+            double max = Double.MIN_VALUE;
+            for (int j = 0; j < data.length; j++) {
+                max = (max < data[j][i]) ? data[j][i] : max;
+            }
+            maxs.add(max);
+        }
+        return maxs;
     }
 
     private double[][] buildData(SpreadsheetData spreadsheetData, List<Integer> columnIndexes) throws TrainingException {

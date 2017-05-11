@@ -1,6 +1,7 @@
 package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.TrainDataInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
@@ -56,7 +57,12 @@ public class SVDTrainingService implements RBFTrainingService {
         List<NetworkModel> models = new ArrayList<>();
         for (int i = minNumOfNeuron; i <= maxNumOfNeuron; i++) {
             RadialBasisFunctionsNetwork rbfNetwork = new RadialBasisFunctionsNetwork(inputNeurons, i, outNeurons);
-            NetworkModel model = train(rbfNetwork, trainingDataService.buildDataset(spreadsheetData, trainInfoDTO));
+            TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
+            rbfNetwork.setMinIns(dataInfoDTO.getMinIns());
+            rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
+            rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
+            rbfNetwork.setMaxOuts(dataInfoDTO.getMaxOuts());
+            NetworkModel model = train(rbfNetwork, dataInfoDTO.getMlDataSet());
             models.add(model);
         }
         return models;
@@ -69,6 +75,11 @@ public class SVDTrainingService implements RBFTrainingService {
         int outNeurons = trainInfoDTO.getOutputContinuousColumnIndexes().size();
 
         RadialBasisFunctionsNetwork rbfNetwork = new RadialBasisFunctionsNetwork(inputNeurons, hiddenNurons, outNeurons);
-        return train(rbfNetwork, trainingDataService.buildDataset(spreadsheetData, trainInfoDTO));
+        TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
+        rbfNetwork.setMinIns(dataInfoDTO.getMinIns());
+        rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
+        rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
+        rbfNetwork.setMaxOuts(dataInfoDTO.getMaxOuts());
+        return train(rbfNetwork, dataInfoDTO.getMlDataSet());
     }
 }

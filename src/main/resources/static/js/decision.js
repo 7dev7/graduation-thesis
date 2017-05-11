@@ -70,9 +70,13 @@ $(function () {
             var item = data[i];
 
             var parent = $("<div class='modelItem'></div>");
-            var name = $("<h3><a href='#'>" + item.name + "</a></h3>");
+            var name = $("<h3 value='" + item.id + "'><a href='#'>" + item.name + "</a></h3>");
 
-            // var d = $.datepicker.formatDate("M d, yy", new Date(item.dateOfCreation));
+            name.on('click', function (event) {
+                event.preventDefault();
+                var id = $(this).attr('value');
+                compute(id);
+            });
 
             var dt = new Date(item.dateOfCreation);
             var curr_date = dt.getDate();
@@ -104,6 +108,30 @@ $(function () {
             description.appendTo(parent);
             parent.appendTo(modelsListBlock);
         }
+    }
+
+    function compute(modelId) {
+        var inputData = loadInputData();
+        $.ajax({
+            url: '/model/compute',
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify({
+                inputs: inputData,
+                modelId: modelId
+            }),
+            success: function (data) {
+                alert(data);
+            }
+        });
+    }
+
+    function loadInputData() {
+        var values = [];
+        $('.inParam').each(function (i, item) {
+            values.push(item.value);
+        });
+        return values;
     }
 });
 

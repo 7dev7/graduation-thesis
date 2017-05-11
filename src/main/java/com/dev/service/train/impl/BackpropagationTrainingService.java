@@ -3,6 +3,7 @@ package com.dev.service.train.impl;
 import com.dev.domain.converter.ActivationFunctionFormatterConverter;
 import com.dev.domain.model.ActivationFunction;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
+import com.dev.domain.model.DTO.TrainDataInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.Perceptron;
@@ -68,7 +69,13 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
             for (ActivationFunction hiddenActivation : hiddenNeuronsFuncs) {
                 for (ActivationFunction outActivation : outNeuronsFuncs) {
                     Perceptron perceptron = new Perceptron(inputNeurons, i, outNeurons, hiddenActivation, outActivation);
-                    NetworkModel model = train(perceptron, trainingDataService.buildDataset(spreadsheetData, trainInfoDTO));
+                    TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
+                    perceptron.setMinIns(dataInfoDTO.getMinIns());
+                    perceptron.setMaxIns(dataInfoDTO.getMaxIns());
+
+                    perceptron.setMinOuts(dataInfoDTO.getMinOuts());
+                    perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
+                    NetworkModel model = train(perceptron, dataInfoDTO.getMlDataSet());
                     models.add(model);
                 }
             }
@@ -85,6 +92,12 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         ActivationFunction outActivationFunction = trainInfoDTO.getOutActivationFunction();
 
         Perceptron perceptron = new Perceptron(inputNeurons, hiddenNeurons, outNeurons, hiddenActivationFunction, outActivationFunction);
-        return train(perceptron, trainingDataService.buildDataset(spreadsheetData, trainInfoDTO));
+        TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
+        perceptron.setMinIns(dataInfoDTO.getMinIns());
+        perceptron.setMaxIns(dataInfoDTO.getMaxIns());
+
+        perceptron.setMinOuts(dataInfoDTO.getMinOuts());
+        perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
+        return train(perceptron, dataInfoDTO.getMlDataSet());
     }
 }

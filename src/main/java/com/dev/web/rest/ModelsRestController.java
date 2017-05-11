@@ -1,9 +1,12 @@
 package com.dev.web.rest;
 
 import com.dev.domain.converter.NetworkModelDTOConverter;
+import com.dev.domain.model.DTO.ComputeModelDataDTO;
 import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.DTO.SaveTrainedModelsDTO;
 import com.dev.domain.model.NetworkModel;
+import com.dev.domain.model.network.Perceptron;
+import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
 import com.dev.service.NetworkModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,14 +48,39 @@ public class ModelsRestController {
         Integer numOfInputs = Integer.parseInt((String) map.get("numOfInputs"));
 
         List<NetworkModel> modelsForCurrentDoctor = networkModelService.getModelsForCurrentDoctor();
-        List<NetworkModel> appropriateModels = modelsForCurrentDoctor.stream()
-                .filter(i -> numOfInputs.equals(i.getPerceptron().getInputNeurons()))
-                .collect(Collectors.toList());
+        List<NetworkModel> appropriateModels = getAppropriateModels(modelsForCurrentDoctor, numOfInputs);
 
         List<NetworkModelDTO> modelDTOS = appropriateModels.stream().map(NetworkModelDTOConverter::convert).collect(Collectors.toCollection(ArrayList::new));
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(modelDTOS);
+    }
+
+    private List<NetworkModel> getAppropriateModels(List<NetworkModel> modelsForCurrentDoctor, Integer numOfInputs) {
+        List<NetworkModel> models = new ArrayList<>();
+        for (NetworkModel model : modelsForCurrentDoctor) {
+            Perceptron perceptron = model.getPerceptron();
+            if (perceptron != null) {
+                if (perceptron.getInputNeurons() == numOfInputs) {
+                    models.add(model);
+                }
+            }
+            RadialBasisFunctionsNetwork rbfNetwork = model.getRbfNetwork();
+            if (rbfNetwork != null) {
+                if (rbfNetwork.getInputNeurons() == numOfInputs) {
+                    models.add(model);
+                }
+            }
+        }
+        return models;
+    }
+
+    @PostMapping(value = "/model/compute", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity compute(@RequestBody ComputeModelDataDTO computeModelDataDTO) {
+        networkModelService.compute(computeModelDataDTO);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(null);
     }
 }

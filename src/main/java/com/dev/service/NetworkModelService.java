@@ -1,5 +1,6 @@
 package com.dev.service;
 
+import com.dev.domain.model.DTO.ComputeModelDataDTO;
 import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.NetworkModel;
 
@@ -16,4 +17,6 @@ public interface NetworkModelService {
     void removeModelById(long id);
 
     NetworkModel findById(long id);
+
+    void compute(ComputeModelDataDTO computeModelDataDTO);
 }
