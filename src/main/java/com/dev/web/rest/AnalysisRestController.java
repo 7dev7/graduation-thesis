@@ -2,10 +2,7 @@ package com.dev.web.rest;
 
 import com.dev.domain.converter.NetworkModelDTOConverter;
 import com.dev.domain.converter.SpreadsheetDataDTOConverter;
-import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
-import com.dev.domain.model.DTO.NetworkModelDTO;
-import com.dev.domain.model.DTO.SpreadsheetDataDTO;
-import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
+import com.dev.domain.model.DTO.*;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.spreadsheet.*;
 import com.dev.service.NetworkModelService;
@@ -70,6 +67,18 @@ public class AnalysisRestController {
                 .body(dataDTO);
     }
 
+    @PostMapping(value = "/validate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity validate(@RequestBody ValidateInputsDTO validateInputsDTO) {
+        if (!spreadsheetService.validate(validateInputsDTO)) {
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("ERROR");
+        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(null);
+    }
+
     @PostMapping(value = "/train", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity train(@RequestBody AutoModeTrainInfoDTO trainInfoDTO) {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
@@ -112,7 +121,7 @@ public class AnalysisRestController {
         PriorityQueue<NetworkModel> queue = new PriorityQueue<>(trainInfoDTO.getNumOfSavedNetworks(), Comparator.comparingDouble(NetworkModel::getError));
         queue.addAll(networkModels);
         List<NetworkModel> result = new ArrayList<>();
-        for (int i = 0; i < trainInfoDTO.getNumOfSavedNetworks(); i++) {
+        for (int i = 0; i < trainInfoDTO.getNumOfSavedNetworks() && i < networkModels.size(); i++) {
             result.add(queue.poll());
         }
         return result;

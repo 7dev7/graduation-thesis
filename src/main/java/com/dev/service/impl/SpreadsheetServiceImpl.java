@@ -1,6 +1,7 @@
 package com.dev.service.impl;
 
 import com.dev.domain.dao.SpreadsheetRepository;
+import com.dev.domain.model.DTO.ValidateInputsDTO;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.domain.model.spreadsheet.*;
 import com.dev.service.DoctorService;
@@ -223,5 +224,36 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         data.getColumns().add(new SpreadsheetColumn(index, name, type));
 
         updateSpreadsheet(spreadsheet);
+    }
+
+    @Override
+    public boolean validate(ValidateInputsDTO validateInputsDTO) {
+        Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(this::createSpreadsheet);
+        SpreadsheetData data = spreadsheet.getSpreadsheetData();
+
+        List<Integer> columnIndexes = validateInputsDTO.getColumnIndexes();
+
+        for (Integer column : columnIndexes) {
+            SpreadsheetColumn spreadsheetColumn = data.getColumns().get(column);
+            List<SpreadsheetRow> rows = data.getRows();
+            for (SpreadsheetRow row : rows) {
+                Object o = row.getElements().get(spreadsheetColumn.getName());
+                try {
+                    if (o == null) {
+                        return false;
+                    } else if (o instanceof Integer) {
+                        double val = Double.valueOf((Integer) o);
+                    } else if (o instanceof Double) {
+                        double val = (Double) o;
+                    } else {
+                        double val = Double.parseDouble((String) o);
+                    }
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

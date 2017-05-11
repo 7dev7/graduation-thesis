@@ -8,6 +8,7 @@ import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.NormalizationService;
 import com.dev.service.exception.TrainingException;
 import com.dev.service.train.TrainingDataService;
+import org.encog.ml.data.folded.FoldedDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         List<Double> maxOut = getMaxValues(outputs);
         double[][] normOut = normalize(outputs, minOut, maxOut);
 
-        BasicNeuralDataSet mlDataPairs = new BasicNeuralDataSet(normIn, normOut);
+        FoldedDataSet mlDataPairs = new FoldedDataSet(new BasicNeuralDataSet(normIn, normOut));
         TrainDataInfoDTO dataInfoDTO = new TrainDataInfoDTO();
         dataInfoDTO.setMlDataSet(mlDataPairs);
         dataInfoDTO.setMinIns(minIn);

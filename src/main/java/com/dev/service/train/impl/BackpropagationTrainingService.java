@@ -13,6 +13,7 @@ import com.dev.service.train.PerceptronTrainingService;
 import com.dev.service.train.TrainingDataService;
 import org.apache.log4j.Logger;
 import org.encog.ml.data.MLDataSet;
+import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,8 +38,10 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         Backpropagation backpropagation = new Backpropagation(perceptron.getNetwork(), dataSet, 0.1, 0.1);
         LOGGER.info("--> Perceptron Train executed: " + perceptron);
 
+        CrossValidationKFold crossValidationKFold = new CrossValidationKFold(backpropagation, 4);
+
         for (int i = 0; i < NUM_OF_ITERATIONS; i++) {
-            backpropagation.iteration();
+            crossValidationKFold.iteration();
         }
         NetworkModel networkModel = new NetworkModel();
         networkModel.setError(backpropagation.getError());

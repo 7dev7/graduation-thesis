@@ -258,23 +258,23 @@ $(function () {
     });
 
     function validateUserModel() {
-        var rbfNum = $('#rbfNumOfNeurons');
-        var mlpNum = $('#mlpNumOfNeurons');
-
-        var block = $('#userModelErrorBlock');
-        var msg = $('#userModelErrorMessage');
-
-        if (rbfNum.val() !== "" && parse(rbfNum) < 1) {
-            msg.html('Количество нейронов на скрытом слое для сети радиальных базисных функций должно быть больше 0');
-            block.show();
-            return false;
-        }
-
-        if (mlpNum.val() !== "" && parse(mlpNum) < 1) {
-            msg.html('Количество нейронов на скрытом слое для многослойного перцептрона должно быть больше 0');
-            block.show();
-            return false;
-        }
+        // var rbfNum = $('#rbfNumOfNeurons');
+        // var mlpNum = $('#mlpNumOfNeurons');
+        //
+        // var block = $('#userModelErrorBlock');
+        // var msg = $('#userModelErrorMessage');
+        //
+        // if (rbfNum.val() !== "" && parseInt(rbfNum) < 1) {
+        //     msg.html('Количество нейронов на скрытом слое для сети радиальных базисных функций должно быть больше 0');
+        //     block.show();
+        //     return false;
+        // }
+        //
+        // if (mlpNum.val() !== "" && parseInt(mlpNum) < 1) {
+        //     msg.html('Количество нейронов на скрытом слое для многослойного перцептрона должно быть больше 0');
+        //     block.show();
+        //     return false;
+        // }
 
         return true;
     }

@@ -1,5 +1,6 @@
 package com.dev.service;
 
+import com.dev.domain.model.DTO.ValidateInputsDTO;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.domain.model.spreadsheet.ColumnType;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
@@ -28,4 +29,6 @@ public interface SpreadsheetService {
     void removeColumnByIndex(int index, String initName) throws StorageException;
 
     void updateColumn(int index, String initName, String name, ColumnType type) throws StorageException;
+
+    boolean validate(ValidateInputsDTO validateInputsDTO);
 }
