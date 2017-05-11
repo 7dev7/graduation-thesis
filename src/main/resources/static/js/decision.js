@@ -9,11 +9,10 @@ $(function () {
         var btnBlock = $("<div class='col-md-1'></div>");
         var btn = $("<button type='button' value='" + countOfInputs + "' class='btn btn-danger inParam removeParamBtn' id='deleteParameter" + countOfInputs + "'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>");
 
-
         btn.on('click', function (event) {
             event.preventDefault();
             var index = $(this).val();
-            //TODO handle remove item
+            removeItemById(index);
         });
 
         btn.appendTo(btnBlock);
@@ -23,4 +22,9 @@ $(function () {
 
         countOfInputs += 1;
     });
+
+    function removeItemById(id) {
+        var className = ".paramItem" + id;
+        $(className).remove();
+    }
 });

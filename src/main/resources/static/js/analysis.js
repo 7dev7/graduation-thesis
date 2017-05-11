@@ -298,6 +298,18 @@ $(function () {
             return false;
         }
 
+        if (mlp.prop("checked") && parseInt(mlpMinNum.val()) < 1) {
+            msg.html("Минимальное число нейронов скрытого слоя для многослойного перцептрона должно быть больше 0");
+            errorBlock.show();
+            return false;
+        }
+
+        if (mlp.prop("checked") && parseInt(mlpMaxNum.val()) < 1) {
+            msg.html("Максимальное число нейронов скрытого слоя для многослойного перцептрона должно быть больше 0");
+            errorBlock.show();
+            return false;
+        }
+
         if (rbf.prop("checked") && rbfMinNum.val() === "") {
             msg.html("Минимальное число нейронов для сети радиальных базисных функций не заполнено");
             errorBlock.show();
@@ -314,6 +326,18 @@ $(function () {
 
         if (parseInt(rbfMinNum.val()) > parseInt(rbfMaxNum.val())) {
             msg.html("Минимальное число нейронов больше максимального числа нейронов");
+            errorBlock.show();
+            return false;
+        }
+
+        if (rbf.prop("checked") && parseInt(rbfMinNum.val()) < 1) {
+            msg.html("Минимальное число нейронов скрытого слоя для сети радиальных базисных функций должно быть больше 0");
+            errorBlock.show();
+            return false;
+        }
+
+        if (rbf.prop("checked") && parseInt(rbfMaxNum.val()) < 1) {
+            msg.html("Максимальное число нейронов скрытого слоя для сети радиальных базисных функций должно быть больше 0");
             errorBlock.show();
             return false;
         }

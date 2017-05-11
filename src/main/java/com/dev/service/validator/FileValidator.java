@@ -19,21 +19,21 @@ public class FileValidator {
         try {
             WorkbookFactory.create(file.getInputStream());
         } catch (Exception e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException("Некорректный файл");
         }
     }
 
     private void validateFileExtension(MultipartFile file) throws StorageException {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         if (!EXCEL_EXTENSION.equalsIgnoreCase(extension) && !EXCEL_2007_EXTENSION.equalsIgnoreCase(extension)) {
-            throw new StorageException("Incorrect file extension");
+            throw new StorageException("Неправильное расширение файла");
         }
     }
 
     private void validateContentType(MultipartFile file) throws StorageException {
         String contentType = file.getContentType();
         if (!EXCEL_CONTENT_TYPE.equalsIgnoreCase(contentType) && !EXCEL_2007_CONTENT_TYPE.equalsIgnoreCase(contentType)) {
-            throw new StorageException("Incorrect content type");
+            throw new StorageException("Неправильное содержимое файла");
         }
     }
 }
