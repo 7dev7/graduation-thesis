@@ -13,12 +13,13 @@
             <div th:each="model : ${networkModels}">
                 <div class="modelItem">
                     <h3><a th:href="@{/model(id=${model.id})}" th:text="${model.name}"></a></h3>
-                    Ошибка: <h4 th:text="${model.error}"></h4>
-                    <h4 th:text="${model.hiddenActivationFunction}"></h4>
-                    <h4 th:text="${model.outActivationFunction}"></h4>
-                    <h4 th:text="${model.dateOfCreation}"></h4>
-                    Описание:
-                    <h5 th:text="${model.description}"></h5>
+                    <h4>Дата создания: <span th:text="${model.dateOfCreation}"></span></h4>
+                    <h5>Ошибка: <span th:text="${model.error}"></span></h5>
+                    <h5 th:if="${model.hiddenActivationFunction}">Функция активации скрытого слоя: <span
+                            th:text="${model.hiddenActivationFunction}"></span></h5>
+                    <h5 th:if="${model.outActivationFunction}">Функция активации выходного слоя: <span
+                            th:text="${model.outActivationFunction}"></span></h5>
+                    <h5>Описание: <span th:text="${model.description}"></span></h5>
                     <hr/>
                 </div>
             </div>

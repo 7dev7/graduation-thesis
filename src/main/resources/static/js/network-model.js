@@ -14,5 +14,5 @@ $(function () {
                 window.location.replace("/network_models");
             }
         });
-    })
+    });
 });

@@ -9,6 +9,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            <div class="alert alert-danger alert-dismissable fade in" id="modelErrorBlock" hidden="hidden">
+                <span id="modelErrorMessage"></span>
+            </div>
             <form modelAttribute="modelDTO" th:action="@{/model}" method="POST" action="#">
                 <input type="hidden" id="id" name="id" th:value="${networkModel.id}"/>
                 <input type="hidden" id="isPerceptronModel" name="isPerceptronModel"
@@ -17,7 +20,8 @@
                     <label for="name">
                         Название:
                     </label>
-                    <input type="text" class="form-control" id="name" name="name" th:value="${networkModel.name}"/>
+                    <input type="text" class="form-control" id="name" name="name" th:value="${networkModel.name}"
+                           required="required"/>
                 </div>
                 <div class="form-group">
                     <label for="description">
@@ -33,6 +37,22 @@
                     <input type="number" readonly="readonly" class="form-control" id="error" name="error"
                            th:value="${networkModel.error}"/>
                 </div>
+
+                <div class="form-group" th:if="${networkModel.isPerceptronModel}">
+                    <label for="error">
+                        Функция активации скрытого слоя:
+                    </label>
+                    <input type="text" readonly="readonly" class="form-control" id="hiddenActivationFunction"
+                           name="hiddenActivationFunction"
+                           th:value="${networkModel.hiddenActivationFunction}"/><br/>
+                    <label for="error">
+                        Функция активации выходного слоя:
+                    </label>
+                    <input type="text" readonly="readonly" class="form-control" id="outActivationFunction"
+                           name="outActivationFunction"
+                           th:value="${networkModel.outActivationFunction}"/>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Обновить значения</button>
                 <button type="button" class="btn btn-danger pull-right" id="removeModelBtn">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Удалить модель

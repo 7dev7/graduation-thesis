@@ -198,6 +198,7 @@ $(function () {
 });
 
 function loadTable(cols, rows) {
+    $.jgrid.gridUnload('#customTableJQGrid');
     $.ajax({
         type: "POST",
         url: '/spreadsheet/create'
