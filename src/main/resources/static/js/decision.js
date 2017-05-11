@@ -9,7 +9,7 @@ $(function () {
         var block = $("<div class='" + className + "'></div>");
         var input = $("<div class='col-md-11'><input type='number' required='required' class='form-control inParam' id='id" + countOfInputs + "'/></div>");
         var btnBlock = $("<div class='col-md-1'></div>");
-        var btn = $("<button type='button' value='" + countOfInputs + "' class='btn btn-danger inParam removeParamBtn' id='deleteParameter" + countOfInputs + "'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>");
+        var btn = $("<button type='button' value='" + countOfInputs + "' class='btn btn-danger removeParamBtn' id='deleteParameter" + countOfInputs + "'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>");
 
         btn.on('click', function (event) {
             event.preventDefault();
@@ -27,15 +27,26 @@ $(function () {
 
     $('#chooseModel').on('click', function (event) {
         event.preventDefault();
-
         if (!validate()) {
             return;
         }
-
         $("#inputsErrorBlock").hide();
 
         $('#input-values-module').hide();
-        $('#choose-model-module').show();
+
+        var numOfInputs = $('.inParam').length;
+
+        $.ajax({
+            url: '/model/appropriate',
+            type: 'POST',
+            data: {
+                numOfInputs: numOfInputs
+            },
+            success: function (data) {
+                fillModels(data);
+                $('#choose-model-module').show();
+            }
+        });
     });
 
     $('#backToInputValuesBtn').on('click', function (event) {
@@ -44,6 +55,56 @@ $(function () {
         $('#input-values-module').show();
         $('#choose-model-module').hide();
     });
+
+    function fillModels(data) {
+        var modelsListBlock = $('#modelsList');
+        modelsListBlock.empty();
+
+        if (data.length === 0) {
+            var msg = $("<h4>У вас нет моделей с количеством входных параметров равным " + $('.inParam').length + "</h4>");
+            msg.appendTo(modelsListBlock);
+            return
+        }
+
+        for (var i = 0; i < data.length; i++) {
+            var item = data[i];
+
+            var parent = $("<div class='modelItem'></div>");
+            var name = $("<h3><a href='#'>" + item.name + "</a></h3>");
+
+            // var d = $.datepicker.formatDate("M d, yy", new Date(item.dateOfCreation));
+
+            var dt = new Date(item.dateOfCreation);
+            var curr_date = dt.getDate();
+            var curr_month = dt.getMonth();
+            var curr_year = dt.getFullYear();
+            var d = curr_year + "-" + curr_month + "-" + curr_date;
+
+            var creationDate = $("<h4>Дата создания: <span>" + d + "</span></h4>");
+            var error = $("<h5>Ошибка: <span>" + item.error + "</span></h5>");
+            var hiddenFunc = null;
+            var outFunc = null;
+            if (item.hiddenFuncFormatted !== null) {
+                hiddenFunc = $("<h5>Функция активации скрытого слоя: <span>" + item.hiddenFuncFormatted + "</span></h5>");
+            }
+            if (item.outFuncFormatted !== null) {
+                outFunc = $("<h5>Функция активации выходного слоя: <span>" + item.outFuncFormatted + "</span></h5>");
+            }
+            var description = $("<h5>Описание: <span>" + item.description + "</span></h5><hr/>");
+
+            name.appendTo(parent);
+            creationDate.appendTo(parent);
+            error.appendTo(parent);
+            if (hiddenFunc !== null) {
+                hiddenFunc.appendTo(parent);
+            }
+            if (outFunc !== null) {
+                outFunc.appendTo(parent);
+            }
+            description.appendTo(parent);
+            parent.appendTo(modelsListBlock);
+        }
+    }
 });
 
 function validate() {

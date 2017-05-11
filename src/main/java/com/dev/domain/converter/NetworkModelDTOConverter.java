@@ -12,7 +12,11 @@ public class NetworkModelDTOConverter {
         modelDTO.setHiddenActivationFunction(networkModel.getHiddenActivationFunction());
         modelDTO.setOutActivationFunction(networkModel.getOutActivationFunction());
         modelDTO.setName(networkModel.getName());
+        modelDTO.setDateOfCreation(networkModel.getDateOfCreation());
+        modelDTO.setDescription(networkModel.getDescription());
         modelDTO.setPerceptronModel(networkModel.isPerceptronModel());
+        modelDTO.setHiddenFuncFormatted(ActivationFunctionFormatterConverter.convert(networkModel.getHiddenActivationFunction()));
+        modelDTO.setOutFuncFormatted(ActivationFunctionFormatterConverter.convert(networkModel.getOutActivationFunction()));
         return modelDTO;
     }
 }

@@ -3,6 +3,7 @@ package com.dev.domain.model.DTO;
 import com.dev.domain.model.ActivationFunction;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class NetworkModelDTO implements Serializable {
     private long id;
@@ -10,8 +11,12 @@ public class NetworkModelDTO implements Serializable {
     private boolean isPerceptronModel;
     private double error;
     private String description;
+    private Date dateOfCreation;
     private ActivationFunction hiddenActivationFunction;
     private ActivationFunction outActivationFunction;
+
+    private String hiddenFuncFormatted;
+    private String outFuncFormatted;
 
     public String getName() {
         return name;
@@ -67,6 +72,30 @@ public class NetworkModelDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
+    }
+
+    public String getHiddenFuncFormatted() {
+        return hiddenFuncFormatted;
+    }
+
+    public void setHiddenFuncFormatted(String hiddenFuncFormatted) {
+        this.hiddenFuncFormatted = hiddenFuncFormatted;
+    }
+
+    public String getOutFuncFormatted() {
+        return outFuncFormatted;
+    }
+
+    public void setOutFuncFormatted(String outFuncFormatted) {
+        this.outFuncFormatted = outFuncFormatted;
     }
 
     @Override

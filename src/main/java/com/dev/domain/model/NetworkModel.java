@@ -29,6 +29,9 @@ public class NetworkModel implements Serializable {
     private ActivationFunction hiddenActivationFunction;
     private ActivationFunction outActivationFunction;
 
+    private String hiddenFuncFormatted;
+    private String outFuncFormatted;
+
     @ManyToOne
     @JoinColumn(name = "doctorId")
     private Doctor owner;
@@ -127,5 +130,21 @@ public class NetworkModel implements Serializable {
 
     public void setDateOfCreation(Date dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
+    }
+
+    public String getHiddenFuncFormatted() {
+        return hiddenFuncFormatted;
+    }
+
+    public void setHiddenFuncFormatted(String hiddenFuncFormatted) {
+        this.hiddenFuncFormatted = hiddenFuncFormatted;
+    }
+
+    public String getOutFuncFormatted() {
+        return outFuncFormatted;
+    }
+
+    public void setOutFuncFormatted(String outFuncFormatted) {
+        this.outFuncFormatted = outFuncFormatted;
     }
 }

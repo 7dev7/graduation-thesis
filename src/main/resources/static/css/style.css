@@ -132,6 +132,10 @@ body {
     margin-top: 15px;
 }
 
+.removeParamBtn {
+    margin-top: 15px;
+}
+
 #addInputParameter {
     margin-top: 25px;
 }

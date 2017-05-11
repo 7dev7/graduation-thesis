@@ -181,8 +181,8 @@ $(function () {
             {label: 'Тип', name: 'perceptronModel', editable: false, formatter: formatStatus},
             {label: 'Название модели', name: 'name', editable: false},
             {label: 'Ошибка', name: 'error', editable: false},
-            {label: 'Функция Активации Скр. слой', name: 'hiddenActivationFunction', editable: false},
-            {label: 'Функция Активации Вых. слой', name: 'outActivationFunction', editable: false}
+            {label: 'Функция Активации Скр. слой', name: 'hiddenFuncFormatted', editable: false},
+            {label: 'Функция Активации Вых. слой', name: 'outFuncFormatted', editable: false}
         ];
 
         $("#trainedModelsInfoJqGrid").jqGrid({

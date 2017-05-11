@@ -39,18 +39,18 @@
                 </div>
 
                 <div class="form-group" th:if="${networkModel.isPerceptronModel}">
-                    <label for="error">
+                    <label for="hiddenFuncFormatted">
                         Функция активации скрытого слоя:
                     </label>
-                    <input type="text" readonly="readonly" class="form-control" id="hiddenActivationFunction"
+                    <input type="text" readonly="readonly" class="form-control" id="hiddenFuncFormatted"
                            name="hiddenActivationFunction"
-                           th:value="${networkModel.hiddenActivationFunction}"/><br/>
-                    <label for="error">
+                           th:value="${networkModel.hiddenFuncFormatted}"/><br/>
+                    <label for="outFuncFormatted">
                         Функция активации выходного слоя:
                     </label>
-                    <input type="text" readonly="readonly" class="form-control" id="outActivationFunction"
+                    <input type="text" readonly="readonly" class="form-control" id="outFuncFormatted"
                            name="outActivationFunction"
-                           th:value="${networkModel.outActivationFunction}"/>
+                           th:value="${networkModel.outFuncFormatted}"/>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Обновить значения</button>

@@ -1,5 +1,6 @@
 package com.dev.service.train.impl;
 
+import com.dev.domain.converter.ActivationFunctionFormatterConverter;
 import com.dev.domain.model.ActivationFunction;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
@@ -43,7 +44,9 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         networkModel.setPerceptron(perceptron);
         networkModel.setPerceptronModel(true);
         networkModel.setDescription("Многослойный перцептрон с " + perceptron.getHiddenNeurons() + " скрытыми нейронами");
+        networkModel.setHiddenFuncFormatted(ActivationFunctionFormatterConverter.convert(perceptron.getHiddenActivationFunc()));
         networkModel.setHiddenActivationFunction(perceptron.getHiddenActivationFunc());
+        networkModel.setOutFuncFormatted(ActivationFunctionFormatterConverter.convert(perceptron.getOutActivationFunc()));
         networkModel.setOutActivationFunction(perceptron.getOutActivationFunc());
         networkModel.setName("MLP: " + perceptron.getInputNeurons() + " - " + perceptron.getHiddenNeurons() + " - " + perceptron.getOutNeurons());
         return networkModel;
