@@ -9,6 +9,7 @@ public class NetworkModelDTO implements Serializable {
     private String name;
     private boolean isPerceptronModel;
     private double error;
+    private String description;
     private ActivationFunction hiddenActivationFunction;
     private ActivationFunction outActivationFunction;
 
@@ -58,6 +59,14 @@ public class NetworkModelDTO implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

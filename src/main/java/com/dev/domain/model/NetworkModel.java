@@ -6,6 +6,7 @@ import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 public class NetworkModel implements Serializable {
@@ -14,6 +15,7 @@ public class NetworkModel implements Serializable {
     private long id;
     private String name;
     private String description;
+    private Date dateOfCreation;
 
     private boolean isPerceptronModel;
 
@@ -30,6 +32,10 @@ public class NetworkModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "doctorId")
     private Doctor owner;
+
+    public NetworkModel() {
+        this.dateOfCreation = new Date();
+    }
 
     public long getId() {
         return id;
@@ -95,6 +101,10 @@ public class NetworkModel implements Serializable {
         isPerceptronModel = perceptronModel;
     }
 
+    public boolean getIsPerceptronModel() {
+        return isPerceptronModel;
+    }
+
     public RadialBasisFunctionsNetwork getRbfNetwork() {
         return rbfNetwork;
     }
@@ -109,5 +119,13 @@ public class NetworkModel implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
     }
 }

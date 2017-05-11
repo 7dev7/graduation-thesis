@@ -1,6 +1,7 @@
 package com.dev.service.impl;
 
 import com.dev.domain.dao.NetworkModelRepository;
+import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.service.DoctorService;
 import com.dev.service.NetworkModelService;
@@ -27,6 +28,16 @@ public class NetworkModelServiceImpl implements NetworkModelService {
     }
 
     @Override
+    public void update(NetworkModelDTO modelDTO) {
+        NetworkModel model = networkModelRepository.findOne(modelDTO.getId());
+        if (model != null) {
+            model.setName(modelDTO.getName());
+            model.setDescription(modelDTO.getDescription());
+        }
+        networkModelRepository.save(model);
+    }
+
+    @Override
     public List<NetworkModel> getModelsForCurrentDoctor() {
         return networkModelRepository.findAllByOwner(doctorService.getCurrentDoctor());
     }
@@ -34,5 +45,10 @@ public class NetworkModelServiceImpl implements NetworkModelService {
     @Override
     public void removeModelById(long id) {
         networkModelRepository.delete(id);
+    }
+
+    @Override
+    public NetworkModel findById(long id) {
+        return networkModelRepository.findOne(id);
     }
 }

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head th:include="fragments/common :: head">
+</head>
+<body>
+<div th:include="fragments/common :: header"></div>
+<script src="/js/network-model.js"></script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <form modelAttribute="modelDTO" th:action="@{/model}" method="POST" action="#">
+                <input type="hidden" id="id" name="id" th:value="${networkModel.id}"/>
+                <input type="hidden" id="isPerceptronModel" name="isPerceptronModel"
+                       th:value="${networkModel.isPerceptronModel}"/>
+                <div class="form-group">
+                    <label for="name">
+                        Название:
+                    </label>
+                    <input type="text" class="form-control" id="name" name="name" th:value="${networkModel.name}"/>
+                </div>
+                <div class="form-group">
+                    <label for="description">
+                        Описание:
+                    </label>
+                    <textarea name="description" class="form-control" id="description" rows="5"
+                              th:field="${networkModel.description}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="error">
+                        Ошибка:
+                    </label>
+                    <input type="number" readonly="readonly" class="form-control" id="error" name="error"
+                           th:value="${networkModel.error}"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Обновить значения</button>
+                <button type="button" class="btn btn-danger pull-right" id="removeModelBtn">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Удалить модель
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:include="fragments/common :: footer"></div>
+</body>
+</html>

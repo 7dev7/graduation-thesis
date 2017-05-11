@@ -139,3 +139,7 @@ body {
 #chooseModel {
     margin-top: 25px;
 }
+
+textarea {
+    resize: vertical;
+}
