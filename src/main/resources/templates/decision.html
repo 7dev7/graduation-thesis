@@ -8,37 +8,58 @@
 <script src="/js/decision.js"></script>
 
 <div class="container">
-    <div class="alert alert-danger alert-dismissable fade in" id="inputsErrorBlock" th:if="${error}">
-        <span id="inputsErrorMessage" th:text="${error}"></span>
+    <div class="alert alert-danger alert-dismissable fade in" id="inputsErrorBlock" hidden="hidden">
+        <span id="inputsErrorMessage"></span>
     </div>
-    <div class="panel-heading">
-        <h3 class="panel-title">Входные данные:</h3>
-    </div>
-    <div class="panel-body">
-        <form role="form" method="post">
-            <fieldset>
-                <div class="col-md-8 col-md-offset-2">
-                    <div id="inputs">
-                        <div class="form-group" id="inputsGroup">
-                            <div class="paramItem0">
-                                <div class="col-md-12">
-                                    <input class="form-control inParam" id="in0" name="in0"
-                                           type="number" required="required"/>
+
+    <div id="input-values-module">
+        <div class="panel-heading">
+            <h3 class="panel-title">Входные данные:</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="post">
+                <fieldset>
+                    <div class="col-md-8 col-md-offset-2">
+                        <div id="inputs">
+                            <div class="form-group" id="inputsGroup">
+                                <div class="paramItem0">
+                                    <div class="col-md-12">
+                                        <input class="form-control inParam" id="in0" name="in0"
+                                               type="number" required="required"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div id="control-module">
+                            <button type="button" class="btn btn-default" id="addInputParameter">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить входной
+                                параметр
+                            </button>
+                        </div>
                     </div>
-                    <div id="control-module">
-                        <button type="button" class="btn btn-default" id="addInputParameter">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить входной параметр
-                        </button>
+                    <div class="col-md-6 col-md-offset-3">
+                        <button type="submit" class="btn btn-primary" id="chooseModel">Выбрать модель</button>
                     </div>
-                </div>
-                <div class="col-md-6 col-md-offset-3">
-                    <button type="submit" class="btn btn-primary" id="chooseModel">Выбрать модель</button>
-                </div>
-            </fieldset>
-        </form>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <div id="choose-model-module" hidden="hidden">
+        <div class="panel-heading">
+            <h3 class="panel-title">Выберите модель:</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="post">
+                <fieldset>
+                    <div class="col-md-8 col-md-offset-2">
+                    </div>
+                    <div class="col-md-6 col-md-offset-3">
+                        <button type="submit" class="btn btn-primary" id="backToInputValuesBtn">Назад</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
     </div>
 </div>
 
