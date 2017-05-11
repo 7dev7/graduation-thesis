@@ -127,3 +127,15 @@ body {
 .for-space {
     visibility: hidden;
 }
+
+.inParam {
+    margin-top: 15px;
+}
+
+#addInputParameter {
+    margin-top: 25px;
+}
+
+#chooseModel {
+    margin-top: 25px;
+}
