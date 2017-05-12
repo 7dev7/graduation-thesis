@@ -149,7 +149,9 @@ public class TrainingDataServiceImpl implements TrainingDataService {
                 }
                 res.add(val);
             } catch (NumberFormatException e) {
-                System.err.println(e.getMessage());
+                //TODO handle WA
+                res.add(0d);
+//                System.err.println(e.getMessage());
             }
         }
         return res;
