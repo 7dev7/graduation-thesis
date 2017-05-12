@@ -17,6 +17,7 @@ $(function () {
     };
 
     function loadSpreadsheetData() {
+        $.jgrid.gridUnload('#jqGrid');
         Pace.track(function () {
             $.ajax({
                 url: "/spreadsheet/current",

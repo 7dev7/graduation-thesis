@@ -43,14 +43,46 @@
                         Функция активации скрытого слоя:
                     </label>
                     <input type="text" readonly="readonly" class="form-control" id="hiddenFuncFormatted"
-                           name="hiddenActivationFunction"
                            th:value="${networkModel.hiddenFuncFormatted}"/><br/>
                     <label for="outFuncFormatted">
                         Функция активации выходного слоя:
                     </label>
                     <input type="text" readonly="readonly" class="form-control" id="outFuncFormatted"
-                           name="outActivationFunction"
                            th:value="${networkModel.outFuncFormatted}"/>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        Входные колонки
+                    </label>
+                    <div th:if="${networkModel.isPerceptronModel}">
+                        <ul class="list-group" id="inputMlpColumns"
+                            th:each="col : ${networkModel.perceptron.inputColumns}">
+                            <li class="list-group-item" th:text="${col}"></li>
+                        </ul>
+                    </div>
+                    <div th:unless="${networkModel.isPerceptronModel}">
+                        <ul class="list-group" id="inputRbfColumns"
+                            th:each="col : ${networkModel.rbfNetwork.inputColumns}">
+                            <li class="list-group-item" th:text="${col}"></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        Выходные колонки
+                    </label>
+                    <div th:if="${networkModel.isPerceptronModel}">
+                        <ul class="list-group" id="outMlpColumns" th:each="col : ${networkModel.perceptron.outColumns}">
+                            <li class="list-group-item" th:text="${col}"></li>
+                        </ul>
+                    </div>
+                    <div th:unless="${networkModel.isPerceptronModel}">
+                        <ul class="list-group" id="outRbfColumns" th:each="col : ${networkModel.rbfNetwork.outColumns}">
+                            <li class="list-group-item" th:text="${col}"></li>
+                        </ul>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Обновить значения</button>

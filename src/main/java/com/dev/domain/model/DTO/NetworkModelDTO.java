@@ -3,7 +3,9 @@ package com.dev.domain.model.DTO;
 import com.dev.domain.model.ActivationFunction;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class NetworkModelDTO implements Serializable {
     private long id;
@@ -17,6 +19,30 @@ public class NetworkModelDTO implements Serializable {
 
     private String hiddenFuncFormatted;
     private String outFuncFormatted;
+
+    private List<String> inputColumns;
+    private List<String> outColumns;
+
+    public NetworkModelDTO() {
+        inputColumns = new ArrayList<>();
+        outColumns = new ArrayList<>();
+    }
+
+    public List<String> getInputColumns() {
+        return inputColumns;
+    }
+
+    public void setInputColumns(List<String> inputColumns) {
+        this.inputColumns = inputColumns;
+    }
+
+    public List<String> getOutColumns() {
+        return outColumns;
+    }
+
+    public void setOutColumns(List<String> outColumns) {
+        this.outColumns = outColumns;
+    }
 
     public String getName() {
         return name;

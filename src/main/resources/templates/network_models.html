@@ -20,6 +20,28 @@
                     <h5 th:if="${model.outActivationFunction}">Функция активации выходного слоя: <span
                             th:text="${model.outFuncFormatted}"></span></h5>
                     <h5>Описание: <span th:text="${model.description}"></span></h5>
+                    <h5>Входные колонки: </h5>
+                    <div th:if="${model.isPerceptronModel}">
+                        <ul class="list-group" id="inputMlpColumns" th:each="col : ${model.perceptron.inputColumns}">
+                            <li class="list-group-item" th:text="${col}"></li>
+                        </ul>
+                    </div>
+                    <div th:unless="${model.isPerceptronModel}">
+                        <ul class="list-group" id="inputRbfColumns" th:each="col : ${model.rbfNetwork.inputColumns}">
+                            <li class="list-group-item" th:text="${col}"></li>
+                        </ul>
+                    </div>
+                    <h5>Выходные колонки: </h5>
+                    <div th:if="${model.isPerceptronModel}">
+                        <ul class="list-group" id="outMlpColumns" th:each="col : ${model.perceptron.outColumns}">
+                            <li class="list-group-item" th:text="${col}"></li>
+                        </ul>
+                    </div>
+                    <div th:unless="${model.isPerceptronModel}">
+                        <ul class="list-group" id="outRbfColumns" th:each="col : ${model.rbfNetwork.outColumns}">
+                            <li class="list-group-item" th:text="${col}"></li>
+                        </ul>
+                    </div>
                     <hr/>
                 </div>
             </div>

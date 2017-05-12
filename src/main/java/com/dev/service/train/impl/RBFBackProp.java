@@ -11,7 +11,7 @@ import com.dev.service.train.RBFTrainingService;
 import com.dev.service.train.TrainingDataService;
 import org.apache.log4j.Logger;
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.rbf.training.SVDTraining;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,26 +19,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SVDTrainingService implements RBFTrainingService {
-    private static final Logger LOGGER = Logger.getLogger(SVDTrainingService.class);
+public class RBFBackProp implements RBFTrainingService {
+    private static final Logger LOGGER = Logger.getLogger(RBFBackProp.class);
     private static final int NUM_OF_ITERATIONS = 500;
     private final TrainingDataService trainingDataService;
 
     @Autowired
-    public SVDTrainingService(TrainingDataService trainingDataService) {
+    public RBFBackProp(TrainingDataService trainingDataService) {
         this.trainingDataService = trainingDataService;
     }
 
     @Override
     public NetworkModel train(RadialBasisFunctionsNetwork rbfNetwork, MLDataSet dataSet) {
-        SVDTraining svdTraining = new SVDTraining(rbfNetwork.getNetwork(), dataSet);
+        Backpropagation backpropagation = new Backpropagation(rbfNetwork.getNetwork(), dataSet);
         LOGGER.info("--> RBF Train executed: " + rbfNetwork);
 
         for (int i = 0; i < NUM_OF_ITERATIONS; i++) {
-            svdTraining.iteration();
+            backpropagation.iteration();
         }
         NetworkModel networkModel = new NetworkModel();
-        networkModel.setError(svdTraining.getError());
+        networkModel.setError(backpropagation.getError());
         networkModel.setRbfNetwork(rbfNetwork);
         networkModel.setDescription("Сеть радиальных базисных функций с " + rbfNetwork.getHiddenNeurons() + " скрытыми нейронами");
         networkModel.setPerceptronModel(false);
@@ -62,6 +62,8 @@ public class SVDTrainingService implements RBFTrainingService {
             rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
             rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
             rbfNetwork.setMaxOuts(dataInfoDTO.getMaxOuts());
+            rbfNetwork.setInputColumns(dataInfoDTO.getInputColumns());
+            rbfNetwork.setOutColumns(dataInfoDTO.getOutColumns());
             NetworkModel model = train(rbfNetwork, dataInfoDTO.getMlDataSet());
             models.add(model);
         }
@@ -80,6 +82,8 @@ public class SVDTrainingService implements RBFTrainingService {
         rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
         rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
         rbfNetwork.setMaxOuts(dataInfoDTO.getMaxOuts());
+        rbfNetwork.setInputColumns(dataInfoDTO.getInputColumns());
+        rbfNetwork.setOutColumns(dataInfoDTO.getOutColumns());
         return train(rbfNetwork, dataInfoDTO.getMlDataSet());
     }
 }

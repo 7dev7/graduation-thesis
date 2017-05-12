@@ -94,7 +94,32 @@ $(function () {
             if (item.outFuncFormatted !== null) {
                 outFunc = $("<h5>Функция активации выходного слоя: <span>" + item.outFuncFormatted + "</span></h5>");
             }
-            var description = $("<h5>Описание: <span>" + item.description + "</span></h5><hr/>");
+            var description = $("<h5>Описание: <span>" + item.description + "</span></h5>");
+
+
+            var inValsBlock = $('<div></div>');
+            var inTitle = $('<h4>Входные колонки:</h4>');
+
+            inTitle.appendTo(inValsBlock);
+
+            var inVals = $('<ul class="list-group"></ul>');
+            for (var j = 0; j < item.inputColumns.length; j++) {
+                inVals.append("<li class='list-group-item'>" + item.inputColumns[j] + "</li>");
+            }
+            inVals.appendTo(inValsBlock);
+
+
+            var outValsBlock = $('<div></div>');
+            var outTitle = $('<h4>Выходные колонки:</h4>');
+
+            outTitle.appendTo(outValsBlock);
+
+            var outVals = $('<ul class="list-group"></ul>');
+            for (var j = 0; j < item.outColumns.length; j++) {
+                outVals.append("<li class='list-group-item'>" + item.outColumns[j] + "</li>");
+            }
+            outVals.appendTo(outValsBlock);
+
 
             name.appendTo(parent);
             creationDate.appendTo(parent);
@@ -106,6 +131,11 @@ $(function () {
                 outFunc.appendTo(parent);
             }
             description.appendTo(parent);
+
+            inValsBlock.appendTo(parent);
+            outValsBlock.appendTo(parent);
+            $('<hr/>').appendTo(parent);
+
             parent.appendTo(modelsListBlock);
         }
     }

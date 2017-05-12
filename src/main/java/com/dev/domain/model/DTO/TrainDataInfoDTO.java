@@ -13,12 +13,18 @@ public class TrainDataInfoDTO {
     private List<Double> maxOuts;
     private List<Double> minOuts;
 
+    private List<String> inputColumns;
+    private List<String> outColumns;
+
     public TrainDataInfoDTO() {
         maxIns = new ArrayList<>();
         minIns = new ArrayList<>();
 
         maxOuts = new ArrayList<>();
         minOuts = new ArrayList<>();
+
+        inputColumns = new ArrayList<>();
+        outColumns = new ArrayList<>();
     }
 
     public MLDataSet getMlDataSet() {
@@ -59,5 +65,21 @@ public class TrainDataInfoDTO {
 
     public void setMinOuts(List<Double> minOuts) {
         this.minOuts = minOuts;
+    }
+
+    public List<String> getInputColumns() {
+        return inputColumns;
+    }
+
+    public void setInputColumns(List<String> inputColumns) {
+        this.inputColumns = inputColumns;
+    }
+
+    public List<String> getOutColumns() {
+        return outColumns;
+    }
+
+    public void setOutColumns(List<String> outColumns) {
+        this.outColumns = outColumns;
     }
 }

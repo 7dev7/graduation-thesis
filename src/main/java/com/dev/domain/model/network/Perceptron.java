@@ -26,6 +26,9 @@ public class Perceptron implements Serializable {
     private List<Double> maxOuts;
     private List<Double> minOuts;
 
+    private List<String> inputColumns;
+    private List<String> outColumns;
+
     public Perceptron(int inNeurons, int neuronsOnHiddenLayer, int outNeurons) {
         this.inputNeurons = inNeurons;
         this.hiddenNeurons = neuronsOnHiddenLayer;
@@ -36,6 +39,9 @@ public class Perceptron implements Serializable {
 
         maxOuts = new ArrayList<>();
         minOuts = new ArrayList<>();
+
+        inputColumns = new ArrayList<>();
+        outColumns = new ArrayList<>();
 
         network = new BasicNetwork();
         network.addLayer(new BasicLayer(null, true, inNeurons));
@@ -78,6 +84,22 @@ public class Perceptron implements Serializable {
                 break;
         }
         return res;
+    }
+
+    public List<String> getInputColumns() {
+        return inputColumns;
+    }
+
+    public void setInputColumns(List<String> inputColumns) {
+        this.inputColumns = inputColumns;
+    }
+
+    public List<String> getOutColumns() {
+        return outColumns;
+    }
+
+    public void setOutColumns(List<String> outColumns) {
+        this.outColumns = outColumns;
     }
 
     public BasicNetwork getNetwork() {

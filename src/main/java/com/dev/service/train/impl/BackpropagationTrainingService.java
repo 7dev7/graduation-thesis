@@ -79,6 +79,8 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
                     perceptron.setMinOuts(dataInfoDTO.getMinOuts());
                     perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
                     NetworkModel model = train(perceptron, dataInfoDTO.getMlDataSet());
+                    perceptron.setInputColumns(dataInfoDTO.getInputColumns());
+                    perceptron.setOutColumns(dataInfoDTO.getOutColumns());
                     models.add(model);
                 }
             }
@@ -101,6 +103,9 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
 
         perceptron.setMinOuts(dataInfoDTO.getMinOuts());
         perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
-        return train(perceptron, dataInfoDTO.getMlDataSet());
+        NetworkModel model = train(perceptron, dataInfoDTO.getMlDataSet());
+        perceptron.setInputColumns(dataInfoDTO.getInputColumns());
+        perceptron.setOutColumns(dataInfoDTO.getOutColumns());
+        return model;
     }
 }

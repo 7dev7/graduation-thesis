@@ -59,6 +59,22 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         dataInfoDTO.setMaxIns(maxIn);
         dataInfoDTO.setMinOuts(minOut);
         dataInfoDTO.setMaxOuts(maxOut);
+
+        List<String> inCols = new ArrayList<>();
+        for (Integer columnIndex : inputContinuousColumnsIndexes) {
+            SpreadsheetColumn spreadsheetColumn = spreadsheetData.getColumns().get(columnIndex);
+            inCols.add(spreadsheetColumn.getName());
+        }
+        dataInfoDTO.setInputColumns(inCols);
+
+        List<String> outCols = new ArrayList<>();
+        for (Integer columnIndex : outputContinuousColumnsIndexes) {
+            SpreadsheetColumn spreadsheetColumn = spreadsheetData.getColumns().get(columnIndex);
+            outCols.add(spreadsheetColumn.getName());
+        }
+
+        dataInfoDTO.setOutColumns(outCols);
+
         return dataInfoDTO;
     }
 
