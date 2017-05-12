@@ -56,8 +56,8 @@ public class BaseConfig {
     private void initUsers() {
         Doctor doctor = new Doctor();
         doctor.setLogin("doctor");
-        doctor.setName("John");
-        doctor.setLastName("Smith");
+        doctor.setName("Ivan");
+        doctor.setLastName("Ivanov");
         doctor.setPassword(bCryptPasswordEncoder.encode("doctor"));
         doctor.setPasswordConfirm(bCryptPasswordEncoder.encode("doctor"));
         doctor.setEmail("us.us@us.com");
