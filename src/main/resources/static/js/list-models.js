@@ -1,4 +1,11 @@
 $(function () {
+    // var options = {
+    //     complete: function (response) {
+    //         alert(response);
+    //     }
+    // };
+    //
+    // $("#uploadModelForm").ajaxForm(options);
 
     $("#remove-model-confirm").dialog({
         autoOpen: false,

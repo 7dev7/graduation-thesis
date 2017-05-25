@@ -3,8 +3,11 @@ package com.dev.domain.model;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
+import org.encog.persist.EncogDirectoryPersistence;
 
 import javax.persistence.*;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -38,6 +41,19 @@ public class NetworkModel implements Serializable {
 
     public NetworkModel() {
         this.dateOfCreation = new Date();
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        EncogDirectoryPersistence.saveObject(oos,
+                isPerceptronModel() ? perceptron.getNetwork() : rbfNetwork.getNetwork());
+        oos.writeUTF(name);
+        oos.writeUTF(description);
+        oos.writeBoolean(isPerceptronModel);
+        oos.writeDouble(error);
+        oos.writeObject(hiddenActivationFunction);
+        oos.writeObject(outActivationFunction);
+        oos.writeUTF(hiddenFuncFormatted);
+        oos.writeUTF(outFuncFormatted);
     }
 
     public long getId() {

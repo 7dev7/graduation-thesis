@@ -12,6 +12,11 @@
             <div class="alert alert-danger alert-dismissable fade in" id="modelErrorBlock" hidden="hidden">
                 <span id="modelErrorMessage"></span>
             </div>
+            <form action="/model/file/" method="POST">
+                <input type="hidden" id="modelId" name="modelId" th:value="${networkModel.id}"/>
+                <button type="submit" class="btn btn-default pull-right">Сохранить в файл</button>
+            </form>
+            <br/>
             <form modelAttribute="modelDTO" th:action="@{/model}" method="POST" action="#">
                 <input type="hidden" id="id" name="id" th:value="${networkModel.id}"/>
                 <input type="hidden" id="isPerceptronModel" name="isPerceptronModel"

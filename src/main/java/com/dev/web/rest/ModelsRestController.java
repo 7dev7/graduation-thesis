@@ -17,7 +17,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -83,5 +88,24 @@ public class ModelsRestController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(result);
+    }
+
+    @PostMapping(value = "/model/file/")
+    public void getFile(@RequestParam long modelId,
+                        HttpServletResponse response) throws IOException {
+        NetworkModel networkModel = networkModelService.findById(modelId);
+
+        response.setHeader("Content-Disposition", "attachment; filename=\"model.txt\"");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
+        objectOutputStream.writeObject(networkModel);
+        response.flushBuffer();
+    }
+
+    @PostMapping(value = "/model/upload/")
+    public void upload(@RequestParam("file") MultipartFile file) throws IOException, ClassNotFoundException {
+        //TODO implement it
+        ObjectInputStream objectInputStream = new ObjectInputStream(file.getInputStream());
+        Object o = objectInputStream.readObject();
+        o.getClass();
     }
 }
