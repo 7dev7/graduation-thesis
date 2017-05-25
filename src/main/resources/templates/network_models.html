@@ -1,48 +1,143 @@
 <!doctype html>
 <html>
-<head th:include="fragments/common :: head">
+<head>
+    <title>ВКР</title>
+    <link href='https://fonts.googleapis.com/css?family=Play&amp;subset=latin,cyrillic' rel='stylesheet'
+          type='text/css'/>
+    <link href='https://fonts.googleapis.com/css?family=Play|Comfortaa|Jura:500&amp;subset=latin,cyrillic'
+          rel='stylesheet'
+          type='text/css'/>
+    <link rel="stylesheet" href="/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-select.css"/>
+    <link rel="stylesheet" href="/css/jquery-ui.min.css"/>
+    <link rel="stylesheet" href="/css/jquery-ui.structure.min.css"/>
+    <link rel="stylesheet" href="/css/jquery-ui.theme.min.css"/>
+
+    <script>
+        paceOptions = {
+            startOnPageLoad: false,
+            ghostTime: 1000
+        }
+    </script>
+    <script src="/js/jquery-3.2.0.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/js/pace.min.js"></script>
+    <script>
+
+    </script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap-select.js"></script>
+    <script src="/js/defaults-ru_RU.js"></script>
+
+    <!--For Excel sheet-->
+    <link rel="stylesheet" href="/css/ui.jqgrid-bootstrap.css"/>
+
+    <link rel="stylesheet" href="/css/models-style.css"/>
 </head>
 <body>
 <div th:include="fragments/common :: header"></div>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+
+        <div class="col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <h5>Тип сети:</h5>
+                <li>
+                    <a href="#" data-filter="all">Все</a>
+                </li>
+                <li>
+                    <a href="#" data-filter=".mlp">Многослойный перцептрон</a>
+                </li>
+                <li>
+                    <a href="#" data-filter=".rbf">Сеть радиальных базисных функций</a>
+                </li>
+            </ul>
+            <ul class="nav nav-sidebar">
+                <h5>Функция активации скрытого слоя:</h5>
+                <li>
+                    <a href="#" data-filter=".hidden-LOGISTIC">Сигмоида</a>
+                </li>
+                <li>
+                    <a href="#" data-filter=".hidden-HYPERBOLIC">Гиперболическая</a>
+                </li>
+                <li>
+                    <a href="#" data-filter=".hidden-EXP">Экспоненциальная</a>
+                </li>
+                <li>
+                    <a href="#" data-filter=".hidden-SIN">Синус</a>
+                </li>
+            </ul>
+            <ul class="nav nav-sidebar">
+                <h5>Функция активации выходного слоя:</h5>
+                <li>
+                    <a href="#" data-filter=".out-LOGISTIC">Сигмоида</a>
+                </li>
+                <li>
+                    <a href="#" data-filter=".out-HYPERBOLIC">Гиперболическая</a>
+                </li>
+                <li>
+                    <a href="#" data-filter=".out-EXP">Экспоненциальная</a>
+                </li>
+                <li>
+                    <a href="#" data-filter=".out-SIN">Синус</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-10 col-md-offset-2 main">
             <h3>Мои модели: </h3>
             <hr/>
-            <div th:each="model : ${networkModels}">
-                <div class="modelItem">
-                    <h3><a th:href="@{/model(id=${model.id})}" th:text="${model.name}"></a></h3>
-                    <h4>Дата создания: <span th:text="${model.dateOfCreation}"></span></h4>
-                    <h5>Ошибка: <span th:text="${model.error}"></span></h5>
-                    <h5 th:if="${model.hiddenActivationFunction}">Функция активации скрытого слоя: <span
-                            th:text="${model.hiddenFuncFormatted}"></span></h5>
-                    <h5 th:if="${model.outActivationFunction}">Функция активации выходного слоя: <span
-                            th:text="${model.outFuncFormatted}"></span></h5>
-                    <h5>Описание: <span th:text="${model.description}"></span></h5>
-                    <h5>Входные колонки: </h5>
-                    <div th:if="${model.isPerceptronModel}">
-                        <ul class="list-group" id="inputMlpColumns" th:each="col : ${model.perceptron.inputColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
-                        </ul>
+            <div class="modelItems">
+                <div id="remove-model-confirm" title="Удаление модели">
+                    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Данная
+                        модель будет удалена. Вы уверены?</p>
+                </div>
+
+                <div th:each="model : ${networkModels}">
+                    <div class="mix"
+                         th:classappend="${model.isPerceptronModel ? 'mlp' : 'rbf'} + ' hidden-' + ${model.hiddenActivationFunction} + ' out-' + ${model.outActivationFunction}">
+                        <h3><a th:href="@{/model(id=${model.id})}" th:text="${model.name}"></a></h3>
+
+                        <button type="button" class="btn btn-danger pull-right removeModelBtn"
+                                th:value="${model.id}">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Удалить модель
+                        </button>
+                        <h4>Дата создания: <span th:text="${model.dateOfCreation}"></span></h4>
+                        <h5>Ошибка: <span th:text="${model.error}"></span></h5>
+                        <h5 th:if="${model.hiddenActivationFunction}">Функция активации скрытого слоя: <span
+                                th:text="${model.hiddenFuncFormatted}"></span></h5>
+                        <h5 th:if="${model.outActivationFunction}">Функция активации выходного слоя: <span
+                                th:text="${model.outFuncFormatted}"></span></h5>
+                        <h5>Описание: <span th:text="${model.description}"></span></h5>
+                        <h5>Входные колонки: </h5>
+                        <div th:if="${model.isPerceptronModel}">
+                            <ul class="list-group" id="inputMlpColumns"
+                                th:each="col : ${model.perceptron.inputColumns}">
+                                <li class="list-group-item" th:text="${col}"></li>
+                            </ul>
+                        </div>
+                        <div th:unless="${model.isPerceptronModel}">
+                            <ul class="list-group" id="inputRbfColumns"
+                                th:each="col : ${model.rbfNetwork.inputColumns}">
+                                <li class="list-group-item" th:text="${col}"></li>
+                            </ul>
+                        </div>
+                        <h5>Выходные колонки: </h5>
+                        <div th:if="${model.isPerceptronModel}">
+                            <ul class="list-group" id="outMlpColumns" th:each="col : ${model.perceptron.outColumns}">
+                                <li class="list-group-item" th:text="${col}"></li>
+                            </ul>
+                        </div>
+                        <div th:unless="${model.isPerceptronModel}">
+                            <ul class="list-group" id="outRbfColumns" th:each="col : ${model.rbfNetwork.outColumns}">
+                                <li class="list-group-item" th:text="${col}"></li>
+                            </ul>
+                        </div>
+                        <hr/>
                     </div>
-                    <div th:unless="${model.isPerceptronModel}">
-                        <ul class="list-group" id="inputRbfColumns" th:each="col : ${model.rbfNetwork.inputColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
-                        </ul>
-                    </div>
-                    <h5>Выходные колонки: </h5>
-                    <div th:if="${model.isPerceptronModel}">
-                        <ul class="list-group" id="outMlpColumns" th:each="col : ${model.perceptron.outColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
-                        </ul>
-                    </div>
-                    <div th:unless="${model.isPerceptronModel}">
-                        <ul class="list-group" id="outRbfColumns" th:each="col : ${model.rbfNetwork.outColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
-                        </ul>
-                    </div>
-                    <hr/>
                 </div>
             </div>
         </div>
@@ -50,5 +145,11 @@
 </div>
 
 <div th:include="fragments/common :: footer"></div>
+<script src="/js/mixitup.min.js"></script>
+<script src="/js/list-models.js"></script>
+<script>
+    var containerEl = document.querySelector('.modelItems');
+    var mixer = mixitup(containerEl);
+</script>
 </body>
 </html>

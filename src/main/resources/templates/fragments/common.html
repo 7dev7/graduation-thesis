@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="/css/style.css"/>
     <link rel="stylesheet" href="/css/bootstrap.css"/>
     <link rel="stylesheet" href="/css/bootstrap-select.css"/>
+    <link rel="stylesheet" href="/css/jquery-ui.min.css"/>
+    <link rel="stylesheet" href="/css/jquery-ui.structure.min.css"/>
+    <link rel="stylesheet" href="/css/jquery-ui.theme.min.css"/>
 
     <script>
         paceOptions = {
@@ -35,7 +38,7 @@
 
 <div th:fragment="header">
     <div class="mainmenu-area">
-        <nav class="navbar navbar-default navbar-static-top" th:if="${doctorLogin}">
+        <nav class="navbar navbar-default navbar-fixed-top" th:if="${doctorLogin}">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"

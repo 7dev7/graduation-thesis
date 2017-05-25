@@ -48,8 +48,8 @@ public class RBFBackProp implements RBFTrainingService {
 
     @Override
     public List<NetworkModel> train(AutoModeTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
-        Integer minNumOfNeuron = trainInfoDTO.getMlpMinNumOfNeuron();
-        Integer maxNumOfNeuron = trainInfoDTO.getMlpMaxNumOfNeuron();
+        Integer minNumOfNeuron = trainInfoDTO.getRbfMinNumOfNeuron();
+        Integer maxNumOfNeuron = trainInfoDTO.getRbfMaxNumOfNeuron();
 
         int inputNeurons = trainInfoDTO.getInputContinuousColumnIndexes().size();
         int outNeurons = trainInfoDTO.getOutputContinuousColumnIndexes().size();

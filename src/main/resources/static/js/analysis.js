@@ -177,7 +177,7 @@ $(function () {
             {label: 'ID', name: 'id', editable: false, hidden: true},
             {
                 name: '', editable: true, edittype: 'checkbox', editoptions: {value: "True:False"},
-                formatter: "checkbox", formatoptions: {disabled: false}
+                formatter: "checkbox", formatoptions: {disabled: false}, width: 35
             },
             {label: 'Тип', name: 'perceptronModel', editable: false, formatter: formatStatus},
             {label: 'Название модели', name: 'name', editable: false},

@@ -8,10 +8,9 @@ $(function () {
         width: 400
     });
 
-    $('#removeModelBtn').on('click', function (event) {
+    $('.removeModelBtn').on('click', function (event) {
         event.preventDefault();
-        var id = $('#id').val();
-
+        var id = $(this).val();
         var confirmDialog = $("#remove-model-confirm");
         confirmDialog.dialog({
             buttons: {
