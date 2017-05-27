@@ -1,6 +1,7 @@
 package com.dev.web.rest;
 
 import com.dev.domain.converter.NetworkModelDTOConverter;
+import com.dev.domain.converter.NetworkModelToJSONConverter;
 import com.dev.domain.model.DTO.ComputeModelDataDTO;
 import com.dev.domain.model.DTO.ComputeResultDTO;
 import com.dev.domain.model.DTO.NetworkModelDTO;
@@ -22,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -94,10 +94,11 @@ public class ModelsRestController {
     public void getFile(@RequestParam long modelId,
                         HttpServletResponse response) throws IOException {
         NetworkModel networkModel = networkModelService.findById(modelId);
+        String fileName = networkModel.getName() + ".json";
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+        String modelJSON = NetworkModelToJSONConverter.convert(networkModel);
 
-        response.setHeader("Content-Disposition", "attachment; filename=\"model.txt\"");
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
-        objectOutputStream.writeObject(networkModel);
+        response.getOutputStream().write(modelJSON.getBytes());
         response.flushBuffer();
     }
 
@@ -106,6 +107,5 @@ public class ModelsRestController {
         //TODO implement it
         ObjectInputStream objectInputStream = new ObjectInputStream(file.getInputStream());
         Object o = objectInputStream.readObject();
-        o.getClass();
     }
 }
