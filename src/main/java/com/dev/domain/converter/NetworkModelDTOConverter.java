@@ -11,8 +11,8 @@ public class NetworkModelDTOConverter {
         modelDTO.setName(networkModel.getName());
         modelDTO.setDateOfCreation(networkModel.getDateOfCreation());
         modelDTO.setDescription(networkModel.getDescription());
-        modelDTO.setInputColumns(networkModel.getInputColumns());
-        modelDTO.setOutColumns(networkModel.getOutColumns());
+        modelDTO.setInputColumns(networkModel.getInColumnsNames());
+        modelDTO.setOutColumns(networkModel.getOutColumnsNames());
         modelDTO.setError(networkModel.getError());
         modelDTO.setPerceptronModel(networkModel.isPerceptronModel());
 

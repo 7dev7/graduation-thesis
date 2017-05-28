@@ -3,8 +3,11 @@ package com.dev.service.impl;
 import com.dev.domain.converter.ActivationFunctionFormatterConverter;
 import com.dev.domain.model.ActivationFunction;
 import com.dev.domain.model.NetworkModel;
+import com.dev.domain.model.network.NetworkModelColumnDefinition;
 import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
+import com.dev.domain.model.spreadsheet.ColumnType;
+import com.dev.domain.model.spreadsheet.MeasurementType;
 import com.dev.service.DoctorService;
 import com.dev.service.NetworkModelJSONService;
 import com.dev.service.NetworkModelService;
@@ -50,8 +53,9 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             jsonObject.put("description", networkModel.getDescription());
             jsonObject.put("isPerceptronModel", networkModel.isPerceptronModel());
             jsonObject.put("error", networkModel.getError());
-            jsonObject.put("input_columns", networkModel.getInputColumns());
-            jsonObject.put("out_columns", networkModel.getOutColumns());
+
+            jsonObject.put("input_columns", buildJSONColumns(networkModel.getInputColumns()));
+            jsonObject.put("out_columns", buildJSONColumns(networkModel.getOutColumns()));
 
             if (networkModel.isPerceptronModel()) {
                 jsonObject.put("inNeurons", networkModel.getPerceptron().getInputNeurons());
@@ -73,6 +77,18 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
         return jsonObject.toJSONString(JSONStyle.NO_COMPRESS);
     }
 
+    private List<JSONObject> buildJSONColumns(List<NetworkModelColumnDefinition> columnDefinitions) {
+        List<JSONObject> cols = new ArrayList<>();
+        for (NetworkModelColumnDefinition columnDefinition : columnDefinitions) {
+            JSONObject inCol = new JSONObject();
+            inCol.put("name", columnDefinition.getName());
+            inCol.put("columnType", columnDefinition.getColumnType());
+            inCol.put("measurementType", columnDefinition.getMeasurementType());
+            cols.add(inCol);
+        }
+        return cols;
+    }
+
     @Override
     public NetworkModel getModelFromJSON(String JSONModel) throws ModelParsingException {
         NetworkModel networkModel = new NetworkModel();
@@ -83,7 +99,7 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             String name = jsonObject.getAsString("name");
             String description = jsonObject.getAsString("description");
             boolean isPerceptronModel = (boolean) jsonObject.get("isPerceptronModel");
-            BigDecimal error = (BigDecimal) jsonObject.get("error");
+            BigDecimal error = new BigDecimal(jsonObject.getAsString("error"));
 
             Integer inNeurons = (Integer) jsonObject.getAsNumber("inNeurons");
             Integer hiddenNeurons = (Integer) jsonObject.getAsNumber("hiddenNeurons");
@@ -92,8 +108,8 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             JSONArray inputColumnsJSON = (JSONArray) jsonObject.get("input_columns");
             JSONArray outColumnsJSON = (JSONArray) jsonObject.get("out_columns");
 
-            List<String> inColumns = new ArrayList(inputColumnsJSON);
-            List<String> outColumns = new ArrayList(outColumnsJSON);
+            List<JSONObject> inColumns = new ArrayList(inputColumnsJSON);
+            List<JSONObject> outColumns = new ArrayList(outColumnsJSON);
 
             if (isPerceptronModel) {
                 ActivationFunction hiddenActivationFunc = ActivationFunction.valueOf(jsonObject.getAsString("hiddenActivationFunction"));
@@ -120,8 +136,15 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             networkModel.setDescription(description);
             networkModel.setPerceptronModel(isPerceptronModel);
             networkModel.setError(error.doubleValue());
-            networkModel.setInputColumns(inColumns);
-            networkModel.setOutColumns(outColumns);
+
+            List<NetworkModelColumnDefinition> inColumnDefinitions = buildColumnDefs(inColumns);
+            List<NetworkModelColumnDefinition> outColumnDefinitions = buildColumnDefs(outColumns);
+
+            inColumnDefinitions.stream().forEach(col -> col.setInNetworkModel(networkModel));
+            outColumnDefinitions.stream().forEach(col -> col.setOutNetworkModel(networkModel));
+
+            networkModel.setInputColumns(inColumnDefinitions);
+            networkModel.setOutColumns(outColumnDefinitions);
 
             networkModel.setOwner(doctorService.getCurrentDoctor());
             networkModelService.save(networkModel);
@@ -130,6 +153,18 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             throw new ModelParsingException("Неправильная структура файла", e);
         }
         return networkModel;
+    }
+
+    private List<NetworkModelColumnDefinition> buildColumnDefs(List<JSONObject> jsonColumns) {
+        List<NetworkModelColumnDefinition> cols = new ArrayList<>();
+        for (JSONObject column : jsonColumns) {
+            NetworkModelColumnDefinition columnDefinition = new NetworkModelColumnDefinition();
+            columnDefinition.setName(column.getAsString("name"));
+            columnDefinition.setColumnType(ColumnType.valueOf(column.getAsString("columnType")));
+            columnDefinition.setMeasurementType(MeasurementType.valueOf(column.getAsString("measurementType")));
+            cols.add(columnDefinition);
+        }
+        return cols;
     }
 
     private String getTextualNetworkStructure(NetworkModel networkModel) throws IOException {

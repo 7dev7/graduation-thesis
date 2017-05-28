@@ -62,7 +62,7 @@
                     </label>
                     <ul class="list-group" id="inputMlpColumns"
                         th:each="col : ${networkModel.inputColumns}">
-                        <li class="list-group-item" th:text="${col}"></li>
+                        <li class="list-group-item" th:text="${col.name}"></li>
                     </ul>
                 </div>
 
@@ -71,7 +71,7 @@
                         Выходные колонки
                     </label>
                     <ul class="list-group" id="outMlpColumns" th:each="col : ${networkModel.outColumns}">
-                        <li class="list-group-item" th:text="${col}"></li>
+                        <li class="list-group-item" th:text="${col.name}"></li>
                     </ul>
                 </div>
 

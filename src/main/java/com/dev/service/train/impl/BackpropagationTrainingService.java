@@ -1,11 +1,13 @@
 package com.dev.service.train.impl;
 
 import com.dev.domain.converter.ActivationFunctionFormatterConverter;
+import com.dev.domain.converter.ColumnsToNetworkModelColumnConverter;
 import com.dev.domain.model.ActivationFunction;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.DTO.TrainDataInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
+import com.dev.domain.model.network.NetworkModelColumnDefinition;
 import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.exception.TrainingException;
@@ -80,8 +82,17 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
                     perceptron.setOutActivationFunc(perceptron.getOutActivationFunc());
 
                     NetworkModel model = train(perceptron, dataInfoDTO.getMlDataSet());
-                    model.setInputColumns(dataInfoDTO.getInputColumns());
-                    model.setOutColumns(dataInfoDTO.getOutColumns());
+
+                    List<NetworkModelColumnDefinition> inColumnDefs =
+                            ColumnsToNetworkModelColumnConverter.getColumnDefs(dataInfoDTO.getInputColumns(), spreadsheet);
+                    inColumnDefs.stream().forEach(col -> col.setInNetworkModel(model));
+                    model.setInputColumns(inColumnDefs);
+
+                    List<NetworkModelColumnDefinition> outColumnDefs =
+                            ColumnsToNetworkModelColumnConverter.getColumnDefs(dataInfoDTO.getOutColumns(), spreadsheet);
+                    outColumnDefs.stream().forEach(col -> col.setOutNetworkModel(model));
+                    model.setOutColumns(outColumnDefs);
+
                     models.add(model);
                 }
             }
@@ -105,8 +116,17 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
 
         NetworkModel model = train(perceptron, dataInfoDTO.getMlDataSet());
-        model.setInputColumns(dataInfoDTO.getInputColumns());
-        model.setOutColumns(dataInfoDTO.getOutColumns());
+
+        List<NetworkModelColumnDefinition> inColumnDefs =
+                ColumnsToNetworkModelColumnConverter.getColumnDefs(dataInfoDTO.getInputColumns(), spreadsheet);
+        inColumnDefs.stream().forEach(col -> col.setInNetworkModel(model));
+        model.setInputColumns(inColumnDefs);
+
+        List<NetworkModelColumnDefinition> outColumnDefs =
+                ColumnsToNetworkModelColumnConverter.getColumnDefs(dataInfoDTO.getOutColumns(), spreadsheet);
+        outColumnDefs.stream().forEach(col -> col.setOutNetworkModel(model));
+        model.setOutColumns(outColumnDefs);
+
         return model;
     }
 }

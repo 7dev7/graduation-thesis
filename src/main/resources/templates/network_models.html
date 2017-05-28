@@ -140,11 +140,11 @@
                         <h5>Входные колонки: </h5>
                         <ul class="list-group" id="inputMlpColumns"
                             th:each="col : ${model.inputColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
+                            <li class="list-group-item" th:text="${col.name}"></li>
                         </ul>
                         <h5>Выходные колонки: </h5>
                         <ul class="list-group" id="outMlpColumns" th:each="col : ${model.outColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
+                            <li class="list-group-item" th:text="${col.name}"></li>
                         </ul>
                         <hr/>
                     </div>

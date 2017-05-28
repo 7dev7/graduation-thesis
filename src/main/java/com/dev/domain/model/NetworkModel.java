@@ -1,6 +1,7 @@
 package com.dev.domain.model;
 
 import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.model.network.NetworkModelColumnDefinition;
 import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class NetworkModel implements Serializable {
@@ -33,15 +35,11 @@ public class NetworkModel implements Serializable {
     @JoinColumn(name = "doctorId")
     private Doctor owner;
 
-    @ElementCollection
-    @CollectionTable(name = "model_columns", joinColumns = @JoinColumn(name = "model_id"))
-    @Column(name = "inputColumn")
-    private List<String> inputColumns;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "inNetworkModel", cascade = CascadeType.ALL)
+    private List<NetworkModelColumnDefinition> inputColumns;
 
-    @ElementCollection
-    @CollectionTable(name = "model_columns", joinColumns = @JoinColumn(name = "model_id"))
-    @Column(name = "outColumn")
-    private List<String> outColumns;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "outNetworkModel", cascade = CascadeType.ALL)
+    private List<NetworkModelColumnDefinition> outColumns;
 
     public NetworkModel() {
         this.dateOfCreation = new Date();
@@ -125,19 +123,27 @@ public class NetworkModel implements Serializable {
         this.dateOfCreation = dateOfCreation;
     }
 
-    public List<String> getInputColumns() {
+    public List<NetworkModelColumnDefinition> getInputColumns() {
         return inputColumns;
     }
 
-    public void setInputColumns(List<String> inputColumns) {
+    public void setInputColumns(List<NetworkModelColumnDefinition> inputColumns) {
         this.inputColumns = inputColumns;
     }
 
-    public List<String> getOutColumns() {
+    public List<NetworkModelColumnDefinition> getOutColumns() {
         return outColumns;
     }
 
-    public void setOutColumns(List<String> outColumns) {
+    public void setOutColumns(List<NetworkModelColumnDefinition> outColumns) {
         this.outColumns = outColumns;
+    }
+
+    public List<String> getInColumnsNames() {
+        return inputColumns.stream().map(NetworkModelColumnDefinition::getName).collect(Collectors.toList());
+    }
+
+    public List<String> getOutColumnsNames() {
+        return outColumns.stream().map(NetworkModelColumnDefinition::getName).collect(Collectors.toList());
     }
 }
