@@ -53,6 +53,7 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             jsonObject.put("description", networkModel.getDescription());
             jsonObject.put("isPerceptronModel", networkModel.isPerceptronModel());
             jsonObject.put("error", networkModel.getError());
+            jsonObject.put("id", networkModel.getId());
 
             jsonObject.put("input_columns", buildJSONColumns(networkModel.getInputColumns()));
             jsonObject.put("out_columns", buildJSONColumns(networkModel.getOutColumns()));
@@ -96,6 +97,9 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
         try {
             JSONObject jsonObject = (JSONObject) JSONValue.parseWithException(JSONModel);
 
+            long modelId = Long.valueOf(jsonObject.getAsString("id"));
+            NetworkModel templateModel = networkModelService.findById(modelId);
+
             String name = jsonObject.getAsString("name");
             String description = jsonObject.getAsString("description");
             boolean isPerceptronModel = (boolean) jsonObject.get("isPerceptronModel");
@@ -124,7 +128,6 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
                 perceptron.setHiddenFuncFormatted(ActivationFunctionFormatterConverter.convert(hiddenActivationFunc));
                 perceptron.setOutActivationFunc(outActivationFunc);
                 perceptron.setOutFuncFormatted(ActivationFunctionFormatterConverter.convert(outActivationFunc));
-
                 networkModel.setPerceptron(perceptron);
             } else {
                 RBFNetwork network = getRBFNetworkFromJSON(jsonObject);
@@ -136,7 +139,7 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             networkModel.setDescription(description);
             networkModel.setPerceptronModel(isPerceptronModel);
             networkModel.setError(error.doubleValue());
-
+            setMinMax(templateModel, networkModel);
             List<NetworkModelColumnDefinition> inColumnDefinitions = buildColumnDefs(inColumns);
             List<NetworkModelColumnDefinition> outColumnDefinitions = buildColumnDefs(outColumns);
 
@@ -153,6 +156,13 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             throw new ModelParsingException("Неправильная структура файла", e);
         }
         return networkModel;
+    }
+
+    private void setMinMax(NetworkModel templateModel, NetworkModel model) {
+        model.setMinIns(new ArrayList<>(templateModel.getMinIns()));
+        model.setMaxIns(new ArrayList<>(templateModel.getMaxIns()));
+        model.setMinOuts(new ArrayList<>(templateModel.getMinOuts()));
+        model.setMaxOuts(new ArrayList<>(templateModel.getMaxOuts()));
     }
 
     private List<NetworkModelColumnDefinition> buildColumnDefs(List<JSONObject> jsonColumns) {
@@ -172,9 +182,8 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
         tmpFile.createNewFile();
         EncogDirectoryPersistence.saveObject(tmpFile,
                 networkModel.isPerceptronModel() ? networkModel.getPerceptron().getNetwork() : networkModel.getRbfNetwork().getNetwork());
-
         StringBuilder sb = new StringBuilder();
-        Files.readAllLines(Paths.get(tmpFile.getPath())).forEach(sb::append);
+        Files.readAllLines(Paths.get(tmpFile.getPath())).forEach(i -> sb.append(i + System.lineSeparator()));
         tmpFile.delete();
         return sb.toString();
     }
@@ -200,7 +209,6 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
         FileOutputStream fos = new FileOutputStream(tmpFile);
         fos.write(networkStructure.getBytes());
         fos.flush();
-        fos.close();
         return tmpFile;
     }
 }

@@ -80,8 +80,8 @@ public class NetworkModelServiceImpl implements NetworkModelService {
 
         double[] normIn = new double[in.length];
         for (int i = 0; i < in.length; i++) {
-            Double min = perceptron.getMinIns().get(i);
-            Double max = perceptron.getMaxIns().get(i);
+            Double min = model.getMinIns().get(i);
+            Double max = model.getMaxIns().get(i);
             double v = normalizationService.normalizeData(in[i], max, min);
             normIn[i] = v;
         }
@@ -92,8 +92,8 @@ public class NetworkModelServiceImpl implements NetworkModelService {
 
         double[] normOut = new double[out.length];
         for (int i = 0; i < out.length; i++) {
-            Double min = perceptron.getMinOuts().get(i);
-            Double max = perceptron.getMaxOuts().get(i);
+            Double min = model.getMinOuts().get(i);
+            Double max = model.getMaxOuts().get(i);
             double v = normalizationService.deNormalizeValue(out[i], max, min);
             normOut[i] = v;
         }
@@ -116,8 +116,8 @@ public class NetworkModelServiceImpl implements NetworkModelService {
         RadialBasisFunctionsNetwork rbfNetwork = model.getRbfNetwork();
         double[] normIn = new double[in.length];
         for (int i = 0; i < in.length; i++) {
-            Double min = rbfNetwork.getMinIns().get(i);
-            Double max = rbfNetwork.getMaxIns().get(i);
+            Double min = model.getMinIns().get(i);
+            Double max = model.getMaxIns().get(i);
             double v = normalizationService.normalizeData(in[i], max, min);
             normIn[i] = v;
         }
@@ -127,8 +127,8 @@ public class NetworkModelServiceImpl implements NetworkModelService {
 
         double[] normOut = new double[out.length];
         for (int i = 0; i < out.length; i++) {
-            Double min = rbfNetwork.getMinOuts().get(i);
-            Double max = rbfNetwork.getMaxOuts().get(i);
+            Double min = model.getMinOuts().get(i);
+            Double max = model.getMaxOuts().get(i);
             double v = normalizationService.deNormalizeValue(out[i], max, min);
             normOut[i] = v;
         }

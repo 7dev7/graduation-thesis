@@ -157,7 +157,7 @@ $(function () {
                 $('#resultModelName').html(data.modelName);
 
                 for (var i = 0; i < data.inputValues.length; i++) {
-                    $('#inputValues').append("<li class='list-group-item'>" + data.inColumns[i].name + ":    " + data.inputValues[i] + "</li>");
+                    $('#inputValues').append("<li class='list-group-item'>" + data.inColumns[i].name + ":&nbsp;&nbsp;&nbsp;&nbsp;" + data.inputValues[i] + "</li>");
                 }
 
                 for (var i = 0; i < data.values.length; i++) {
@@ -166,7 +166,7 @@ $(function () {
                     if (mearType === 'INTEGER') {
                         val = Math.round(val);
                     }
-                    $('#outputValues').append("<li class='list-group-item'>" + data.outColumns[i].name + " :    " + val + "</li>");
+                    $('#outputValues').append("<li class='list-group-item'>" + data.outColumns[i].name + " :&nbsp;&nbsp;&nbsp;&nbsp;" + val + "</li>");
                 }
 
                 $('#show-result-module').show();

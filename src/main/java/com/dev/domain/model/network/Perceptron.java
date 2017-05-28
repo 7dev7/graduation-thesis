@@ -9,8 +9,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Perceptron implements Serializable {
@@ -21,11 +19,6 @@ public class Perceptron implements Serializable {
     private int hiddenNeurons;
     private int outNeurons;
 
-    private List<Double> maxIns;
-    private List<Double> minIns;
-    private List<Double> maxOuts;
-    private List<Double> minOuts;
-
     private String hiddenFuncFormatted;
     private String outFuncFormatted;
 
@@ -33,12 +26,6 @@ public class Perceptron implements Serializable {
         this.inputNeurons = inNeurons;
         this.hiddenNeurons = neuronsOnHiddenLayer;
         this.outNeurons = outNeurons;
-
-        this.maxIns = new ArrayList<>();
-        this.minIns = new ArrayList<>();
-
-        maxOuts = new ArrayList<>();
-        minOuts = new ArrayList<>();
 
         network = new BasicNetwork();
         network.addLayer(new BasicLayer(null, true, inNeurons));
@@ -136,38 +123,6 @@ public class Perceptron implements Serializable {
 
     public void setOutNeurons(int outNeurons) {
         this.outNeurons = outNeurons;
-    }
-
-    public List<Double> getMaxIns() {
-        return maxIns;
-    }
-
-    public void setMaxIns(List<Double> maxIns) {
-        this.maxIns = maxIns;
-    }
-
-    public List<Double> getMinIns() {
-        return minIns;
-    }
-
-    public void setMinIns(List<Double> minIns) {
-        this.minIns = minIns;
-    }
-
-    public List<Double> getMaxOuts() {
-        return maxOuts;
-    }
-
-    public void setMaxOuts(List<Double> maxOuts) {
-        this.maxOuts = maxOuts;
-    }
-
-    public List<Double> getMinOuts() {
-        return minOuts;
-    }
-
-    public void setMinOuts(List<Double> minOuts) {
-        this.minOuts = minOuts;
     }
 
     public String getHiddenFuncFormatted() {

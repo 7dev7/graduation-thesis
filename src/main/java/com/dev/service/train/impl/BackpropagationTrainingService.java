@@ -71,10 +71,6 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
                 for (ActivationFunction outActivation : outNeuronsFuncs) {
                     Perceptron perceptron = new Perceptron(inputNeurons, i, outNeurons, hiddenActivation, outActivation);
                     TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheet, trainInfoDTO);
-                    perceptron.setMinIns(dataInfoDTO.getMinIns());
-                    perceptron.setMaxIns(dataInfoDTO.getMaxIns());
-                    perceptron.setMinOuts(dataInfoDTO.getMinOuts());
-                    perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
 
                     perceptron.setHiddenFuncFormatted(ActivationFunctionFormatterConverter.convert(perceptron.getHiddenActivationFunc()));
                     perceptron.setHiddenActivationFunc(perceptron.getHiddenActivationFunc());
@@ -93,6 +89,11 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
                     outColumnDefs.stream().forEach(col -> col.setOutNetworkModel(model));
                     model.setOutColumns(outColumnDefs);
 
+                    model.setMinIns(dataInfoDTO.getMinIns());
+                    model.setMaxIns(dataInfoDTO.getMaxIns());
+                    model.setMinOuts(dataInfoDTO.getMinOuts());
+                    model.setMaxOuts(dataInfoDTO.getMaxOuts());
+
                     models.add(model);
                 }
             }
@@ -110,10 +111,6 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
 
         Perceptron perceptron = new Perceptron(inputNeurons, hiddenNeurons, outNeurons, hiddenActivationFunction, outActivationFunction);
         TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheet, trainInfoDTO);
-        perceptron.setMinIns(dataInfoDTO.getMinIns());
-        perceptron.setMaxIns(dataInfoDTO.getMaxIns());
-        perceptron.setMinOuts(dataInfoDTO.getMinOuts());
-        perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
 
         NetworkModel model = train(perceptron, dataInfoDTO.getMlDataSet());
 
@@ -126,6 +123,11 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
                 ColumnsToNetworkModelColumnConverter.getColumnDefs(dataInfoDTO.getOutColumns(), spreadsheet);
         outColumnDefs.stream().forEach(col -> col.setOutNetworkModel(model));
         model.setOutColumns(outColumnDefs);
+
+        model.setMinIns(dataInfoDTO.getMinIns());
+        model.setMaxIns(dataInfoDTO.getMaxIns());
+        model.setMinOuts(dataInfoDTO.getMinOuts());
+        model.setMaxOuts(dataInfoDTO.getMaxOuts());
 
         return model;
     }

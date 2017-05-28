@@ -60,10 +60,6 @@ public class RBFBackProp implements RBFTrainingService {
         for (int i = minNumOfNeuron; i <= maxNumOfNeuron; i++) {
             RadialBasisFunctionsNetwork rbfNetwork = new RadialBasisFunctionsNetwork(inputNeurons, i, outNeurons);
             TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheet, trainInfoDTO);
-            rbfNetwork.setMinIns(dataInfoDTO.getMinIns());
-            rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
-            rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
-            rbfNetwork.setMaxOuts(dataInfoDTO.getMaxOuts());
 
             NetworkModel model = train(rbfNetwork, dataInfoDTO.getMlDataSet());
 
@@ -76,6 +72,11 @@ public class RBFBackProp implements RBFTrainingService {
                     ColumnsToNetworkModelColumnConverter.getColumnDefs(dataInfoDTO.getOutColumns(), spreadsheet);
             outColumnDefs.stream().forEach(col -> col.setOutNetworkModel(model));
             model.setOutColumns(outColumnDefs);
+
+            model.setMinIns(dataInfoDTO.getMinIns());
+            model.setMaxIns(dataInfoDTO.getMaxIns());
+            model.setMinOuts(dataInfoDTO.getMinOuts());
+            model.setMaxOuts(dataInfoDTO.getMaxOuts());
 
             models.add(model);
         }
@@ -90,11 +91,6 @@ public class RBFBackProp implements RBFTrainingService {
 
         RadialBasisFunctionsNetwork rbfNetwork = new RadialBasisFunctionsNetwork(inputNeurons, hiddenNurons, outNeurons);
         TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheet, trainInfoDTO);
-        rbfNetwork.setMinIns(dataInfoDTO.getMinIns());
-        rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
-        rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
-        rbfNetwork.setMaxOuts(dataInfoDTO.getMaxOuts());
-
         NetworkModel model = train(rbfNetwork, dataInfoDTO.getMlDataSet());
 
         List<NetworkModelColumnDefinition> inColumnDefs =
@@ -106,6 +102,11 @@ public class RBFBackProp implements RBFTrainingService {
                 ColumnsToNetworkModelColumnConverter.getColumnDefs(dataInfoDTO.getOutColumns(), spreadsheet);
         outColumnDefs.stream().forEach(col -> col.setOutNetworkModel(model));
         model.setOutColumns(outColumnDefs);
+
+        model.setMinIns(dataInfoDTO.getMinIns());
+        model.setMaxIns(dataInfoDTO.getMaxIns());
+        model.setMinOuts(dataInfoDTO.getMinOuts());
+        model.setMaxOuts(dataInfoDTO.getMaxOuts());
 
         return model;
     }

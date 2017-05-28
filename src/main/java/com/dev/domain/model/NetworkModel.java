@@ -41,10 +41,36 @@ public class NetworkModel implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "outNetworkModel", cascade = CascadeType.ALL)
     private List<NetworkModelColumnDefinition> outColumns;
 
+    @ElementCollection
+    @CollectionTable(name = "in_out_values", joinColumns = @JoinColumn(name = "model_id"))
+    @Column(name = "max_in")
+    private List<Double> maxIns;
+
+    @ElementCollection
+    @CollectionTable(name = "in_out_values", joinColumns = @JoinColumn(name = "model_id"))
+    @Column(name = "min_in")
+    private List<Double> minIns;
+
+    @ElementCollection
+    @CollectionTable(name = "in_out_values", joinColumns = @JoinColumn(name = "model_id"))
+    @Column(name = "max_out")
+    private List<Double> maxOuts;
+
+    @ElementCollection
+    @CollectionTable(name = "in_out_values", joinColumns = @JoinColumn(name = "model_id"))
+    @Column(name = "min_out")
+    private List<Double> minOuts;
+
     public NetworkModel() {
         this.dateOfCreation = new Date();
         this.inputColumns = new ArrayList<>();
         this.outColumns = new ArrayList<>();
+
+        this.maxIns = new ArrayList<>();
+        this.minIns = new ArrayList<>();
+
+        this.maxOuts = new ArrayList<>();
+        this.minOuts = new ArrayList<>();
     }
 
     public long getId() {
@@ -137,6 +163,38 @@ public class NetworkModel implements Serializable {
 
     public void setOutColumns(List<NetworkModelColumnDefinition> outColumns) {
         this.outColumns = outColumns;
+    }
+
+    public List<Double> getMaxIns() {
+        return maxIns;
+    }
+
+    public void setMaxIns(List<Double> maxIns) {
+        this.maxIns = maxIns;
+    }
+
+    public List<Double> getMinIns() {
+        return minIns;
+    }
+
+    public void setMinIns(List<Double> minIns) {
+        this.minIns = minIns;
+    }
+
+    public List<Double> getMaxOuts() {
+        return maxOuts;
+    }
+
+    public void setMaxOuts(List<Double> maxOuts) {
+        this.maxOuts = maxOuts;
+    }
+
+    public List<Double> getMinOuts() {
+        return minOuts;
+    }
+
+    public void setMinOuts(List<Double> minOuts) {
+        this.minOuts = minOuts;
     }
 
     public List<String> getInColumnsNames() {
