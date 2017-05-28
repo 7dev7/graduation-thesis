@@ -9,10 +9,10 @@ import com.dev.service.DoctorService;
 import com.dev.service.NetworkModelJSONService;
 import com.dev.service.NetworkModelService;
 import com.dev.service.exception.ModelParsingException;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import net.minidev.json.JSONValue;
-import net.minidev.json.parser.ParseException;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.rbf.RBFNetwork;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
@@ -43,20 +45,13 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
     public String getJSONFromModel(NetworkModel networkModel) {
         JSONObject jsonObject = new JSONObject();
         try {
-            File tmpFile = new File(new Date().getTime() + ".dmmy");
-            tmpFile.createNewFile();
-            EncogDirectoryPersistence.saveObject(tmpFile,
-                    networkModel.isPerceptronModel() ? networkModel.getPerceptron().getNetwork() : networkModel.getRbfNetwork().getNetwork());
-
-            StringBuilder sb = new StringBuilder();
-            Files.readAllLines(Paths.get(tmpFile.getPath())).forEach(sb::append);
-            tmpFile.delete();
-
-            jsonObject.put("network_structure", sb.toString());
+            jsonObject.put("network_structure", getTextualNetworkStructure(networkModel));
             jsonObject.put("name", networkModel.getName());
             jsonObject.put("description", networkModel.getDescription());
             jsonObject.put("isPerceptronModel", networkModel.isPerceptronModel());
             jsonObject.put("error", networkModel.getError());
+            jsonObject.put("input_columns", networkModel.getInputColumns());
+            jsonObject.put("out_columns", networkModel.getOutColumns());
 
             if (networkModel.isPerceptronModel()) {
                 jsonObject.put("inNeurons", networkModel.getPerceptron().getInputNeurons());
@@ -94,20 +89,17 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             Integer hiddenNeurons = (Integer) jsonObject.getAsNumber("hiddenNeurons");
             Integer outNeurons = (Integer) jsonObject.getAsNumber("outNeurons");
 
-            String networkStructure = jsonObject.getAsString("network_structure");
-            File tmpFile = new File(new Date().getTime() + ".dmmy");
-            tmpFile.createNewFile();
-            FileOutputStream fos = new FileOutputStream(tmpFile);
-            fos.write(networkStructure.getBytes());
-            fos.flush();
-            fos.close();
+            JSONArray inputColumnsJSON = (JSONArray) jsonObject.get("input_columns");
+            JSONArray outColumnsJSON = (JSONArray) jsonObject.get("out_columns");
+
+            List<String> inColumns = new ArrayList(inputColumnsJSON);
+            List<String> outColumns = new ArrayList(outColumnsJSON);
 
             if (isPerceptronModel) {
                 ActivationFunction hiddenActivationFunc = ActivationFunction.valueOf(jsonObject.getAsString("hiddenActivationFunction"));
                 ActivationFunction outActivationFunc = ActivationFunction.valueOf(jsonObject.getAsString("outActivationFunction"));
 
-                BasicNetwork network = (BasicNetwork) EncogDirectoryPersistence.loadObject(tmpFile);
-                tmpFile.delete();
+                BasicNetwork network = getPerceptronNetworkFromJSON(jsonObject);
                 Perceptron perceptron = new Perceptron(inNeurons, hiddenNeurons, outNeurons, network);
                 perceptron.setHiddenActivationFunc(hiddenActivationFunc);
                 perceptron.setOutActivationFunc(outActivationFunc);
@@ -119,7 +111,7 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
 
                 networkModel.setPerceptron(perceptron);
             } else {
-                RBFNetwork network = (RBFNetwork) EncogDirectoryPersistence.loadObject(tmpFile);
+                RBFNetwork network = getRBFNetworkFromJSON(jsonObject);
                 RadialBasisFunctionsNetwork rbfNetwork = new RadialBasisFunctionsNetwork(inNeurons, hiddenNeurons, outNeurons, network);
                 networkModel.setRbfNetwork(rbfNetwork);
             }
@@ -128,6 +120,8 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             networkModel.setDescription(description);
             networkModel.setPerceptronModel(isPerceptronModel);
             networkModel.setError(error.doubleValue());
+            networkModel.setInputColumns(inColumns);
+            networkModel.setOutColumns(outColumns);
 
             networkModel.setOwner(doctorService.getCurrentDoctor());
             networkModelService.save(networkModel);
@@ -136,5 +130,42 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             throw new ModelParsingException("Неправильная структура файла", e);
         }
         return networkModel;
+    }
+
+    private String getTextualNetworkStructure(NetworkModel networkModel) throws IOException {
+        File tmpFile = new File(new Date().getTime() + ".dmmy");
+        tmpFile.createNewFile();
+        EncogDirectoryPersistence.saveObject(tmpFile,
+                networkModel.isPerceptronModel() ? networkModel.getPerceptron().getNetwork() : networkModel.getRbfNetwork().getNetwork());
+
+        StringBuilder sb = new StringBuilder();
+        Files.readAllLines(Paths.get(tmpFile.getPath())).forEach(sb::append);
+        tmpFile.delete();
+        return sb.toString();
+    }
+
+    private BasicNetwork getPerceptronNetworkFromJSON(JSONObject jsonObject) throws IOException {
+        File file = buildTemporaryFileWithStructure(jsonObject);
+        BasicNetwork network = (BasicNetwork) EncogDirectoryPersistence.loadObject(file);
+        file.delete();
+        return network;
+    }
+
+    private RBFNetwork getRBFNetworkFromJSON(JSONObject jsonObject) throws IOException {
+        File file = buildTemporaryFileWithStructure(jsonObject);
+        RBFNetwork network = (RBFNetwork) EncogDirectoryPersistence.loadObject(file);
+        file.delete();
+        return network;
+    }
+
+    private File buildTemporaryFileWithStructure(JSONObject jsonObject) throws IOException {
+        String networkStructure = jsonObject.getAsString("network_structure");
+        File tmpFile = new File(new Date().getTime() + ".dmmy");
+        tmpFile.createNewFile();
+        FileOutputStream fos = new FileOutputStream(tmpFile);
+        fos.write(networkStructure.getBytes());
+        fos.flush();
+        fos.close();
+        return tmpFile;
     }
 }
