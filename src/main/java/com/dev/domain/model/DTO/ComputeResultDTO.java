@@ -1,6 +1,6 @@
 package com.dev.domain.model.DTO;
 
-import com.dev.domain.model.spreadsheet.MeasurementType;
+import com.dev.domain.model.network.NetworkModelColumnDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,8 @@ public class ComputeResultDTO {
     private List<Double> values;
     private List<Double> inputValues;
 
-    private List<String> inColumns;
-    private List<String> outColumns;
-
-    private List<MeasurementType> measurementTypes;
+    private List<NetworkModelColumnDefinition> inColumns;
+    private List<NetworkModelColumnDefinition> outColumns;
 
     public ComputeResultDTO() {
         this.values = new ArrayList<>();
@@ -22,7 +20,6 @@ public class ComputeResultDTO {
 
         this.inColumns = new ArrayList<>();
         this.outColumns = new ArrayList<>();
-        this.measurementTypes = new ArrayList<>();
     }
 
     public List<Double> getValues() {
@@ -57,27 +54,19 @@ public class ComputeResultDTO {
         this.modelName = modelName;
     }
 
-    public List<String> getInColumns() {
+    public List<NetworkModelColumnDefinition> getInColumns() {
         return inColumns;
     }
 
-    public void setInColumns(List<String> inColumns) {
+    public void setInColumns(List<NetworkModelColumnDefinition> inColumns) {
         this.inColumns = inColumns;
     }
 
-    public List<String> getOutColumns() {
+    public List<NetworkModelColumnDefinition> getOutColumns() {
         return outColumns;
     }
 
-    public void setOutColumns(List<String> outColumns) {
+    public void setOutColumns(List<NetworkModelColumnDefinition> outColumns) {
         this.outColumns = outColumns;
-    }
-
-    public List<MeasurementType> getMeasurementTypes() {
-        return measurementTypes;
-    }
-
-    public void setMeasurementTypes(List<MeasurementType> measurementTypes) {
-        this.measurementTypes = measurementTypes;
     }
 }

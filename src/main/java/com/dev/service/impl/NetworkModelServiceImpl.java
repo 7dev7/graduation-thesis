@@ -103,6 +103,10 @@ public class NetworkModelServiceImpl implements NetworkModelService {
         resultDTO.setInputValues(computeModelDataDTO.getInputs());
         resultDTO.setModelId(model.getId());
         resultDTO.setModelName(model.getName());
+
+        resultDTO.setInColumns(model.getInputColumns());
+        resultDTO.setOutColumns(model.getOutColumns());
+
         return resultDTO;
     }
 
@@ -134,6 +138,10 @@ public class NetworkModelServiceImpl implements NetworkModelService {
         resultDTO.setInputValues(computeModelDataDTO.getInputs());
         resultDTO.setModelId(model.getId());
         resultDTO.setModelName(model.getName());
+
+        resultDTO.setInColumns(model.getInputColumns());
+        resultDTO.setOutColumns(model.getOutColumns());
+
         return resultDTO;
     }
 }

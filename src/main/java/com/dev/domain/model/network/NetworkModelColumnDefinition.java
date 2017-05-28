@@ -3,6 +3,7 @@ package com.dev.domain.model.network;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.spreadsheet.ColumnType;
 import com.dev.domain.model.spreadsheet.MeasurementType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -18,10 +19,12 @@ public class NetworkModelColumnDefinition {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "in_model_id")
+    @JsonIgnore
     private NetworkModel inNetworkModel;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "out_model_id")
+    @JsonIgnore
     private NetworkModel outNetworkModel;
 
     public long getId() {
