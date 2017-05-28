@@ -1,6 +1,8 @@
 package com.dev.service.impl;
 
+import com.dev.domain.dao.SpreadsheetColumnRepository;
 import com.dev.domain.dao.SpreadsheetRepository;
+import com.dev.domain.dao.SpreadsheetRowRepository;
 import com.dev.domain.model.DTO.ValidateInputsDTO;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.domain.model.spreadsheet.*;
@@ -19,37 +21,38 @@ import java.util.*;
 
 @Service
 public class SpreadsheetServiceImpl implements SpreadsheetService {
-
     private final SpreadsheetRepository spreadsheetRepository;
+    private final SpreadsheetColumnRepository spreadsheetColumnRepository;
+    private final SpreadsheetRowRepository spreadsheetRowRepository;
     private final DoctorService doctorService;
 
     @Autowired
-    public SpreadsheetServiceImpl(DoctorService doctorService, SpreadsheetRepository spreadsheetRepository) {
+    public SpreadsheetServiceImpl(DoctorService doctorService, SpreadsheetRepository spreadsheetRepository,
+                                  SpreadsheetColumnRepository spreadsheetColumnRepository, SpreadsheetRowRepository spreadsheetRowRepository) {
         this.doctorService = doctorService;
         this.spreadsheetRepository = spreadsheetRepository;
+        this.spreadsheetColumnRepository = spreadsheetColumnRepository;
+        this.spreadsheetRowRepository = spreadsheetRowRepository;
     }
 
-    @Override
-    public SpreadsheetData getSpreadsheetData(MultipartFile excelFile) throws StorageException {
-        SpreadsheetData spreadsheetData;
+    public Spreadsheet fillSpreadsheet(Spreadsheet spreadsheet, MultipartFile excelFile) throws StorageException {
         try {
             Workbook workbook = WorkbookFactory.create(excelFile.getInputStream());
             Sheet sheet = workbook.getSheetAt(0);
-            spreadsheetData = buildDataWithBasicInfo(sheet);
-            spreadsheetData = fillRows(sheet, spreadsheetData);
+            spreadsheet = buildDataWithBasicInfo(spreadsheet, sheet);
+            spreadsheet = fillRows(sheet, spreadsheet);
         } catch (IOException | InvalidFormatException e) {
             throw new StorageException(e.getMessage(), e);
         }
-        return spreadsheetData;
+        return spreadsheet;
     }
 
-    private SpreadsheetData buildDataWithBasicInfo(Sheet sheet) {
-        SpreadsheetData spreadsheetData = new SpreadsheetData();
-        spreadsheetData.setColumns(buildColumns(sheet));
-        return spreadsheetData;
+    private Spreadsheet buildDataWithBasicInfo(Spreadsheet spreadsheet, Sheet sheet) {
+        spreadsheet.setColumns(buildColumns(spreadsheet, sheet));
+        return spreadsheet;
     }
 
-    private List<SpreadsheetColumn> buildColumns(Sheet sheet) {
+    private List<SpreadsheetColumn> buildColumns(Spreadsheet spreadsheet, Sheet sheet) {
         Iterator<Cell> cellIterator = sheet.getRow(0).cellIterator();
         List<SpreadsheetColumn> result = new ArrayList<>();
         int index = 0;
@@ -60,12 +63,16 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
                 continue;
             }
             SpreadsheetColumn spreadsheetColumn = new SpreadsheetColumn();
-            spreadsheetColumn.setName(stringCellValue);
-            spreadsheetColumn.setIndex(index++);
 
             List<Cell> cellsForColumn = getCellsForColumn(sheet, cell.getColumnIndex());
             ColumnType type = chooseColumnType(cellsForColumn);
+            MeasurementType measurementType = chooseMeasurementType(cellsForColumn);
+
+            spreadsheetColumn.setName(stringCellValue);
+            spreadsheetColumn.setIndex(index++);
             spreadsheetColumn.setType(type);
+            spreadsheetColumn.setMeasurementType(measurementType);
+            spreadsheetColumn.setSpreadsheet(spreadsheet);
             result.add(spreadsheetColumn);
         }
         return result;
@@ -92,7 +99,28 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         return isNominal ? ColumnType.NOMINAL : ColumnType.CONTINUOUS;
     }
 
-    private SpreadsheetData fillRows(Sheet sheet, SpreadsheetData spreadsheetData) {
+    private MeasurementType chooseMeasurementType(List<Cell> cells) {
+        for (Cell cell : cells) {
+            if (cell != null) {
+                if (CellType.STRING.equals(cell.getCellTypeEnum())) {
+                    return MeasurementType.TEXT;
+                }
+            }
+        }
+        boolean containsDouble = false;
+        for (Cell cell : cells) {
+            if (cell != null) {
+                if (CellType.NUMERIC.equals(cell.getCellTypeEnum())) {
+                    if (cell.getNumericCellValue() % 1 != 0) {
+                        containsDouble = true;
+                    }
+                }
+            }
+        }
+        return containsDouble ? MeasurementType.DOUBLE : MeasurementType.INTEGER;
+    }
+
+    private Spreadsheet fillRows(Sheet sheet, Spreadsheet spreadsheet) {
         Iterator<Row> rowIterator = sheet.rowIterator();
         //Miss column name's row
         rowIterator.next();
@@ -102,29 +130,41 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         while (rowIterator.hasNext()) {
             Iterator<Cell> cellIterator = rowIterator.next().cellIterator();
             int columnIndex = 0;
-            Map<String, Object> dataRow = new HashMap<>();
-            while (cellIterator.hasNext() && columnIndex < spreadsheetData.getColumns().size()) {
+
+            SpreadsheetRow spreadsheetRow = new SpreadsheetRow();
+            spreadsheetRow.setIndex(rowIndex++);
+            spreadsheetRow.setSpreadsheet(spreadsheet);
+
+            List<SpreadsheetCell> cells = new ArrayList<>();
+
+            while (cellIterator.hasNext() && columnIndex < spreadsheet.getColumns().size()) {
                 Cell cell = cellIterator.next();
                 CellType cellTypeEnum = cell.getCellTypeEnum();
-                String key = spreadsheetData.getColumns().get(columnIndex++).getName();
+
+                SpreadsheetCell spreadsheetCell = new SpreadsheetCell();
+                spreadsheetCell.setSpreadsheetColumn(spreadsheet.getColumns().get(columnIndex++));
+                spreadsheetCell.setSpreadsheetRow(spreadsheetRow);
+
                 switch (cellTypeEnum) {
                     case STRING:
-                        dataRow.put(key, cell.getStringCellValue());
+                        spreadsheetCell.setValue(cell.getStringCellValue());
                         break;
                     case NUMERIC:
                         double numericCellValue = cell.getNumericCellValue();
                         if (numericCellValue % 1 == 0) {
-                            dataRow.put(key, (int) numericCellValue);
+                            spreadsheetCell.setValue(String.valueOf((int) numericCellValue));
                         } else {
-                            dataRow.put(key, String.valueOf(numericCellValue));
+                            spreadsheetCell.setValue(String.valueOf(numericCellValue));
                         }
                         break;
                 }
+                cells.add(spreadsheetCell);
             }
-            rows.add(new SpreadsheetRow(rowIndex++, dataRow));
+            spreadsheetRow.setSpreadsheetCells(cells);
+            rows.add(spreadsheetRow);
         }
-        spreadsheetData.setRows(rows);
-        return spreadsheetData;
+        spreadsheet.setRows(rows);
+        return spreadsheet;
     }
 
     @Override
@@ -152,8 +192,7 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         Spreadsheet spreadsheet = new Spreadsheet();
         try {
             spreadsheet.setClosed(false);
-            SpreadsheetData spreadsheetData = getSpreadsheetData(excelFile);
-            spreadsheet.setSpreadsheetData(spreadsheetData);
+            fillSpreadsheet(spreadsheet, excelFile);
             spreadsheet.setOwner(doctorService.getCurrentDoctor());
             spreadsheetRepository.save(spreadsheet);
         } catch (StorageException e) {
@@ -162,13 +201,12 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
         return spreadsheet;
     }
 
+    @Override
     public Spreadsheet createSpreadsheet() {
         closeActiveSpreadsheet();
 
         Spreadsheet spreadsheet = new Spreadsheet();
         spreadsheet.setClosed(false);
-        SpreadsheetData spreadsheetData = new SpreadsheetData();
-        spreadsheet.setSpreadsheetData(spreadsheetData);
         spreadsheet.setOwner(doctorService.getCurrentDoctor());
         spreadsheetRepository.save(spreadsheet);
         return spreadsheet;
@@ -192,16 +230,18 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
     public void removeColumnByIndex(int index, String initName) throws StorageException {
         Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(this::createSpreadsheet);
-        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
 
-        Optional<SpreadsheetColumn> columnOptional = spreadsheetData.getColumns().stream().filter(i -> i.getName().equals(initName)).findFirst();
+        Optional<SpreadsheetColumn> columnOptional = spreadsheet.getColumns().stream().filter(i -> i.getName().equals(initName)).findFirst();
         SpreadsheetColumn spreadsheetColumn = columnOptional.orElseThrow(StorageException::new);
 
-        for (SpreadsheetRow row : spreadsheetData.getRows()) {
-            Map<String, Object> elements = row.getElements();
-            elements.remove(spreadsheetColumn.getName());
+        for (SpreadsheetRow row : spreadsheet.getRows()) {
+            Optional<SpreadsheetCell> cell = row.getSpreadsheetCells().stream().filter(i -> initName.equals(i.getSpreadsheetColumn().getName())).findFirst();
+            cell.ifPresent(i -> {
+                row.getSpreadsheetCells().remove(i);
+            });
         }
-        spreadsheetData.getColumns().remove(spreadsheetColumn);
+        spreadsheet.getColumns().remove(spreadsheetColumn);
+        spreadsheetColumnRepository.delete(spreadsheetColumn);
         updateSpreadsheet(spreadsheet);
     }
 
@@ -209,20 +249,74 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
     public void updateColumn(int index, String initName, String name, ColumnType type) throws StorageException {
         Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(this::createSpreadsheet);
-        SpreadsheetData data = spreadsheet.getSpreadsheetData();
 
-        Optional<SpreadsheetColumn> columnOptional = data.getColumns().stream().filter(i -> i.getName().equals(initName)).findFirst();
+        Optional<SpreadsheetColumn> columnOptional = spreadsheet.getColumns().stream().filter(i -> i.getName().equals(initName)).findFirst();
         SpreadsheetColumn column = columnOptional.orElseThrow(StorageException::new);
+        column.setName(name);
 
-        for (SpreadsheetRow row : data.getRows()) {
-            Map<String, Object> elements = row.getElements();
-            Object val = elements.get(column.getName());
-            elements.remove(column.getName());
-            elements.put(name, val);
+        spreadsheetColumnRepository.save(column);
+    }
+
+    @Override
+    public int addRow(Map<String, Object> paramsMap) throws StorageException {
+        Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseThrow(StorageException::new);
+
+        List<SpreadsheetCell> cells = new ArrayList<>();
+
+        SpreadsheetRow spreadsheetRow = new SpreadsheetRow();
+
+        for (SpreadsheetColumn column : spreadsheet.getColumns()) {
+            Object o = paramsMap.get(column.getName());
+            if (o != null) {
+                SpreadsheetCell cell = new SpreadsheetCell();
+                cell.setSpreadsheetRow(spreadsheetRow);
+                cell.setSpreadsheetColumn(column);
+                cell.setValue(o.toString());
+                cells.add(cell);
+            }
         }
-        data.getColumns().remove(column);
-        data.getColumns().add(new SpreadsheetColumn(index, name, type));
+        spreadsheetRow.setIndex(spreadsheet.getMaxRowIndex() + 1);
+        spreadsheetRow.setSpreadsheetCells(cells);
+        spreadsheetRow.setSpreadsheet(spreadsheet);
 
+        spreadsheetRowRepository.save(spreadsheetRow);
+
+        spreadsheet.getRows().add(spreadsheetRow);
+
+        updateSpreadsheet(spreadsheet);
+        return spreadsheetRow.getIndex();
+    }
+
+    @Override
+    public void removeRowByIndex(int index) throws StorageException {
+        Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseThrow(StorageException::new);
+
+        Optional<SpreadsheetRow> spreadsheetRowOptional = spreadsheet.getRows().stream().filter(i -> i.getIndex() == index).findFirst();
+        spreadsheetRowOptional.ifPresent(i -> {
+            spreadsheet.getRows().remove(i);
+            spreadsheetRowRepository.delete(i);
+        });
+        updateSpreadsheet(spreadsheet);
+    }
+
+    @Override
+    public void editRowByIndex(int index, Map<String, Object> paramsMap) throws StorageException {
+        Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
+        Spreadsheet spreadsheet = spreadsheetOptional.orElseThrow(StorageException::new);
+
+        Optional<SpreadsheetRow> spreadsheetRowOptional = spreadsheet.getRows().stream().filter(i -> i.getIndex() == index).findFirst();
+        spreadsheetRowOptional.ifPresent(i -> {
+            for (SpreadsheetColumn column : spreadsheet.getColumns()) {
+                Object o = paramsMap.get(column.getName());
+                if (o != null) {
+                    i.getCellByColumn(column).setValue(o.toString());
+
+                }
+            }
+            spreadsheetRowRepository.save(i);
+        });
         updateSpreadsheet(spreadsheet);
     }
 
@@ -230,15 +324,14 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
     public boolean validate(ValidateInputsDTO validateInputsDTO) {
         Optional<Spreadsheet> spreadsheetOptional = getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(this::createSpreadsheet);
-        SpreadsheetData data = spreadsheet.getSpreadsheetData();
 
         List<Integer> columnIndexes = validateInputsDTO.getColumnIndexes();
 
         for (Integer column : columnIndexes) {
-            SpreadsheetColumn spreadsheetColumn = data.getColumns().get(column);
-            List<SpreadsheetRow> rows = data.getRows();
+            SpreadsheetColumn spreadsheetColumn = spreadsheet.getColumns().get(column);
+            List<SpreadsheetRow> rows = spreadsheet.getRows();
             for (SpreadsheetRow row : rows) {
-                Object o = row.getElements().get(spreadsheetColumn.getName());
+                Object o = row.getCellsMap().get(spreadsheetColumn.getName());
                 try {
                     if (o == null) {
                         return false;

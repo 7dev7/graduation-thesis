@@ -2,7 +2,7 @@ package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
-import com.dev.domain.model.spreadsheet.SpreadsheetData;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.exception.TrainingException;
 import com.dev.service.train.PerceptronTrainingService;
 import com.dev.service.train.RBFTrainingService;
@@ -22,12 +22,12 @@ public class UserModelTrainServiceImpl implements UserModelTrainService {
     }
 
     @Override
-    public NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
+    public NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, Spreadsheet spreadsheet) throws TrainingException {
         NetworkModel model;
         if (trainInfoDTO.getIsMLPModel()) {
-            model = perceptronTrainingService.train(trainInfoDTO, spreadsheetData);
+            model = perceptronTrainingService.train(trainInfoDTO, spreadsheet);
         } else {
-            model = rbfTrainingService.train(trainInfoDTO, spreadsheetData);
+            model = rbfTrainingService.train(trainInfoDTO, spreadsheet);
         }
         return model;
     }

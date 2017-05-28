@@ -5,7 +5,7 @@ import com.dev.domain.model.DTO.TrainDataInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
-import com.dev.domain.model.spreadsheet.SpreadsheetData;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.exception.TrainingException;
 import com.dev.service.train.RBFTrainingService;
 import com.dev.service.train.TrainingDataService;
@@ -47,7 +47,7 @@ public class RBFBackProp implements RBFTrainingService {
     }
 
     @Override
-    public List<NetworkModel> train(AutoModeTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
+    public List<NetworkModel> train(AutoModeTrainInfoDTO trainInfoDTO, Spreadsheet spreadsheet) throws TrainingException {
         Integer minNumOfNeuron = trainInfoDTO.getRbfMinNumOfNeuron();
         Integer maxNumOfNeuron = trainInfoDTO.getRbfMaxNumOfNeuron();
 
@@ -57,7 +57,7 @@ public class RBFBackProp implements RBFTrainingService {
         List<NetworkModel> models = new ArrayList<>();
         for (int i = minNumOfNeuron; i <= maxNumOfNeuron; i++) {
             RadialBasisFunctionsNetwork rbfNetwork = new RadialBasisFunctionsNetwork(inputNeurons, i, outNeurons);
-            TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
+            TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheet, trainInfoDTO);
             rbfNetwork.setMinIns(dataInfoDTO.getMinIns());
             rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
             rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
@@ -72,13 +72,13 @@ public class RBFBackProp implements RBFTrainingService {
     }
 
     @Override
-    public NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
+    public NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, Spreadsheet spreadsheet) throws TrainingException {
         int inputNeurons = trainInfoDTO.getInputContinuousColumnIndexes().size();
         int hiddenNurons = trainInfoDTO.getNumOfNeurons();
         int outNeurons = trainInfoDTO.getOutputContinuousColumnIndexes().size();
 
         RadialBasisFunctionsNetwork rbfNetwork = new RadialBasisFunctionsNetwork(inputNeurons, hiddenNurons, outNeurons);
-        TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
+        TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheet, trainInfoDTO);
         rbfNetwork.setMinIns(dataInfoDTO.getMinIns());
         rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
         rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());

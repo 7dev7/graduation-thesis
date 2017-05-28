@@ -1,10 +1,10 @@
 package com.dev.domain.model.network;
 
 import com.dev.domain.model.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLOG;
 import org.encog.engine.network.activation.ActivationSIN;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationStep;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 
@@ -75,10 +75,10 @@ public class Perceptron implements Serializable {
 
         switch (activationFunction) {
             case LOGISTIC:
-                res = new ActivationLOG();
+                res = new ActivationSigmoid();
                 break;
             case HYPERBOLIC:
-                res = new ActivationSigmoid();
+                res = new ActivationTANH();
                 break;
             case EXP:
                 res = new ActivationStep();

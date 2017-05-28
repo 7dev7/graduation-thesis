@@ -4,7 +4,9 @@ import com.dev.domain.converter.NetworkModelDTOConverter;
 import com.dev.domain.converter.SpreadsheetDataDTOConverter;
 import com.dev.domain.model.DTO.*;
 import com.dev.domain.model.NetworkModel;
-import com.dev.domain.model.spreadsheet.*;
+import com.dev.domain.model.spreadsheet.ColumnType;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
+import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.service.NetworkModelService;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
@@ -53,10 +55,8 @@ public class AnalysisRestController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(validate);
         }
-        SpreadsheetDataDTO dataDTO;
         try {
             Spreadsheet spreadsheet = spreadsheetService.createSpreadsheet(file);
-            dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheet.getSpreadsheetData());
         } catch (StorageException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -64,7 +64,7 @@ public class AnalysisRestController {
         }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(dataDTO);
+                .body(null);
     }
 
     @PostMapping(value = "/validate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -85,7 +85,7 @@ public class AnalysisRestController {
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(Spreadsheet::new);
         List<NetworkModel> networkModels = null;
         try {
-            networkModels = autoModeTrainService.train(trainInfoDTO, spreadsheet.getSpreadsheetData());
+            networkModels = autoModeTrainService.train(trainInfoDTO, spreadsheet);
         } catch (TrainingException e) {
             e.printStackTrace();
         }
@@ -105,7 +105,7 @@ public class AnalysisRestController {
 
         NetworkModel networkModel = null;
         try {
-            networkModel = userModelTrainService.train(userModelTrainInfo, spreadsheet.getSpreadsheetData());
+            networkModel = userModelTrainService.train(userModelTrainInfo, spreadsheet);
         } catch (TrainingException e) {
             e.printStackTrace();
         }
@@ -132,7 +132,7 @@ public class AnalysisRestController {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
         try {
             Spreadsheet spreadsheet = spreadsheetOptional.orElseThrow(Exception::new);
-            SpreadsheetDataDTO dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheet.getSpreadsheetData());
+            SpreadsheetDataDTO dataDTO = SpreadsheetDataDTOConverter.convert(spreadsheet);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(dataDTO);
@@ -164,11 +164,11 @@ public class AnalysisRestController {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(spreadsheetService::createSpreadsheet);
 
-        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
         String columnName = (String) map.get("columnName");
         ColumnType type = ColumnType.values()[Integer.valueOf((String) map.get("columnType"))];
-        SpreadsheetColumn column = new SpreadsheetColumn(spreadsheetData.getMaxColumnIndex() + 1, columnName, type);
-        spreadsheetData.getColumns().add(column);
+        SpreadsheetColumn column = new SpreadsheetColumn(spreadsheet.getMaxColumnIndex() + 1, columnName, type);
+        column.setSpreadsheet(spreadsheet);
+        spreadsheet.getColumns().add(column);
         spreadsheetService.updateSpreadsheet(spreadsheet);
     }
 
@@ -200,51 +200,32 @@ public class AnalysisRestController {
     public int addRow(@RequestParam Map<String, Object> map) {
         Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
         Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(spreadsheetService::createSpreadsheet);
-
-        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
-        Map<String, Object> elements = new HashMap<>();
-        for (String column : spreadsheetData.getColumnNames()) {
-            Object o = map.get(column);
-            if (o != null) {
-                elements.put(column, o);
-            }
+        try {
+            return spreadsheetService.addRow(map);
+        } catch (StorageException e) {
+            e.printStackTrace();
         }
-        SpreadsheetRow spreadsheetRow = new SpreadsheetRow(spreadsheetData.getMaxRowIndex() + 1, elements);
-        spreadsheetData.getRows().add(spreadsheetRow);
-        spreadsheetService.updateSpreadsheet(spreadsheet);
-        return spreadsheetRow.getIndex();
+        return -1;
     }
 
     @PostMapping("/row/edit")
     public void editRow(@RequestParam Map<String, Object> map) {
-        Integer id = Integer.valueOf((String) map.get("___#$RowId$#___"));
-        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
-        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(spreadsheetService::createSpreadsheet);
-        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
-
-        Optional<SpreadsheetRow> spreadsheetRowOptional = spreadsheetData.getRows().stream().filter(i -> i.getIndex() == id).findFirst();
-        spreadsheetRowOptional.ifPresent(i -> {
-            Map<String, Object> elements = i.getElements();
-            for (String column : spreadsheetData.getColumnNames()) {
-                Object o = map.get(column);
-                if (o != null) {
-                    elements.put(column, o);
-                }
-            }
-        });
-        spreadsheetService.updateSpreadsheet(spreadsheet);
+        Integer index = Integer.valueOf((String) map.get("___#$RowId$#___"));
+        try {
+            spreadsheetService.editRowByIndex(index, map);
+        } catch (StorageException e) {
+            e.printStackTrace();
+        }
     }
 
     @PostMapping("/row/remove")
     public void removeRow(@RequestParam Map<String, Object> map) {
         int index = Integer.valueOf((String) map.get("id"));
-        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
-        Spreadsheet spreadsheet = spreadsheetOptional.orElseGet(spreadsheetService::createSpreadsheet);
-        SpreadsheetData spreadsheetData = spreadsheet.getSpreadsheetData();
-
-        Optional<SpreadsheetRow> spreadsheetRowOptional = spreadsheetData.getRows().stream().filter(i -> i.getIndex() == index).findFirst();
-        spreadsheetRowOptional.ifPresent(i -> spreadsheetData.getRows().remove(i));
-        spreadsheetService.updateSpreadsheet(spreadsheet);
+        try {
+            spreadsheetService.removeRowByIndex(index);
+        } catch (StorageException e) {
+            e.printStackTrace();
+        }
     }
 
     private String validate(MultipartFile file) {

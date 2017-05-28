@@ -2,7 +2,7 @@ package com.dev.service.train.impl;
 
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
-import com.dev.domain.model.spreadsheet.SpreadsheetData;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.exception.TrainingException;
 import com.dev.service.train.AutoModeTrainService;
 import com.dev.service.train.PerceptronTrainingService;
@@ -25,13 +25,13 @@ public class AutoModeTrainServiceImpl implements AutoModeTrainService {
     }
 
     @Override
-    public List<NetworkModel> train(AutoModeTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
+    public List<NetworkModel> train(AutoModeTrainInfoDTO trainInfoDTO, Spreadsheet spreadsheet) throws TrainingException {
         List<NetworkModel> models = new ArrayList<>();
         if (trainInfoDTO.getIsMLPNeeded()) {
-            models.addAll(perceptronTrainingService.train(trainInfoDTO, spreadsheetData));
+            models.addAll(perceptronTrainingService.train(trainInfoDTO, spreadsheet));
         }
         if (trainInfoDTO.getIsRBFNeeded()) {
-            models.addAll(rbfTrainingService.train(trainInfoDTO, spreadsheetData));
+            models.addAll(rbfTrainingService.train(trainInfoDTO, spreadsheet));
         }
         return models;
     }

@@ -3,8 +3,8 @@ package com.dev.service.train.impl;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.DTO.TrainDataInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
-import com.dev.domain.model.spreadsheet.SpreadsheetData;
 import com.dev.service.NormalizationService;
 import com.dev.service.exception.TrainingException;
 import com.dev.service.train.TrainingDataService;
@@ -27,19 +27,19 @@ public class TrainingDataServiceImpl implements TrainingDataService {
     }
 
     @Override
-    public TrainDataInfoDTO buildDataset(SpreadsheetData spreadsheetData, AutoModeTrainInfoDTO trainInfoDTO) throws TrainingException {
-        return build(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes(), trainInfoDTO.getOutputContinuousColumnIndexes());
+    public TrainDataInfoDTO buildDataset(Spreadsheet spreadsheet, AutoModeTrainInfoDTO trainInfoDTO) throws TrainingException {
+        return build(spreadsheet, trainInfoDTO.getInputContinuousColumnIndexes(), trainInfoDTO.getOutputContinuousColumnIndexes());
     }
 
     @Override
-    public TrainDataInfoDTO buildDataset(SpreadsheetData spreadsheetData, UserModelTrainInfoDTO trainInfoDTO) throws TrainingException {
-        return build(spreadsheetData, trainInfoDTO.getInputContinuousColumnIndexes(), trainInfoDTO.getOutputContinuousColumnIndexes());
+    public TrainDataInfoDTO buildDataset(Spreadsheet spreadsheet, UserModelTrainInfoDTO trainInfoDTO) throws TrainingException {
+        return build(spreadsheet, trainInfoDTO.getInputContinuousColumnIndexes(), trainInfoDTO.getOutputContinuousColumnIndexes());
     }
 
-    private TrainDataInfoDTO build(SpreadsheetData spreadsheetData, List<Integer> inputContinuousColumnsIndexes,
+    private TrainDataInfoDTO build(Spreadsheet spreadsheet, List<Integer> inputContinuousColumnsIndexes,
                                    List<Integer> outputContinuousColumnsIndexes) throws TrainingException {
-        double[][] inputs = buildData(spreadsheetData, inputContinuousColumnsIndexes);
-        double[][] outputs = buildData(spreadsheetData, outputContinuousColumnsIndexes);
+        double[][] inputs = buildData(spreadsheet, inputContinuousColumnsIndexes);
+        double[][] outputs = buildData(spreadsheet, outputContinuousColumnsIndexes);
 
         //TODO add normalization check needed
 
@@ -62,14 +62,14 @@ public class TrainingDataServiceImpl implements TrainingDataService {
 
         List<String> inCols = new ArrayList<>();
         for (Integer columnIndex : inputContinuousColumnsIndexes) {
-            SpreadsheetColumn spreadsheetColumn = spreadsheetData.getColumns().get(columnIndex);
+            SpreadsheetColumn spreadsheetColumn = spreadsheet.getColumns().get(columnIndex);
             inCols.add(spreadsheetColumn.getName());
         }
         dataInfoDTO.setInputColumns(inCols);
 
         List<String> outCols = new ArrayList<>();
         for (Integer columnIndex : outputContinuousColumnsIndexes) {
-            SpreadsheetColumn spreadsheetColumn = spreadsheetData.getColumns().get(columnIndex);
+            SpreadsheetColumn spreadsheetColumn = spreadsheet.getColumns().get(columnIndex);
             outCols.add(spreadsheetColumn.getName());
         }
 
@@ -118,15 +118,15 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         return maxs;
     }
 
-    private double[][] buildData(SpreadsheetData spreadsheetData, List<Integer> columnIndexes) throws TrainingException {
+    private double[][] buildData(Spreadsheet spreadsheet, List<Integer> columnIndexes) throws TrainingException {
         List<List<Double>> result = new ArrayList<>();
         for (Integer columnIndex : columnIndexes) {
-            SpreadsheetColumn spreadsheetColumn = spreadsheetData.getColumns().get(columnIndex);
+            SpreadsheetColumn spreadsheetColumn = spreadsheet.getColumns().get(columnIndex);
             if (spreadsheetColumn == null) {
                 throw new TrainingException("Incorrect column index");
             }
-            List<Object> collect = spreadsheetData.getRows().stream()
-                    .map(i -> i.getElements().get(spreadsheetColumn.getName()))
+            List<Object> collect = spreadsheet.getRows().stream()
+                    .map(i -> i.getCellsMap().get(spreadsheetColumn.getName()))
                     .collect(Collectors.toCollection(ArrayList::new));
             result.add(cast(collect));
         }

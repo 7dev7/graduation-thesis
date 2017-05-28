@@ -4,15 +4,24 @@ import com.dev.domain.model.doctor.Doctor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Spreadsheet implements Serializable {
     @Id
     @GeneratedValue
     private long id;
-    @Lob
-    private SpreadsheetData spreadsheetData;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "spreadsheet", cascade = {CascadeType.ALL})
+    private List<SpreadsheetColumn> columns = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "spreadsheet", cascade = {CascadeType.ALL})
+    private List<SpreadsheetRow> rows = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "doctorId")
     private Doctor owner;
@@ -29,14 +38,6 @@ public class Spreadsheet implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public SpreadsheetData getSpreadsheetData() {
-        return spreadsheetData;
-    }
-
-    public void setSpreadsheetData(SpreadsheetData spreadsheetData) {
-        this.spreadsheetData = spreadsheetData;
     }
 
     public Doctor getOwner() {
@@ -63,13 +64,43 @@ public class Spreadsheet implements Serializable {
         isClosed = closed;
     }
 
-    @Override
-    public String toString() {
-        return "Spreadsheet{" +
-                "id=" + id +
-                ", spreadsheetData=" + spreadsheetData +
-                ", lastUpdate=" + lastUpdate +
-                ", isClosed=" + isClosed +
-                '}';
+    public List<SpreadsheetColumn> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<SpreadsheetColumn> columns) {
+        this.columns = columns;
+    }
+
+    public List<SpreadsheetRow> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<SpreadsheetRow> rows) {
+        this.rows = rows;
+    }
+
+    public int getNumOfRecords() {
+        return rows.size();
+    }
+
+    public List<String> getColumnNames() {
+        return columns.stream().map(SpreadsheetColumn::getName).collect(Collectors.toList());
+    }
+
+    public List<Integer> getColumnIndexes() {
+        return columns.stream().map(SpreadsheetColumn::getIndex).collect(Collectors.toList());
+    }
+
+    public List<Integer> getColumnTypesIndexes() {
+        return columns.stream().map(SpreadsheetColumn::getType).map(ColumnType::ordinal).collect(Collectors.toList());
+    }
+
+    public int getMaxRowIndex() {
+        return rows.stream().max(Comparator.comparingInt(SpreadsheetRow::getIndex)).orElseGet(SpreadsheetRow::new).getIndex();
+    }
+
+    public int getMaxColumnIndex() {
+        return columns.stream().max(Comparator.comparingInt(SpreadsheetColumn::getIndex)).orElseGet(SpreadsheetColumn::new).getIndex();
     }
 }

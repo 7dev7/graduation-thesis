@@ -29,7 +29,7 @@ public class Doctor implements Serializable {
     private List<Spreadsheet> spreadsheets;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
-    private List<NetworkModel> networkInfos;
+    private List<NetworkModel> networkModels;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor")
     private List<Patient> patients;
@@ -126,6 +126,14 @@ public class Doctor implements Serializable {
 
     public void setSpreadsheets(List<Spreadsheet> spreadsheets) {
         this.spreadsheets = spreadsheets;
+    }
+
+    public List<NetworkModel> getNetworkModels() {
+        return networkModels;
+    }
+
+    public void setNetworkModels(List<NetworkModel> networkModels) {
+        this.networkModels = networkModels;
     }
 
     @Override

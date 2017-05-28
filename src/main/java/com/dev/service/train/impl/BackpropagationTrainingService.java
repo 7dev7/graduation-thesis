@@ -7,7 +7,7 @@ import com.dev.domain.model.DTO.TrainDataInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.Perceptron;
-import com.dev.domain.model.spreadsheet.SpreadsheetData;
+import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.exception.TrainingException;
 import com.dev.service.train.PerceptronTrainingService;
 import com.dev.service.train.TrainingDataService;
@@ -53,7 +53,7 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
     }
 
     @Override
-    public List<NetworkModel> train(AutoModeTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
+    public List<NetworkModel> train(AutoModeTrainInfoDTO trainInfoDTO, Spreadsheet spreadsheet) throws TrainingException {
         Integer minNumOfNeuron = trainInfoDTO.getMlpMinNumOfNeuron();
         Integer maxNumOfNeuron = trainInfoDTO.getMlpMaxNumOfNeuron();
 
@@ -68,7 +68,7 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
             for (ActivationFunction hiddenActivation : hiddenNeuronsFuncs) {
                 for (ActivationFunction outActivation : outNeuronsFuncs) {
                     Perceptron perceptron = new Perceptron(inputNeurons, i, outNeurons, hiddenActivation, outActivation);
-                    TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
+                    TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheet, trainInfoDTO);
                     perceptron.setMinIns(dataInfoDTO.getMinIns());
                     perceptron.setMaxIns(dataInfoDTO.getMaxIns());
                     perceptron.setMinOuts(dataInfoDTO.getMinOuts());
@@ -90,7 +90,7 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
     }
 
     @Override
-    public NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, SpreadsheetData spreadsheetData) throws TrainingException {
+    public NetworkModel train(UserModelTrainInfoDTO trainInfoDTO, Spreadsheet spreadsheet) throws TrainingException {
         int inputNeurons = trainInfoDTO.getInputContinuousColumnIndexes().size();
         int hiddenNeurons = trainInfoDTO.getNumOfNeurons();
         int outNeurons = trainInfoDTO.getOutputContinuousColumnIndexes().size();
@@ -98,7 +98,7 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         ActivationFunction outActivationFunction = trainInfoDTO.getOutActivationFunction();
 
         Perceptron perceptron = new Perceptron(inputNeurons, hiddenNeurons, outNeurons, hiddenActivationFunction, outActivationFunction);
-        TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
+        TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheet, trainInfoDTO);
         perceptron.setMinIns(dataInfoDTO.getMinIns());
         perceptron.setMaxIns(dataInfoDTO.getMaxIns());
         perceptron.setMinOuts(dataInfoDTO.getMinOuts());

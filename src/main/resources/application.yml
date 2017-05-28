@@ -14,10 +14,10 @@ spring:
       username: sa
 
   jpa:
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        show_sql: true
+        show_sql: false
         format_sql: true
         current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
 
@@ -25,4 +25,4 @@ logging:
   level:
     org:
       hibernate:
-        type: trace
+        type: error
