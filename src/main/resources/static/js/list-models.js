@@ -1,11 +1,5 @@
 $(function () {
-    // var options = {
-    //     complete: function (response) {
-    //         alert(response);
-    //     }
-    // };
-    //
-    // $("#uploadModelForm").ajaxForm(options);
+    $("#loadModelErrorMsg").hide();
 
     $("#remove-model-confirm").dialog({
         autoOpen: false,
@@ -41,4 +35,19 @@ $(function () {
         });
         confirmDialog.dialog("open");
     });
+
+    var options = {
+        complete: function (data) {
+            if (data.status !== 201) {
+                var msg = $("#loadModelErrorMsg");
+                msg.text(data.responseText);
+                msg.show();
+                return;
+            }
+            $("#loadModelErrorMsg").hide();
+            window.location.replace("/model?id=" + data.responseJSON.id);
+        }
+    };
+
+    $("#uploadModelForm").ajaxForm(options);
 });

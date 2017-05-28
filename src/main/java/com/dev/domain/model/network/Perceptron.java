@@ -26,8 +26,8 @@ public class Perceptron implements Serializable {
     private List<Double> maxOuts;
     private List<Double> minOuts;
 
-    private List<String> inputColumns;
-    private List<String> outColumns;
+    private String hiddenFuncFormatted;
+    private String outFuncFormatted;
 
     public Perceptron(int inNeurons, int neuronsOnHiddenLayer, int outNeurons) {
         this.inputNeurons = inNeurons;
@@ -40,15 +40,19 @@ public class Perceptron implements Serializable {
         maxOuts = new ArrayList<>();
         minOuts = new ArrayList<>();
 
-        inputColumns = new ArrayList<>();
-        outColumns = new ArrayList<>();
-
         network = new BasicNetwork();
         network.addLayer(new BasicLayer(null, true, inNeurons));
         network.addLayer(new BasicLayer(new ActivationSigmoid(), true, neuronsOnHiddenLayer));
         network.addLayer(new BasicLayer(new ActivationSigmoid(), false, outNeurons));
         network.getStructure().finalizeStructure();
         network.reset();
+    }
+
+    public Perceptron(int inNeurons, int neuronsOnHiddenLayer, int outNeurons, BasicNetwork network) {
+        this.inputNeurons = inNeurons;
+        this.hiddenNeurons = neuronsOnHiddenLayer;
+        this.outNeurons = outNeurons;
+        this.network = network;
     }
 
     public Perceptron(int inNeurons, int neuronsOnHiddenLayer, int outNeurons, ActivationFunction hiddenActivationFunc,
@@ -84,22 +88,6 @@ public class Perceptron implements Serializable {
                 break;
         }
         return res;
-    }
-
-    public List<String> getInputColumns() {
-        return inputColumns;
-    }
-
-    public void setInputColumns(List<String> inputColumns) {
-        this.inputColumns = inputColumns;
-    }
-
-    public List<String> getOutColumns() {
-        return outColumns;
-    }
-
-    public void setOutColumns(List<String> outColumns) {
-        this.outColumns = outColumns;
     }
 
     public BasicNetwork getNetwork() {
@@ -180,5 +168,21 @@ public class Perceptron implements Serializable {
 
     public void setMinOuts(List<Double> minOuts) {
         this.minOuts = minOuts;
+    }
+
+    public String getHiddenFuncFormatted() {
+        return hiddenFuncFormatted;
+    }
+
+    public void setHiddenFuncFormatted(String hiddenFuncFormatted) {
+        this.hiddenFuncFormatted = hiddenFuncFormatted;
+    }
+
+    public String getOutFuncFormatted() {
+        return outFuncFormatted;
+    }
+
+    public void setOutFuncFormatted(String outFuncFormatted) {
+        this.outFuncFormatted = outFuncFormatted;
     }
 }

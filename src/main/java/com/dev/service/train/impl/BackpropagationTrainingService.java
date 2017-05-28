@@ -48,10 +48,6 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         networkModel.setPerceptron(perceptron);
         networkModel.setPerceptronModel(true);
         networkModel.setDescription("Многослойный перцептрон с " + perceptron.getHiddenNeurons() + " скрытыми нейронами");
-        networkModel.setHiddenFuncFormatted(ActivationFunctionFormatterConverter.convert(perceptron.getHiddenActivationFunc()));
-        networkModel.setHiddenActivationFunction(perceptron.getHiddenActivationFunc());
-        networkModel.setOutFuncFormatted(ActivationFunctionFormatterConverter.convert(perceptron.getOutActivationFunc()));
-        networkModel.setOutActivationFunction(perceptron.getOutActivationFunc());
         networkModel.setName("MLP: " + perceptron.getInputNeurons() + " - " + perceptron.getHiddenNeurons() + " - " + perceptron.getOutNeurons());
         return networkModel;
     }
@@ -75,12 +71,17 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
                     TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
                     perceptron.setMinIns(dataInfoDTO.getMinIns());
                     perceptron.setMaxIns(dataInfoDTO.getMaxIns());
-
                     perceptron.setMinOuts(dataInfoDTO.getMinOuts());
                     perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
+
+                    perceptron.setHiddenFuncFormatted(ActivationFunctionFormatterConverter.convert(perceptron.getHiddenActivationFunc()));
+                    perceptron.setHiddenActivationFunc(perceptron.getHiddenActivationFunc());
+                    perceptron.setOutFuncFormatted(ActivationFunctionFormatterConverter.convert(perceptron.getOutActivationFunc()));
+                    perceptron.setOutActivationFunc(perceptron.getOutActivationFunc());
+
                     NetworkModel model = train(perceptron, dataInfoDTO.getMlDataSet());
-                    perceptron.setInputColumns(dataInfoDTO.getInputColumns());
-                    perceptron.setOutColumns(dataInfoDTO.getOutColumns());
+                    model.setInputColumns(dataInfoDTO.getInputColumns());
+                    model.setOutColumns(dataInfoDTO.getOutColumns());
                     models.add(model);
                 }
             }
@@ -100,12 +101,12 @@ public class BackpropagationTrainingService implements PerceptronTrainingService
         TrainDataInfoDTO dataInfoDTO = trainingDataService.buildDataset(spreadsheetData, trainInfoDTO);
         perceptron.setMinIns(dataInfoDTO.getMinIns());
         perceptron.setMaxIns(dataInfoDTO.getMaxIns());
-
         perceptron.setMinOuts(dataInfoDTO.getMinOuts());
         perceptron.setMaxOuts(dataInfoDTO.getMaxOuts());
+
         NetworkModel model = train(perceptron, dataInfoDTO.getMlDataSet());
-        perceptron.setInputColumns(dataInfoDTO.getInputColumns());
-        perceptron.setOutColumns(dataInfoDTO.getOutColumns());
+        model.setInputColumns(dataInfoDTO.getInputColumns());
+        model.setOutColumns(dataInfoDTO.getOutColumns());
         return model;
     }
 }

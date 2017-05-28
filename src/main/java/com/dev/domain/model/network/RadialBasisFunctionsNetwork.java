@@ -19,9 +19,6 @@ public class RadialBasisFunctionsNetwork implements Serializable {
     private List<Double> maxOuts;
     private List<Double> minOuts;
 
-    private List<String> inputColumns;
-    private List<String> outColumns;
-
     public RadialBasisFunctionsNetwork(int inputNeurons, int hiddenNeurons, int outNeurons) {
         this.inputNeurons = inputNeurons;
         this.hiddenNeurons = hiddenNeurons;
@@ -30,9 +27,6 @@ public class RadialBasisFunctionsNetwork implements Serializable {
         this.maxIns = new ArrayList<>();
         this.minIns = new ArrayList<>();
 
-        inputColumns = new ArrayList<>();
-        outColumns = new ArrayList<>();
-
         maxOuts = new ArrayList<>();
         minOuts = new ArrayList<>();
 
@@ -40,20 +34,11 @@ public class RadialBasisFunctionsNetwork implements Serializable {
         network.reset();
     }
 
-    public List<String> getInputColumns() {
-        return inputColumns;
-    }
-
-    public void setInputColumns(List<String> inputColumns) {
-        this.inputColumns = inputColumns;
-    }
-
-    public List<String> getOutColumns() {
-        return outColumns;
-    }
-
-    public void setOutColumns(List<String> outColumns) {
-        this.outColumns = outColumns;
+    public RadialBasisFunctionsNetwork(int inputNeurons, int hiddenNeurons, int outNeurons, RBFNetwork network) {
+        this.network = network;
+        this.inputNeurons = inputNeurons;
+        this.hiddenNeurons = hiddenNeurons;
+        this.outNeurons = outNeurons;
     }
 
     public RBFNetwork getNetwork() {

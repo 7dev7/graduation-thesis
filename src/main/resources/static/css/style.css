@@ -151,3 +151,7 @@ body {
 textarea {
     resize: vertical;
 }
+
+.error-msg {
+    color: #b92c28;
+}

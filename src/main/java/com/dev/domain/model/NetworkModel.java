@@ -3,13 +3,12 @@ package com.dev.domain.model;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
-import org.encog.persist.EncogDirectoryPersistence;
 
 import javax.persistence.*;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class NetworkModel implements Serializable {
@@ -29,31 +28,25 @@ public class NetworkModel implements Serializable {
     private RadialBasisFunctionsNetwork rbfNetwork;
 
     private double error;
-    private ActivationFunction hiddenActivationFunction;
-    private ActivationFunction outActivationFunction;
-
-    private String hiddenFuncFormatted;
-    private String outFuncFormatted;
 
     @ManyToOne
     @JoinColumn(name = "doctorId")
     private Doctor owner;
 
+    @ElementCollection
+    @CollectionTable(name = "model_columns", joinColumns = @JoinColumn(name = "model_id"))
+    @Column(name = "inputColumn")
+    private List<String> inputColumns;
+
+    @ElementCollection
+    @CollectionTable(name = "model_columns", joinColumns = @JoinColumn(name = "model_id"))
+    @Column(name = "outColumn")
+    private List<String> outColumns;
+
     public NetworkModel() {
         this.dateOfCreation = new Date();
-    }
-
-    private void writeObject(ObjectOutputStream oos) throws IOException {
-        EncogDirectoryPersistence.saveObject(oos,
-                isPerceptronModel() ? perceptron.getNetwork() : rbfNetwork.getNetwork());
-        oos.writeUTF(name);
-        oos.writeUTF(description);
-        oos.writeBoolean(isPerceptronModel);
-        oos.writeDouble(error);
-        oos.writeObject(hiddenActivationFunction);
-        oos.writeObject(outActivationFunction);
-        oos.writeUTF(hiddenFuncFormatted);
-        oos.writeUTF(outFuncFormatted);
+        this.inputColumns = new ArrayList<>();
+        this.outColumns = new ArrayList<>();
     }
 
     public long getId() {
@@ -86,22 +79,6 @@ public class NetworkModel implements Serializable {
 
     public void setError(double error) {
         this.error = error;
-    }
-
-    public ActivationFunction getHiddenActivationFunction() {
-        return hiddenActivationFunction;
-    }
-
-    public void setHiddenActivationFunction(ActivationFunction hiddenActivationFunction) {
-        this.hiddenActivationFunction = hiddenActivationFunction;
-    }
-
-    public ActivationFunction getOutActivationFunction() {
-        return outActivationFunction;
-    }
-
-    public void setOutActivationFunction(ActivationFunction outActivationFunction) {
-        this.outActivationFunction = outActivationFunction;
     }
 
     public Doctor getOwner() {
@@ -148,19 +125,19 @@ public class NetworkModel implements Serializable {
         this.dateOfCreation = dateOfCreation;
     }
 
-    public String getHiddenFuncFormatted() {
-        return hiddenFuncFormatted;
+    public List<String> getInputColumns() {
+        return inputColumns;
     }
 
-    public void setHiddenFuncFormatted(String hiddenFuncFormatted) {
-        this.hiddenFuncFormatted = hiddenFuncFormatted;
+    public void setInputColumns(List<String> inputColumns) {
+        this.inputColumns = inputColumns;
     }
 
-    public String getOutFuncFormatted() {
-        return outFuncFormatted;
+    public List<String> getOutColumns() {
+        return outColumns;
     }
 
-    public void setOutFuncFormatted(String outFuncFormatted) {
-        this.outFuncFormatted = outFuncFormatted;
+    public void setOutColumns(List<String> outColumns) {
+        this.outColumns = outColumns;
     }
 }

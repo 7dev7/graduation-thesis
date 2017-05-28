@@ -48,46 +48,31 @@
                         Функция активации скрытого слоя:
                     </label>
                     <input type="text" readonly="readonly" class="form-control" id="hiddenFuncFormatted"
-                           th:value="${networkModel.hiddenFuncFormatted}"/><br/>
+                           th:value="${networkModel.perceptron.hiddenFuncFormatted}"/><br/>
                     <label for="outFuncFormatted">
                         Функция активации выходного слоя:
                     </label>
                     <input type="text" readonly="readonly" class="form-control" id="outFuncFormatted"
-                           th:value="${networkModel.outFuncFormatted}"/>
+                           th:value="${networkModel.perceptron.outFuncFormatted}"/>
                 </div>
 
                 <div class="form-group">
                     <label>
                         Входные колонки
                     </label>
-                    <div th:if="${networkModel.isPerceptronModel}">
-                        <ul class="list-group" id="inputMlpColumns"
-                            th:each="col : ${networkModel.perceptron.inputColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
-                        </ul>
-                    </div>
-                    <div th:unless="${networkModel.isPerceptronModel}">
-                        <ul class="list-group" id="inputRbfColumns"
-                            th:each="col : ${networkModel.rbfNetwork.inputColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
-                        </ul>
-                    </div>
+                    <ul class="list-group" id="inputMlpColumns"
+                        th:each="col : ${networkModel.inputColumns}">
+                        <li class="list-group-item" th:text="${col}"></li>
+                    </ul>
                 </div>
 
                 <div class="form-group">
                     <label>
                         Выходные колонки
                     </label>
-                    <div th:if="${networkModel.isPerceptronModel}">
-                        <ul class="list-group" id="outMlpColumns" th:each="col : ${networkModel.perceptron.outColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
-                        </ul>
-                    </div>
-                    <div th:unless="${networkModel.isPerceptronModel}">
-                        <ul class="list-group" id="outRbfColumns" th:each="col : ${networkModel.rbfNetwork.outColumns}">
-                            <li class="list-group-item" th:text="${col}"></li>
-                        </ul>
-                    </div>
+                    <ul class="list-group" id="outMlpColumns" th:each="col : ${networkModel.outColumns}">
+                        <li class="list-group-item" th:text="${col}"></li>
+                    </ul>
                 </div>
 
                 <div id="remove-model-confirm" title="Удаление модели">

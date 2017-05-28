@@ -62,9 +62,10 @@ public class RBFBackProp implements RBFTrainingService {
             rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
             rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
             rbfNetwork.setMaxOuts(dataInfoDTO.getMaxOuts());
-            rbfNetwork.setInputColumns(dataInfoDTO.getInputColumns());
-            rbfNetwork.setOutColumns(dataInfoDTO.getOutColumns());
+
             NetworkModel model = train(rbfNetwork, dataInfoDTO.getMlDataSet());
+            model.setInputColumns(dataInfoDTO.getInputColumns());
+            model.setOutColumns(dataInfoDTO.getOutColumns());
             models.add(model);
         }
         return models;
@@ -82,8 +83,10 @@ public class RBFBackProp implements RBFTrainingService {
         rbfNetwork.setMaxIns(dataInfoDTO.getMaxIns());
         rbfNetwork.setMinOuts(dataInfoDTO.getMinOuts());
         rbfNetwork.setMaxOuts(dataInfoDTO.getMaxOuts());
-        rbfNetwork.setInputColumns(dataInfoDTO.getInputColumns());
-        rbfNetwork.setOutColumns(dataInfoDTO.getOutColumns());
-        return train(rbfNetwork, dataInfoDTO.getMlDataSet());
+
+        NetworkModel model = train(rbfNetwork, dataInfoDTO.getMlDataSet());
+        model.setInputColumns(dataInfoDTO.getInputColumns());
+        model.setOutColumns(dataInfoDTO.getOutColumns());
+        return model;
     }
 }

@@ -3,7 +3,10 @@ package com.dev.web;
 import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.service.DoctorService;
+import com.dev.service.NetworkModelJSONService;
 import com.dev.service.NetworkModelService;
+import com.dev.service.exception.ModelParsingException;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,18 +15,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
 public class NetworkModelController {
     private final NetworkModelService networkModelService;
     private final DoctorService doctorService;
+    private final NetworkModelJSONService networkModelJSONService;
 
     @Autowired
-    public NetworkModelController(NetworkModelService networkModelService, DoctorService doctorService) {
+    public NetworkModelController(NetworkModelService networkModelService, DoctorService doctorService, NetworkModelJSONService networkModelJSONService) {
         this.networkModelService = networkModelService;
         this.doctorService = doctorService;
+        this.networkModelJSONService = networkModelJSONService;
     }
 
     @GetMapping("/network_models")
