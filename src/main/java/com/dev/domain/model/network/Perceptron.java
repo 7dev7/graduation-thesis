@@ -140,4 +140,17 @@ public class Perceptron implements Serializable {
     public void setOutFuncFormatted(String outFuncFormatted) {
         this.outFuncFormatted = outFuncFormatted;
     }
+
+    @Override
+    public String toString() {
+        return "Perceptron{" +
+                "hiddenActivationFunc=" + hiddenActivationFunc +
+                ", outActivationFunc=" + outActivationFunc +
+                ", inputNeurons=" + inputNeurons +
+                ", hiddenNeurons=" + hiddenNeurons +
+                ", outNeurons=" + outNeurons +
+                ", hiddenFuncFormatted='" + hiddenFuncFormatted + '\'' +
+                ", outFuncFormatted='" + outFuncFormatted + '\'' +
+                '}';
+    }
 }

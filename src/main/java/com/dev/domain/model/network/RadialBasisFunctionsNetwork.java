@@ -16,8 +16,8 @@ public class RadialBasisFunctionsNetwork implements Serializable {
         this.hiddenNeurons = hiddenNeurons;
         this.outNeurons = outNeurons;
 
-        network = new RBFNetwork(inputNeurons, hiddenNeurons, outNeurons, RBFEnum.Gaussian);
-        network.reset();
+        this.network = new RBFNetwork(inputNeurons, hiddenNeurons, outNeurons, RBFEnum.Gaussian);
+        this.network.reset();
     }
 
     public RadialBasisFunctionsNetwork(int inputNeurons, int hiddenNeurons, int outNeurons, RBFNetwork network) {
@@ -57,5 +57,14 @@ public class RadialBasisFunctionsNetwork implements Serializable {
 
     public void setOutNeurons(int outNeurons) {
         this.outNeurons = outNeurons;
+    }
+
+    @Override
+    public String toString() {
+        return "RadialBasisFunctionsNetwork{" +
+                "inputNeurons=" + inputNeurons +
+                ", hiddenNeurons=" + hiddenNeurons +
+                ", outNeurons=" + outNeurons +
+                '}';
     }
 }

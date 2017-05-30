@@ -3,6 +3,7 @@ package com.dev.service.train.impl;
 import com.dev.domain.model.DTO.AutoModeTrainInfoDTO;
 import com.dev.domain.model.DTO.TrainDataInfoDTO;
 import com.dev.domain.model.DTO.UserModelTrainInfoDTO;
+import com.dev.domain.model.spreadsheet.ColumnType;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import com.dev.service.NormalizationService;
@@ -41,12 +42,9 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         double[][] inputs = buildData(spreadsheet, inputContinuousColumnsIndexes);
         double[][] outputs = buildData(spreadsheet, outputContinuousColumnsIndexes);
 
-        //TODO add normalization check needed
-
         List<Double> minIn = getMinValues(inputs);
         List<Double> maxIn = getMaxValues(inputs);
         double[][] normIn = normalize(inputs, minIn, maxIn);
-
 
         List<Double> minOut = getMinValues(outputs);
         List<Double> maxOut = getMaxValues(outputs);
@@ -74,7 +72,6 @@ public class TrainingDataServiceImpl implements TrainingDataService {
         }
 
         dataInfoDTO.setOutColumns(outCols);
-
         return dataInfoDTO;
     }
 
@@ -101,7 +98,7 @@ public class TrainingDataServiceImpl implements TrainingDataService {
             for (int j = 0; j < data.length; j++) {
                 min = (min > data[j][i]) ? data[j][i] : min;
             }
-            mins.add(min * 1.25);
+            mins.add(min);
         }
         return mins;
     }
@@ -113,7 +110,7 @@ public class TrainingDataServiceImpl implements TrainingDataService {
             for (int j = 0; j < data.length; j++) {
                 max = (max < data[j][i]) ? data[j][i] : max;
             }
-            maxs.add(max * 1.25);
+            maxs.add(max);
         }
         return maxs;
     }
@@ -128,33 +125,60 @@ public class TrainingDataServiceImpl implements TrainingDataService {
             List<Object> collect = spreadsheet.getRows().stream()
                     .map(i -> i.getCellsMap().get(spreadsheetColumn.getName()))
                     .collect(Collectors.toCollection(ArrayList::new));
-            result.add(cast(collect));
+
+            result.add(cast(collect, spreadsheetColumn));
         }
         return transformToArray(result);
     }
 
-    private List<Double> cast(List<Object> items) {
+    private List<Double> cast(List<Object> items, SpreadsheetColumn column) {
         List<Double> res = new ArrayList<>();
         for (Object obj : items) {
             try {
-                double val;
                 if (obj == null) {
-                    val = -1;
+                    if (column.getType().equals(ColumnType.CONTINUOUS)) {
+                        res.add(getAvg(items));
+                    } else {
+                        res.add(0d);
+                    }
                 } else if (obj instanceof Integer) {
-                    val = Double.valueOf((Integer) obj);
+                    res.add(Double.valueOf((Integer) obj));
                 } else if (obj instanceof Double) {
-                    val = (Double) obj;
+                    res.add((Double) obj);
                 } else {
-                    val = Double.parseDouble((String) obj);
+                    res.add(Double.parseDouble((String) obj));
                 }
-                res.add(val);
             } catch (NumberFormatException e) {
-                //TODO handle WA
-                res.add(0d);
-//                System.err.println(e.getMessage());
+                if (column.getType().equals(ColumnType.CONTINUOUS)) {
+                    res.add(getAvg(items));
+                } else if (ColumnType.ORDINAL.equals(column.getType())) {
+                    res.add(0d);
+                }
             }
         }
         return res;
+    }
+
+    private double getAvg(List<Object> items) {
+        List<Double> res = new ArrayList<>();
+        for (Object item : items) {
+            try {
+                double val;
+                if (item == null) {
+                    continue;
+                } else if (item instanceof Integer) {
+                    val = Double.valueOf((Integer) item);
+                } else if (item instanceof Double) {
+                    val = (Double) item;
+                } else {
+                    val = Double.parseDouble((String) item);
+                }
+                res.add(val);
+            } catch (NumberFormatException e) {
+                //NOP
+            }
+        }
+        return res.size() != 0 ? res.stream().mapToDouble(Double::doubleValue).sum() / res.size() : 0;
     }
 
     private double[][] transformToArray(List<List<Double>> ins) {
