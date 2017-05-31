@@ -10,7 +10,7 @@ public class ActivationFunctionFormatterConverter {
         }
         switch (activationFunction) {
             case LOGISTIC:
-                return "Сигмоида";
+                return "Логистическая";
             case EXP:
                 return "Экспоненциальная";
             case SIN:

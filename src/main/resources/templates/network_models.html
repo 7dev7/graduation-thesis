@@ -60,7 +60,7 @@
             <ul class="nav nav-sidebar">
                 <h5>Функция активации скрытого слоя:</h5>
                 <li>
-                    <a href="#" data-filter=".hidden-LOGISTIC">Сигмоида</a>
+                    <a href="#" data-filter=".hidden-LOGISTIC">Логистическая</a>
                 </li>
                 <li>
                     <a href="#" data-filter=".hidden-HYPERBOLIC">Гиперболическая</a>
@@ -75,7 +75,7 @@
             <ul class="nav nav-sidebar">
                 <h5>Функция активации выходного слоя:</h5>
                 <li>
-                    <a href="#" data-filter=".out-LOGISTIC">Сигмоида</a>
+                    <a href="#" data-filter=".out-LOGISTIC">Логистическая</a>
                 </li>
                 <li>
                     <a href="#" data-filter=".out-HYPERBOLIC">Гиперболическая</a>
@@ -91,23 +91,24 @@
 
         <h4 class="error-msg" id="loadModelErrorMsg" hidden="hidden"/>
 
-        <form role="form" method="POST" enctype="multipart/form-data" action="/model/upload/"
-              id="uploadModelForm">
-            <fieldset>
-                <div class="form-group">
-                    <label for="file" class="control-label">Загрузка модели из файла:</label>
-                    <input class="form-control" name="file" type="file" id="file" required="required"/>
-                </div>
-                <div class="col-md-4 col-md-offset-4">
-                    <button type="submit" class="btn btn-primary" id="loadFileBtn">Загрузить
-                        файл
-                    </button>
-                </div>
-            </fieldset>
-        </form>
-        <hr/>
 
-        <div class="col-md-12 main">
+        <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 main">
+            <form role="form" method="POST" enctype="multipart/form-data" action="/model/upload/"
+                  id="uploadModelForm">
+                <fieldset>
+                    <div class="form-group">
+                        <label for="file" class="control-label">Загрузка модели из файла:</label>
+                        <input class="form-control" name="file" type="file" id="file" required="required"/>
+                    </div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <button type="submit" class="btn btn-primary" id="loadFileBtn">Загрузить
+                            файл
+                        </button>
+                    </div>
+                </fieldset>
+            </form>
+            <hr/>
+
             <h3>Мои модели: </h3>
             <hr/>
             <div class="modelItems">
