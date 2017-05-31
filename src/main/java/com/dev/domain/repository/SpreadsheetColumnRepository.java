@@ -1,4 +1,4 @@
-package com.dev.domain.dao;
+package com.dev.domain.repository;
 
 import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
 import org.springframework.data.repository.CrudRepository;

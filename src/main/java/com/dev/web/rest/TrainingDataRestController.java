@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-public class AnalysisRestController {
+public class TrainingDataRestController {
     private static final String SUCCESSFUL_CODE = "OK";
     private final AutoModeTrainService autoModeTrainService;
     private final UserModelTrainService userModelTrainService;
@@ -37,9 +37,9 @@ public class AnalysisRestController {
     private final FileValidator fileValidator;
 
     @Autowired
-    public AnalysisRestController(FileValidator fileValidator, SpreadsheetService spreadsheetService,
-                                  AutoModeTrainService autoModeTrainService, NetworkModelService networkModelService,
-                                  UserModelTrainService userModelTrainService) {
+    public TrainingDataRestController(FileValidator fileValidator, SpreadsheetService spreadsheetService,
+                                      AutoModeTrainService autoModeTrainService, NetworkModelService networkModelService,
+                                      UserModelTrainService userModelTrainService) {
         this.fileValidator = fileValidator;
         this.spreadsheetService = spreadsheetService;
         this.autoModeTrainService = autoModeTrainService;
@@ -47,7 +47,7 @@ public class AnalysisRestController {
         this.userModelTrainService = userModelTrainService;
     }
 
-    @PostMapping(value = "/analysis", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/spreadsheet/load", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity analyze(@RequestParam("file") MultipartFile file) {
         String validate = validate(file);
         if (!SUCCESSFUL_CODE.equals(validate)) {

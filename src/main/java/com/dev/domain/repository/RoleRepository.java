@@ -1,4 +1,4 @@
-package com.dev.domain.dao;
+package com.dev.domain.repository;
 
 import com.dev.domain.model.doctor.Role;
 import org.springframework.data.repository.CrudRepository;

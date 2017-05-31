@@ -1,6 +1,6 @@
 package com.dev.service.impl;
 
-import com.dev.domain.dao.NetworkModelRepository;
+import com.dev.domain.repository.NetworkModelRepository;
 import com.dev.domain.model.DTO.ComputeModelDataDTO;
 import com.dev.domain.model.DTO.ComputeResultDTO;
 import com.dev.domain.model.DTO.NetworkModelDTO;

@@ -1,10 +1,9 @@
 package com.dev;
 
-import com.dev.domain.dao.DoctorRepository;
-import com.dev.domain.dao.PatientRepository;
-import com.dev.domain.dao.RoleRepository;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.domain.model.doctor.Role;
+import com.dev.domain.repository.DoctorRepository;
+import com.dev.domain.repository.RoleRepository;
 import com.dev.service.impl.RoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,16 +30,14 @@ public class BaseConfig {
     private final DoctorRepository doctorRepository;
     private final RoleRepository roleRepository;
     private final RoleServiceImpl roleManager;
-    private final PatientRepository patientRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public BaseConfig(DoctorRepository doctorRepository, RoleRepository roleRepository,
-                      RoleServiceImpl roleManager, PatientRepository patientRepository) {
+                      RoleServiceImpl roleManager) {
         this.doctorRepository = doctorRepository;
         this.roleRepository = roleRepository;
         this.roleManager = roleManager;
-        this.patientRepository = patientRepository;
     }
 
     @PostConstruct
@@ -57,7 +54,9 @@ public class BaseConfig {
         Doctor doctor = new Doctor();
         doctor.setLogin("doctor");
         doctor.setName("Иван");
-        doctor.setLastName("Иванов");
+        doctor.setSurname("Иванов");
+        doctor.setMiddleName("Иванович");
+        doctor.setPosition("Генетик");
         doctor.setPassword(bCryptPasswordEncoder.encode("doctor"));
         doctor.setPasswordConfirm(bCryptPasswordEncoder.encode("doctor"));
         doctor.setEmail("us.us@us.com");

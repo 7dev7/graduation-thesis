@@ -1,6 +1,6 @@
 package com.dev.service.auth;
 
-import com.dev.domain.dao.DoctorRepository;
+import com.dev.domain.repository.DoctorRepository;
 import com.dev.domain.model.doctor.Doctor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

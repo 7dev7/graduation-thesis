@@ -1,6 +1,5 @@
-package com.dev.domain.dao;
+package com.dev.domain.repository;
 
-import com.dev.domain.model.Patient;
 import com.dev.domain.model.doctor.Doctor;
 import org.springframework.data.repository.CrudRepository;
 
@@ -11,6 +10,4 @@ public interface DoctorRepository extends CrudRepository<Doctor, Long> {
 
     @Override
     List<Doctor> findAll();
-
-    Doctor findDoctorByPatients(Patient patient);
 }

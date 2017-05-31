@@ -1,8 +1,8 @@
 package com.dev.service.impl;
 
-import com.dev.domain.dao.SpreadsheetColumnRepository;
-import com.dev.domain.dao.SpreadsheetRepository;
-import com.dev.domain.dao.SpreadsheetRowRepository;
+import com.dev.domain.repository.SpreadsheetColumnRepository;
+import com.dev.domain.repository.SpreadsheetRepository;
+import com.dev.domain.repository.SpreadsheetRowRepository;
 import com.dev.domain.model.DTO.ValidateInputsDTO;
 import com.dev.domain.model.doctor.Doctor;
 import com.dev.domain.model.spreadsheet.*;

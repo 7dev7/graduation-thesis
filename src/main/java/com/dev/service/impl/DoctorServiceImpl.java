@@ -1,9 +1,9 @@
 package com.dev.service.impl;
 
-import com.dev.domain.dao.DoctorRepository;
-import com.dev.domain.dao.RoleRepository;
 import com.dev.domain.model.DTO.DoctorDTO;
 import com.dev.domain.model.doctor.Doctor;
+import com.dev.domain.repository.DoctorRepository;
+import com.dev.domain.repository.RoleRepository;
 import com.dev.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -62,7 +62,9 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = doctorRepository.findOne(doctorDTO.getId());
         doctor.setLogin(doctorDTO.getLogin());
         doctor.setName(doctorDTO.getName());
-        doctor.setLastName(doctorDTO.getLastName());
+        doctor.setSurname(doctorDTO.getSurname());
+        doctor.setMiddleName(doctorDTO.getMiddleName());
+        doctor.setPosition(doctorDTO.getPosition());
         doctor.setEmail(doctorDTO.getEmail());
         doctorRepository.save(doctor);
     }

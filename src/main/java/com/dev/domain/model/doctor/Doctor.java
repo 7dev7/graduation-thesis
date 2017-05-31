@@ -1,7 +1,6 @@
 package com.dev.domain.model.doctor;
 
 import com.dev.domain.model.NetworkModel;
-import com.dev.domain.model.Patient;
 import com.dev.domain.model.spreadsheet.Spreadsheet;
 
 import javax.persistence.*;
@@ -17,7 +16,9 @@ public class Doctor implements Serializable {
     @Column(unique = true)
     private String login;
     private String name;
-    private String lastName;
+    private String surname;
+    private String middleName;
+    private String position;
     private String password;
     private String passwordConfirm;
     private String email;
@@ -31,12 +32,8 @@ public class Doctor implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
     private List<NetworkModel> networkModels;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor")
-    private List<Patient> patients;
-
     public Doctor() {
         spreadsheets = new ArrayList<>();
-        patients = new ArrayList<>();
     }
 
     public long getId() {
@@ -95,14 +92,6 @@ public class Doctor implements Serializable {
         this.name = name;
     }
 
-    public List<Patient> getPatients() {
-        return patients;
-    }
-
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
-    }
-
     @Transient
     public String getPasswordConfirm() {
         return passwordConfirm;
@@ -112,12 +101,12 @@ public class Doctor implements Serializable {
         this.passwordConfirm = passwordConfirm;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public List<Spreadsheet> getSpreadsheets() {
@@ -136,19 +125,36 @@ public class Doctor implements Serializable {
         this.networkModels = networkModels;
     }
 
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
     @Override
     public String toString() {
         return "Doctor{" +
                 "id=" + id +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", surname='" + surname + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", position='" + position + '\'' +
                 ", password='" + password + '\'' +
                 ", passwordConfirm='" + passwordConfirm + '\'' +
                 ", email='" + email + '\'' +
                 ", roles=" + roles +
                 ", enabled=" + enabled +
-                ", patients=" + patients +
                 '}';
     }
 }
