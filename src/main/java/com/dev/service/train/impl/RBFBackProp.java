@@ -42,7 +42,7 @@ public class RBFBackProp implements RBFTrainingService {
         NetworkModel networkModel = new NetworkModel();
         networkModel.setError(backpropagation.getError());
         networkModel.setRbfNetwork(rbfNetwork);
-        networkModel.setDescription("Сеть радиальных базисных функций с " + rbfNetwork.getHiddenNeurons() + " скрытыми нейронами");
+        networkModel.setDescription("Сеть радиально-базисных функций с " + rbfNetwork.getHiddenNeurons() + " скрытыми нейронами");
         networkModel.setPerceptronModel(false);
         networkModel.setName("RBF: " + rbfNetwork.getInputNeurons() + " - " + rbfNetwork.getHiddenNeurons() + " - " + rbfNetwork.getOutNeurons());
         return networkModel;
