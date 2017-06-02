@@ -159,10 +159,12 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
     }
 
     private void setMinMax(NetworkModel templateModel, NetworkModel model) {
-        model.setMinIns(new ArrayList<>(templateModel.getMinIns()));
-        model.setMaxIns(new ArrayList<>(templateModel.getMaxIns()));
-        model.setMinOuts(new ArrayList<>(templateModel.getMinOuts()));
-        model.setMaxOuts(new ArrayList<>(templateModel.getMaxOuts()));
+        if (templateModel != null) {
+            model.setMinIns(new ArrayList<>(templateModel.getMinIns()));
+            model.setMaxIns(new ArrayList<>(templateModel.getMaxIns()));
+            model.setMinOuts(new ArrayList<>(templateModel.getMinOuts()));
+            model.setMaxOuts(new ArrayList<>(templateModel.getMaxOuts()));
+        }
     }
 
     private List<NetworkModelColumnDefinition> buildColumnDefs(List<JSONObject> jsonColumns) {

@@ -3,6 +3,7 @@
     top: 50px;
     bottom: 0;
     left: 0;
+    width: 199px;
     display: block;
     padding: 20px;
     overflow-x: hidden;
@@ -33,4 +34,8 @@
 .nav-sidebar > .active > a:focus {
     color: #fff;
     background-color: #428bca;
+}
+
+.main {
+    margin-left: 200px;
 }
