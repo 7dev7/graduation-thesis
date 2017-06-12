@@ -2,9 +2,7 @@ package com.dev.web;
 
 import com.dev.domain.model.DTO.DoctorDTO;
 import com.dev.domain.model.doctor.Doctor;
-import com.dev.domain.model.spreadsheet.Spreadsheet;
 import com.dev.service.DoctorService;
-import com.dev.service.SpreadsheetService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,25 +11,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
-
 @Controller
 public class DoctorController {
     private final DoctorService doctorService;
-    private final SpreadsheetService spreadsheetService;
 
-    public DoctorController(DoctorService doctorService, SpreadsheetService spreadsheetService) {
+    public DoctorController(DoctorService doctorService) {
         this.doctorService = doctorService;
-        this.spreadsheetService = spreadsheetService;
     }
 
     @GetMapping("/doctor")
     public String doctorPage(@RequestParam long id, Model model) {
         Doctor doctor = doctorService.findById(id);
+        if (doctor == null) {
+            return "redirect:/";
+        }
         model.addAttribute("doctor", doctor);
-
-        Optional<Spreadsheet> activeSpreadsheetForDoctor = spreadsheetService.getActiveSpreadsheetForDoctor(doctor);
-        activeSpreadsheetForDoctor.ifPresent(spreadsheet -> model.addAttribute("spreadsheet", spreadsheet));
         model.addAttribute("doctorDto", new DoctorDTO());
         return "doctor_page";
     }

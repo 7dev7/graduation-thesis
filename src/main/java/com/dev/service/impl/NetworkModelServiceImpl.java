@@ -1,12 +1,12 @@
 package com.dev.service.impl;
 
-import com.dev.domain.repository.NetworkModelRepository;
 import com.dev.domain.model.DTO.ComputeModelDataDTO;
 import com.dev.domain.model.DTO.ComputeResultDTO;
 import com.dev.domain.model.DTO.NetworkModelDTO;
 import com.dev.domain.model.NetworkModel;
 import com.dev.domain.model.network.Perceptron;
 import com.dev.domain.model.network.RadialBasisFunctionsNetwork;
+import com.dev.domain.repository.NetworkModelRepository;
 import com.dev.service.DoctorService;
 import com.dev.service.NetworkModelService;
 import com.dev.service.NormalizationService;

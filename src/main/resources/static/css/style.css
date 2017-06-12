@@ -155,3 +155,7 @@ textarea {
 .error-msg {
     color: #b92c28;
 }
+
+.tableCell {
+    vertical-align: middle;
+}

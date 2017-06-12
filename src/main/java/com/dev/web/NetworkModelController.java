@@ -58,4 +58,14 @@ public class NetworkModelController {
         networkModelService.update(modelDTO);
         return "redirect:model?id=" + modelDTO.getId();
     }
+
+    @GetMapping("/model/compute")
+    public String computeModel(@RequestParam long id, Model model) {
+        NetworkModel networkModel = networkModelService.findById(id);
+        if (networkModel == null) {
+            return "redirect:/decision";
+        }
+        model.addAttribute("model", networkModel);
+        return "compute_model";
+    }
 }

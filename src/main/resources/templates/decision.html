@@ -5,88 +5,45 @@
 <body>
 
 <div th:include="fragments/common :: header"></div>
-<script src="/js/decision.js"></script>
 
 <div class="container">
-    <div class="alert alert-danger alert-dismissable fade in" id="inputsErrorBlock" hidden="hidden">
-        <span id="inputsErrorMessage"></span>
-    </div>
-
-    <div id="input-values-module">
-
+    <div id="choose-model-module">
         <div class="login-panel panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Входные данные:</h3>
+                <h3 class="panel-title">Выберите модель нейронной сети:</h3>
             </div>
             <div class="panel-body">
-                <form role="form" method="post">
-                    <fieldset>
-                        <div class="col-md-8 col-md-offset-2">
-                            <div id="inputs">
-                                <div class="form-group" id="inputsGroup">
-                                    <div class="paramItem0">
-                                        <div class="col-md-12">
-                                            <input class="form-control inParam" id="in0" name="in0"
-                                                   type="number" required="required"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="control-module">
-                                <button type="button" class="btn btn-default pull-right" id="addInputParameter">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить входной
-                                    параметр
-                                </button>
-                            </div>
+                <div th:each="model : ${networkModels}">
+                    <div class="mix"
+                         th:classappend="${model.isPerceptronModel ? 'mlp' : 'rbf'} + ${model.isPerceptronModel ? ' hidden-' + model.perceptron.hiddenActivationFunc : ''} + ${model.isPerceptronModel ? ' out-' + model.perceptron.outActivationFunc : ''}">
+
+                        <h3><a th:href="@{/model/compute(id=${model.id})}" th:text="${model.name}"></a></h3>
+
+                        <h4>Дата создания: <span th:text="${model.dateOfCreation}"></span></h4>
+                        <h5>Ошибка: <span th:text="${model.error}"></span></h5>
+
+                        <div th:if="${model.isPerceptronModel}">
+                            <h5 th:if="${model.perceptron.hiddenActivationFunc}">Функция активации скрытого слоя: <span
+                                    th:text="${model.perceptron.hiddenFuncFormatted}"></span></h5>
+                            <h5 th:if="${model.perceptron.outActivationFunc}">Функция активации выходного слоя: <span
+                                    th:text="${model.perceptron.outFuncFormatted}"></span></h5>
                         </div>
-                        <div class="col-md-6 col-md-offset-3">
-                            <button type="submit" class="btn btn-primary" id="chooseModel">Выбрать модель</button>
-                        </div>
-                    </fieldset>
-                </form>
+
+                        <h5>Описание: <span th:text="${model.description}"></span></h5>
+
+                        <h5>Входные колонки: </h5>
+                        <ul class="list-group" id="inputMlpColumns"
+                            th:each="col : ${model.inputColumns}">
+                            <li class="list-group-item" th:text="${col.name}"></li>
+                        </ul>
+                        <h5>Выходные колонки: </h5>
+                        <ul class="list-group" id="outMlpColumns" th:each="col : ${model.outColumns}">
+                            <li class="list-group-item" th:text="${col.name}"></li>
+                        </ul>
+                        <hr/>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div id="choose-model-module" hidden="hidden">
-        <div class="panel-heading">
-            <h3 class="panel-title">Выберите модель:</h3>
-        </div>
-        <div class="panel-body">
-            <form role="form" method="post">
-                <fieldset>
-                    <div class="col-md-8 col-md-offset-2" id="modelsList">
-                    </div>
-                    <div class="col-md-6 col-md-offset-3">
-                        <button type="submit" class="btn btn-primary" id="backToInputValuesBtn">Назад</button>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
-    </div>
-
-    <div id="show-result-module" hidden="hidden">
-        <div class="panel-heading">
-            <h3 class="panel-title">Результат:</h3>
-        </div>
-        <div class="panel-body">
-            <form role="form" method="post">
-                <fieldset>
-                    <div class="col-md-8 col-md-offset-2" id="resultBlock">
-                        <h3><a href="#" id="resultModelName"></a></h3>
-                        <div class="col-md-6">
-                            <h4>Входные значения:</h4>
-                            <ul class="list-group" id="inputValues">
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h4>Результат:</h4>
-                            <ul class="list-group" id="outputValues">
-                            </ul>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
         </div>
     </div>
 </div>

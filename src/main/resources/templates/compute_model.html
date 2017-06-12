@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:include="fragments/common :: head">
+</head>
+<body>
+<div th:include="fragments/common :: header"></div>
+<script src="/js/computeModel.js"></script>
+
+<div class="container">
+    <div class="alert alert-danger alert-dismissable fade in" id="inputsErrorBlock" hidden="hidden">
+        <span id="inputsErrorMessage"></span>
+    </div>
+
+    <input type="hidden" th:value="${model.id}" id="modelId"/>
+
+    <div id="input-values-module">
+        <div class="panel-heading">
+            <h3 class="panel-title">Введите входные данные:</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="post">
+                <fieldset>
+                    <div class="col-md-8 col-md-offset-2">
+                        <table class="table table-bordered">
+                            <tr th:each="col : ${model.inputColumns}">
+                                <td class="text-center tableCell">
+                                    <span class="text-center tableCell" th:text="${col.name}"></span>
+                                </td>
+                                <td>
+                                    <input class="form-control inParam" type="number" required="required"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6 col-md-offset-3">
+                        <button type="submit" class="btn btn-primary" id="analyzeBtn">Провести анализ</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <div id="show-result-module" hidden="hidden">
+        <div class="panel-heading">
+            <h3 class="panel-title">Результат:</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="post">
+                <fieldset>
+                    <div class="col-md-10 col-md-offset-1" id="resultBlock">
+                        <h3><a href="#" id="resultModelName"></a></h3>
+                        <div class="col-md-6">
+                            <h4>Входные значения:</h4>
+                            <ul class="list-group" id="inputValues">
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Результат:</h4>
+                            <ul class="list-group" id="outputValues">
+                            </ul>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:include="fragments/common :: footer"></div>
+</body>
+</html>

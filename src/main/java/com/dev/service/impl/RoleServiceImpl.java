@@ -1,7 +1,7 @@
 package com.dev.service.impl;
 
-import com.dev.domain.repository.RoleRepository;
 import com.dev.domain.model.doctor.Role;
+import com.dev.domain.repository.RoleRepository;
 import com.dev.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
