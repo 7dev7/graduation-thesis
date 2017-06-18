@@ -238,6 +238,7 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
         FileOutputStream fos = new FileOutputStream(tmpFile);
         fos.write(networkStructure.getBytes());
         fos.flush();
+        fos.close();
         return tmpFile;
     }
 }
