@@ -311,8 +311,10 @@ public class SpreadsheetServiceImpl implements SpreadsheetService {
             for (SpreadsheetColumn column : spreadsheet.getColumns()) {
                 Object o = paramsMap.get(column.getName());
                 if (o != null) {
-                    i.getCellByColumn(column).setValue(o.toString());
-
+                    SpreadsheetCell cell = i.getCellByColumn(column);
+                    if (cell != null) {
+                        cell.setValue(o.toString());
+                    }
                 }
             }
             spreadsheetRowRepository.save(i);

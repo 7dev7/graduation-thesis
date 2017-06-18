@@ -72,6 +72,6 @@ public class SpreadsheetRow implements Serializable {
     }
 
     public SpreadsheetCell getCellByColumn(SpreadsheetColumn column) {
-        return spreadsheetCells.stream().filter(i -> column.getName().equals(i.getSpreadsheetColumn().getName())).findFirst().get();
+        return spreadsheetCells.stream().filter(i -> column.getName().equals(i.getSpreadsheetColumn().getName())).findFirst().orElse(null);
     }
 }

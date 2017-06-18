@@ -4,9 +4,7 @@ import com.dev.domain.converter.NetworkModelDTOConverter;
 import com.dev.domain.converter.SpreadsheetDataDTOConverter;
 import com.dev.domain.model.DTO.*;
 import com.dev.domain.model.NetworkModel;
-import com.dev.domain.model.spreadsheet.ColumnType;
-import com.dev.domain.model.spreadsheet.Spreadsheet;
-import com.dev.domain.model.spreadsheet.SpreadsheetColumn;
+import com.dev.domain.model.spreadsheet.*;
 import com.dev.service.NetworkModelService;
 import com.dev.service.SpreadsheetService;
 import com.dev.service.exception.StorageException;
@@ -14,6 +12,7 @@ import com.dev.service.exception.TrainingException;
 import com.dev.service.train.AutoModeTrainService;
 import com.dev.service.train.UserModelTrainService;
 import com.dev.service.validator.FileValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -142,6 +141,113 @@ public class TrainingDataRestController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(null);
+    }
+
+    @PostMapping(value = "/validate_data")
+    public ResponseEntity validateData(@RequestBody AutoModeTrainInfoDTO trainInfoDTO) {
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        boolean[] isValid = {true};
+        spreadsheetOptional.ifPresent(spreadsheet -> {
+            isValid[0] = validateData(spreadsheet, trainInfoDTO);
+        });
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(isValid[0]);
+    }
+
+    @PostMapping(value = "/validate_data_user")
+    public ResponseEntity validateData(@RequestBody UserModelTrainInfoDTO userModelTrainInfo) {
+        Optional<Spreadsheet> spreadsheetOptional = spreadsheetService.getActiveSpreadsheetForCurrentDoctor();
+        boolean[] isValid = {true};
+        spreadsheetOptional.ifPresent(spreadsheet -> {
+            isValid[0] = validateData(spreadsheet, userModelTrainInfo);
+        });
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(isValid[0]);
+    }
+
+    private boolean validateData(Spreadsheet spreadsheet, AutoModeTrainInfoDTO trainInfoDTO) {
+        boolean inColTypeValid = validateColType(spreadsheet, trainInfoDTO.getInputContinuousColumnIndexes());
+        if (!inColTypeValid) {
+            return false;
+        }
+        boolean outColTypeValid = validateColType(spreadsheet, trainInfoDTO.getOutputContinuousColumnIndexes());
+        if (!outColTypeValid) {
+            return false;
+        }
+        boolean validateIns = validateColumns(spreadsheet, trainInfoDTO.getInputContinuousColumnIndexes());
+        if (!validateIns) {
+            return false;
+        }
+        boolean validateOuts = validateColumns(spreadsheet, trainInfoDTO.getOutputContinuousColumnIndexes());
+        if (!validateOuts) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateData(Spreadsheet spreadsheet, UserModelTrainInfoDTO userModelTrainInfo) {
+        boolean inColTypeValid = validateColType(spreadsheet, userModelTrainInfo.getInputContinuousColumnIndexes());
+        if (!inColTypeValid) {
+            return false;
+        }
+        boolean outColTypeValid = validateColType(spreadsheet, userModelTrainInfo.getOutputContinuousColumnIndexes());
+        if (!outColTypeValid) {
+            return false;
+        }
+        boolean validateIns = validateColumns(spreadsheet, userModelTrainInfo.getInputContinuousColumnIndexes());
+        if (!validateIns) {
+            return false;
+        }
+        boolean validateOuts = validateColumns(spreadsheet, userModelTrainInfo.getOutputContinuousColumnIndexes());
+        if (!validateOuts) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateColType(Spreadsheet spreadsheet, List<Integer> columnIndexes) {
+        for (Integer index : columnIndexes) {
+            SpreadsheetColumn column = spreadsheet.getColumns().get(index);
+            if (ColumnType.NOMINAL.equals(column.getType())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateColumns(Spreadsheet spreadsheet, List<Integer> columnIndexes) {
+        for (Integer index : columnIndexes) {
+            SpreadsheetColumn column = spreadsheet.getColumns().get(index);
+            for (SpreadsheetRow row : spreadsheet.getRows()) {
+                SpreadsheetCell cell = row.getCellByColumn(column);
+                if (cell != null) {
+                    boolean validateResult = validateCell(cell);
+                    if (!validateResult) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean validateCell(SpreadsheetCell cell) {
+        String value = cell.getValue();
+        if (StringUtils.isEmpty(value)) {
+            return true;
+        }
+        try {
+            Integer.valueOf(value);
+        } catch (NumberFormatException e) {
+            try {
+                Double.valueOf(value);
+            } catch (NumberFormatException e1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @PostMapping(value = "/spreadsheet/create")

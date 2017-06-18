@@ -129,18 +129,35 @@ $(function () {
         hideErrors();
 
         var data = loadData();
-        Pace.track(function () {
-            $.ajax({
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(data),
-                url: '/train',
-                success: function (data) {
-                    $('#automatic-mode-module').hide();
-                    $('#trained-models-module').show();
-                    showTrainedInfo(data);
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            url: '/validate_data',
+            success: function (response) {
+                if (response === false) {
+                    var msg = $("#autoModeErrorMessage");
+                    var errorBlock = $("#autoModeErrorBlock");
+
+                    msg.html("Выбрана колонка с текстовыми значениями");
+                    errorBlock.show();
+                } else {
+                    Pace.track(function () {
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(data),
+                            url: '/train',
+                            success: function (data) {
+                                $('#automatic-mode-module').hide();
+                                $('#trained-models-module').show();
+                                showTrainedInfo(data);
+                            }
+                        });
+                    });
                 }
-            });
+            }
         });
     });
 
@@ -152,18 +169,36 @@ $(function () {
         //TODO hide errors
 
         var data = loadUserModelData();
-        Pace.track(function () {
-            $.ajax({
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(data),
-                url: '/train_user_model',
-                success: function (data) {
-                    $('#user-model-module').hide();
-                    $('#trained-models-module').show();
-                    showTrainedInfo(data);
+
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            url: '/validate_data_user',
+            success: function (response) {
+                if (response === false) {
+                    var block = $('#userModelErrorBlock');
+                    var msg = $('#userModelErrorMessage');
+
+                    msg.html("Выбрана колонка с текстовыми значениями");
+                    block.show();
+                } else {
+                    Pace.track(function () {
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(data),
+                            url: '/train_user_model',
+                            success: function (data) {
+                                $('#user-model-module').hide();
+                                $('#trained-models-module').show();
+                                showTrainedInfo(data);
+                            }
+                        });
+                    });
                 }
-            });
+            }
         });
     });
 
