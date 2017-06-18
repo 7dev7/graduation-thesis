@@ -58,6 +58,11 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             jsonObject.put("input_columns", buildJSONColumns(networkModel.getInputColumns()));
             jsonObject.put("out_columns", buildJSONColumns(networkModel.getOutColumns()));
 
+            jsonObject.put("minIns", networkModel.getMinIns());
+            jsonObject.put("maxIns", networkModel.getMaxIns());
+            jsonObject.put("minOuts", networkModel.getMinOuts());
+            jsonObject.put("maxOuts", networkModel.getMaxOuts());
+
             if (networkModel.isPerceptronModel()) {
                 jsonObject.put("inNeurons", networkModel.getPerceptron().getInputNeurons());
                 jsonObject.put("hiddenNeurons", networkModel.getPerceptron().getHiddenNeurons());
@@ -96,9 +101,6 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
 
         try {
             JSONObject jsonObject = (JSONObject) JSONValue.parseWithException(JSONModel);
-
-            long modelId = Long.valueOf(jsonObject.getAsString("id"));
-            NetworkModel templateModel = networkModelService.findById(modelId);
 
             String name = jsonObject.getAsString("name");
             String description = jsonObject.getAsString("description");
@@ -139,7 +141,7 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             networkModel.setDescription(description);
             networkModel.setPerceptronModel(isPerceptronModel);
             networkModel.setError(error.doubleValue());
-            setMinMax(templateModel, networkModel);
+            setMinMax(networkModel, jsonObject);
             List<NetworkModelColumnDefinition> inColumnDefinitions = buildColumnDefs(inColumns);
             List<NetworkModelColumnDefinition> outColumnDefinitions = buildColumnDefs(outColumns);
 
@@ -158,13 +160,38 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
         return networkModel;
     }
 
-    private void setMinMax(NetworkModel templateModel, NetworkModel model) {
-        if (templateModel != null) {
-            model.setMinIns(new ArrayList<>(templateModel.getMinIns()));
-            model.setMaxIns(new ArrayList<>(templateModel.getMaxIns()));
-            model.setMinOuts(new ArrayList<>(templateModel.getMinOuts()));
-            model.setMaxOuts(new ArrayList<>(templateModel.getMaxOuts()));
+    private void setMinMax(NetworkModel model, JSONObject jsonObject) {
+        List minInsObjects = new ArrayList((JSONArray) jsonObject.get("minIns"));
+        List maxInsObjects = new ArrayList((JSONArray) jsonObject.get("maxIns"));
+        List minOutsObjects = new ArrayList((JSONArray) jsonObject.get("minOuts"));
+        List maxOutsObjects = new ArrayList((JSONArray) jsonObject.get("maxOuts"));
+
+        if (!minInsObjects.isEmpty() && !maxInsObjects.isEmpty() &&
+                !minOutsObjects.isEmpty() && !maxOutsObjects.isEmpty()) {
+            model.setMinIns(convertToDouble(minInsObjects));
+            model.setMaxIns(convertToDouble(maxInsObjects));
+            model.setMinOuts(convertToDouble(minOutsObjects));
+            model.setMaxOuts(convertToDouble(maxOutsObjects));
+        } else {
+            long modelId = Long.valueOf(jsonObject.getAsString("id"));
+            NetworkModel templateModel = networkModelService.findById(modelId);
+
+            if (templateModel != null) {
+                model.setMinIns(new ArrayList<>(templateModel.getMinIns()));
+                model.setMaxIns(new ArrayList<>(templateModel.getMaxIns()));
+                model.setMinOuts(new ArrayList<>(templateModel.getMinOuts()));
+                model.setMaxOuts(new ArrayList<>(templateModel.getMaxOuts()));
+            }
         }
+    }
+
+    private List<Double> convertToDouble(List values) {
+        List<Double> list = new ArrayList<>();
+        for (Object obj : values) {
+            BigDecimal val = new BigDecimal(String.valueOf(obj));
+            list.add(val.doubleValue());
+        }
+        return list;
     }
 
     private List<NetworkModelColumnDefinition> buildColumnDefs(List<JSONObject> jsonColumns) {
