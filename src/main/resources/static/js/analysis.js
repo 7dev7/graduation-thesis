@@ -376,6 +376,30 @@ $(function () {
             return false;
         }
 
+        if (mlpMinNum.val().indexOf(',') !== -1 || mlpMinNum.val().indexOf('.') !== -1) {
+            msg.html("Минимальное число нейронов для многослойного персептрона должно быть целым числом");
+            errorBlock.show();
+            return false;
+        }
+
+        if (mlpMaxNum.val().indexOf(',') !== -1 || mlpMaxNum.val().indexOf('.') !== -1) {
+            msg.html("Максимальное число нейронов для многослойного персептрона должно быть целым числом");
+            errorBlock.show();
+            return false;
+        }
+
+        if (rbfMinNum.val().indexOf(',') !== -1 || rbfMinNum.val().indexOf('.') !== -1) {
+            msg.html("Минимальное число нейронов для сети радиально-базисных функций должно быть целым числом");
+            errorBlock.show();
+            return false;
+        }
+
+        if (rbfMaxNum.val().indexOf(',') !== -1 || rbfMaxNum.val().indexOf('.') !== -1) {
+            msg.html("Максимальное число нейронов для сети радиально-базисных функций должно быть целым числом");
+            errorBlock.show();
+            return false;
+        }
+
         //TODO implement int number validation
 
         if (parseInt(rbfMinNum.val()) > parseInt(rbfMaxNum.val())) {

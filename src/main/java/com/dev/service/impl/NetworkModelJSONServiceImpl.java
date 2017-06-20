@@ -53,7 +53,6 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             jsonObject.put("description", networkModel.getDescription());
             jsonObject.put("isPerceptronModel", networkModel.isPerceptronModel());
             jsonObject.put("error", networkModel.getError());
-            jsonObject.put("id", networkModel.getId());
 
             jsonObject.put("input_columns", buildJSONColumns(networkModel.getInputColumns()));
             jsonObject.put("out_columns", buildJSONColumns(networkModel.getOutColumns()));
@@ -160,7 +159,7 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
         return networkModel;
     }
 
-    private void setMinMax(NetworkModel model, JSONObject jsonObject) {
+    private void setMinMax(NetworkModel model, JSONObject jsonObject) throws ModelParsingException {
         List minInsObjects = new ArrayList((JSONArray) jsonObject.get("minIns"));
         List maxInsObjects = new ArrayList((JSONArray) jsonObject.get("maxIns"));
         List minOutsObjects = new ArrayList((JSONArray) jsonObject.get("minOuts"));
@@ -173,15 +172,7 @@ public class NetworkModelJSONServiceImpl implements NetworkModelJSONService {
             model.setMinOuts(convertToDouble(minOutsObjects));
             model.setMaxOuts(convertToDouble(maxOutsObjects));
         } else {
-            long modelId = Long.valueOf(jsonObject.getAsString("id"));
-            NetworkModel templateModel = networkModelService.findById(modelId);
-
-            if (templateModel != null) {
-                model.setMinIns(new ArrayList<>(templateModel.getMinIns()));
-                model.setMaxIns(new ArrayList<>(templateModel.getMaxIns()));
-                model.setMinOuts(new ArrayList<>(templateModel.getMinOuts()));
-                model.setMaxOuts(new ArrayList<>(templateModel.getMaxOuts()));
-            }
+            throw new ModelParsingException("Отсутствует min/max in/outs");
         }
     }
 
